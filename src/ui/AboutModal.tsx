@@ -13,8 +13,11 @@ export default function (props: ModalProps) {
             Storm Kamishibai v0.3.0<br />
             (C) 2022 Nona Takahara
           </p>
+          <p>
+            <a href="https://github.com/nona-takahara/storm-kamishibai">GitHub Repository</a>
+          </p>
           <ul>
-          <li>GitHub <a href="https://github.com/nona-takahara">nona-takahara</a></li>
+            <li>GitHub <a href="https://github.com/nona-takahara">nona-takahara</a></li>
             <li>Twitter <a href="https://twitter.com/nona_takahara">@nona_takahara</a></li>
           </ul>
           <p>
