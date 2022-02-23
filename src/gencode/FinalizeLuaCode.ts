@@ -8,7 +8,7 @@ export default function FinalizeLuaCode(sn: Array<LuaCodeSnippet>, opt: LuaCodeO
     funcV: (opt.compressV)? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
     funcH: (opt.compressH)? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
   }
-  let outerFront = `function R(x,y,w,h)S.drawRectF(x${ph.offsetX},y${ph.offsetY},w,h)${ph.funcV}${ph.funcH}
+  let outerFront = `function R(x,y,w,h)S.drawRectF(x${ph.offsetX},y${ph.offsetY},w,h)end${ph.funcV}${ph.funcH}
 I=0
 function onTick()I=input.getNumber(${opt.readChannel})end
 function onDraw()S=screen C=S.setColor`;
