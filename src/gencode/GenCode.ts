@@ -31,7 +31,7 @@ ctx.addEventListener('message', (evt: MessageEvent<ConvertCommands>) => {
             new Uint32Array() :
             convertLayer(pic,
               d.pictureWidth, d.pictureHeight,
-              d.cropHeight, d.cropHeight,
+              d.cropWidth, d.cropHeight,
               x * d.cropWidth, y * d.cropHeight, l),
             y + vCount * x, l, d.colorSet[picIndex])
         ));
