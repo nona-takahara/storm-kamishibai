@@ -18,6 +18,7 @@ import LuaCodeOption, { getDefault } from './LuaCodeOption';
 import FinalizeLuaCode from './gencode/FinalizeLuaCode';
 import HelpModal from './ui/HelpModal';
 import AboutModal from './ui/AboutModal';
+import LandingBox from './ui/LandingBox';
 
 type AppState = {
   pictureData?: PictureData;
@@ -196,8 +197,8 @@ export default class App extends React.Component<any, AppState> {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
               <Nav>
-                <Nav.Link onClick={() => { this.setState({ modalShow: 'help'}); }}>使い方</Nav.Link>
-                <Nav.Link onClick={() => { this.setState({ modalShow: 'about'}); }}>このアプリについて</Nav.Link>
+                <Nav.Link onClick={() => { this.setState({ modalShow: 'help' }); }}>使い方</Nav.Link>
+                <Nav.Link onClick={() => { this.setState({ modalShow: 'about' }); }}>このアプリについて</Nav.Link>
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -206,35 +207,47 @@ export default class App extends React.Component<any, AppState> {
           <Row><Col md={6} className='mt-4'>
             <Stack gap={2}>
               <FileSelector onFileChange={this.handleFileChange} />
-              <ConvertBox
-                isWorking={this.state.isWorking}
-                onStartConvertClick={this.handleStartConvertClick}
-                onStopConvertClick={this.handleStopConvertClick}
-                disableStartButton={this.state.pictureData === undefined}
-                convertProgress={this.state.convertProgress} />
-              <LuaCode code={this.state.generatedCode} />
+              {
+                (this.state.pictureData === undefined) ? (
+                  <></>
+                ) : (
+                <>
+                  <ConvertBox
+                    isWorking={this.state.isWorking}
+                    onStartConvertClick={this.handleStartConvertClick}
+                    onStopConvertClick={this.handleStopConvertClick}
+                    disableStartButton={this.state.pictureData === undefined}
+                    convertProgress={this.state.convertProgress} />
+                  <LuaCode code={this.state.generatedCode} />
+                </>
+                )}
             </Stack>
           </Col><Col md={6} className='mt-4'>
-              <Stack gap={2}>
-                <Settings
-                  onWidthChanged={this.handleCropWidthChanged}
-                  onHeightChanged={this.handleCropHeightChanged}
-                  onChannelChanged={this.handleChannelChanged}
-                  onKamishibaiStartWithChanged={this.handleKamishibaiStartWithChanged}
-                  onOffsetXChanged={this.handleOffsetXChanged}
-                  onOffsetYChanged={this.handleOffsetYChanged}
-                  luaCodeOption={this.state.luaCodeOption}
-                />
-                <ColorList
-                  colorSet={this.state.pictureData?.colorSet}
-                  colorOrder={this.state.orderTable}
-                  undrawFlag={this.state.drawFlagTable}
-                  onDrawFlagChange={this.handleOnDrawChange}
-                  onMoveUpClick={this.handleOnMoveUpClick}
-                  onMoveDownClick={this.handleOnMoveDownClick}
-                  onColorChange={this.handleOnColorChange}
-                />
-              </Stack>
+              {
+                (this.state.pictureData === undefined) ? (
+                  <LandingBox />
+                ) : (
+                <Stack gap={2}>
+                  <Settings
+                    onWidthChanged={this.handleCropWidthChanged}
+                    onHeightChanged={this.handleCropHeightChanged}
+                    onChannelChanged={this.handleChannelChanged}
+                    onKamishibaiStartWithChanged={this.handleKamishibaiStartWithChanged}
+                    onOffsetXChanged={this.handleOffsetXChanged}
+                    onOffsetYChanged={this.handleOffsetYChanged}
+                    luaCodeOption={this.state.luaCodeOption}
+                  />
+                  <ColorList
+                    colorSet={this.state.pictureData?.colorSet}
+                    colorOrder={this.state.orderTable}
+                    undrawFlag={this.state.drawFlagTable}
+                    onDrawFlagChange={this.handleOnDrawChange}
+                    onMoveUpClick={this.handleOnMoveUpClick}
+                    onMoveDownClick={this.handleOnMoveDownClick}
+                    onColorChange={this.handleOnColorChange}
+                  />
+                </Stack>)
+              }
             </Col>
           </Row>
         </Container>
