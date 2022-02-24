@@ -54,10 +54,26 @@ export default class App extends React.Component<any, AppState> {
     this.handleOffsetXChanged = this.handleOffsetXChanged.bind(this);
     this.handleOffsetYChanged = this.handleOffsetYChanged.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
+    this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
     this.state = {
       convertProgress: 0, orderTable: [], drawFlagTable: [], isWorking: false,
       generatedCode: [], luaCodeOption: getDefault(), modalShow: ''
     };
+  }
+
+  componentDidMount() {
+    window.addEventListener("beforeunload", this.handleBeforeUnloadEvent);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("beforeunload", this.handleBeforeUnloadEvent);
+  }
+
+  handleBeforeUnloadEvent(evt: BeforeUnloadEvent) {
+    if (this.state.pictureData !== undefined) {
+      evt.preventDefault();
+    }
+    evt.returnValue = "";
   }
 
   handleFileChange(_pictureData: PictureData) {
