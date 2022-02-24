@@ -191,7 +191,7 @@ export default class App extends React.Component<any, AppState> {
   render(): React.ReactNode {
     return (
       <>
-        <Navbar collapseOnSelect expand="lg" bg="light">
+        <Navbar collapseOnSelect expand="md" bg="light">
           <Container>
             <Navbar.Brand>Storm Kamishibai</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
