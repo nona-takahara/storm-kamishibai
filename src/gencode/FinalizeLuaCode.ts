@@ -40,5 +40,9 @@ function onDraw()S=screen C=S.setColor`;
 }
 
 function frame(index: number, snippet: string) {
-  return `\nif I==${index}then ${snippet}end`;
+  if (snippet.length === 0) {
+    return '';
+  } else {
+    return `\nif I==${index}then ${snippet}end`;
+  }
 }
