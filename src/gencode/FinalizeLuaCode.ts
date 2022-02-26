@@ -13,7 +13,7 @@ I=0
 function onTick()I=input.getNumber(${opt.readChannel})end
 function onDraw()S=screen C=S.setColor`;
   let outerBottom = '\nend';
-  let maxLength = 4090 - (outerFront.length + outerBottom.length);
+  let maxLength = 4090 - (bytelen(outerFront) + bytelen(outerBottom));
 
   let r: string [] = [];
   let t = '';
@@ -22,13 +22,12 @@ function onDraw()S=screen C=S.setColor`;
     const k = v.layers.reverse();
     
     let t2 = frame(i + opt.startWith, k.join(''));
-    console.log(t2);
 
-    if (t2.length > maxLength) {
+    if (bytelen(t2) > maxLength) {
 
     }
 
-    if (t.length + t2.length > maxLength) {
+    if (bytelen(t) + bytelen(t2) > maxLength) {
       r.push(t);
       t = t2;
     } else {
@@ -45,4 +44,8 @@ function frame(index: number, snippet: string) {
   } else {
     return `\nif I==${index}then ${snippet}end`;
   }
+}
+
+function bytelen(s: string) {
+  return (new Blob([s])).size;
 }

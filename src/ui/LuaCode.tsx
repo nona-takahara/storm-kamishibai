@@ -42,11 +42,15 @@ constructor(props: LuaCodeProps) {
               </InputGroup>
             </Col>
             <Col xs="auto">
-              {(this.props.code[i] || "").length} 文字
+              {bytelen(this.props.code[i] || "")} 文字
             </Col>
           </Row>
         </Card.Header>
         <Card.Body as="textarea" className="font-monospace p-1" value={this.props.code[this.state.index] || ""} readOnly={true}/>
       </Card>);
   }
+}
+
+function bytelen(s: string) {
+  return (new Blob([s])).size;
 }
