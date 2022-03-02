@@ -10,11 +10,12 @@ export default function (props: ModalProps) {
       <Modal.Body>
         <section>
           <p>
-            Storm Kamishibai v0.3.1<br />
+            Storm Kamishibai v0.3.2<br />
             (C) 2022 Nona Takahara
           </p>
           <p>
             <a href="https://github.com/nona-takahara/storm-kamishibai">GitHub Repository</a>
+            <a href="https://forms.gle/TRxMsVQLBrCc3yJF7">問い合わせフォーム(Google Forms)</a>
           </p>
           <ul>
             <li>GitHub <a href="https://github.com/nona-takahara">nona-takahara</a></li>
@@ -40,6 +41,14 @@ export default function (props: ModalProps) {
         </section>
         <hr />
         <h4>アップデートログ</h4>
+        <section>
+          <h5>v0.3.2</h5>
+          <ul>
+            <li>暫定版のランディングボックスを設置</li>
+            <li>文字数カウントをバイト数に変更</li>
+            <li>空のフレームでのLuaコード出力を抑制</li>
+          </ul>
+        </section>
         <section>
           <h5>v0.3.1</h5>
           <ul>
