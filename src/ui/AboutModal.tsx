@@ -13,11 +13,9 @@ export default function (props: ModalProps) {
             Storm Kamishibai v0.3.2<br />
             (C) 2022 Nona Takahara
           </p>
-          <p>
-            <a href="https://github.com/nona-takahara/storm-kamishibai">GitHub Repository</a>
-            <a href="https://forms.gle/TRxMsVQLBrCc3yJF7">問い合わせフォーム(Google Forms)</a>
-          </p>
           <ul>
+            <li><a href="https://github.com/nona-takahara/storm-kamishibai">GitHub Repository</a></li>
+            <li><a href="https://forms.gle/TRxMsVQLBrCc3yJF7">問い合わせフォーム(Google Forms)</a></li>
             <li>GitHub <a href="https://github.com/nona-takahara">nona-takahara</a></li>
             <li>Twitter <a href="https://twitter.com/nona_takahara">@nona_takahara</a></li>
           </ul>
