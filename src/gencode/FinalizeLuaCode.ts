@@ -19,41 +19,54 @@ function onDraw()S=screen C=S.setColor`;
   let haveColorDiv = false;
 
   let r: string [] = [];
-  let t = '';
+  let blockLP = '';
   for (let i = 0; i < sn.length; i++) {
     const v = sn[i];
     const k = v.layers.reverse();
     
-    let t2 = frame(i + opt.startWith, k.join(''));
+    let frameLP = frame(i + opt.startWith, k.join(''));
+    let frameSize = bytelen(frame(i + opt.startWith, ''));
 
-    if (bytelen(t2) > maxLength) {
+    if (blockLP !== '' && (bytelen(blockLP) + bytelen(frameLP)) > maxLength) {
+      r.push(blockLP);
+      blockLP = '';
+    }
+
+    if (bytelen(frameLP) > maxLength) {
       haveOverRun = true;
-      while(bytelen(t2) > maxLength) {
-        let cutpoint = t2.lastIndexOf(')C(', maxLength - 1) + 1;
-        if (cutpoint == 0) {
-          haveColorDiv = true;
-
-          let nextColpt = t2.indexOf(')C(') + 1;
-          t2 = t2.slice(nextColpt, t2.indexOf(')', nextColpt) + 1) + t2;
-          cutpoint = t2.lastIndexOf(')', maxLength - 1) + 1;
-          if (cutpoint == 0) {
-
-            cutpoint = maxLength;
+      frameLP = '';
+      for (let colorLP of k) {
+        if (colorLP === undefined) colorLP = '';
+        if ((bytelen(frameLP + colorLP) + frameSize) > maxLength) {
+          if (frameLP !== '') {
+            r.push(frame(i + opt.startWith, frameLP));
           }
+
+          if ((bytelen(colorLP) + frameSize) > maxLength) {
+            haveColorDiv = true;
+
+            let v_color = colorLP.slice(0, colorLP.indexOf(')') + 1);
+            colorLP = colorLP.slice(colorLP.indexOf(')') + 1);
+            const localMaxLength = maxLength - frameSize - bytelen(v_color);
+
+            while(bytelen(colorLP) > localMaxLength) {
+              let cutpoint = colorLP.lastIndexOf(')', localMaxLength - 1) + 1;
+              r.push(frame(i + opt.startWith, v_color + colorLP.slice(0, cutpoint)));
+              colorLP = colorLP.slice(cutpoint);
+            }
+
+            colorLP = v_color + colorLP;
+          }
+          frameLP = '';
         }
-        r.push(t2.slice(0, cutpoint))
-        t2 = t2.slice(cutpoint);
+        frameLP += colorLP;
       }
+      frameLP = frame(i + opt.startWith, frameLP);
     }
 
-    if (bytelen(t) + bytelen(t2) > maxLength) {
-      r.push(t);
-      t = t2;
-    } else {
-      t += t2;
-    }
+    blockLP += frameLP;
   }
-  if (t !== '') r.push(t);
+  if (blockLP !== '') r.push(blockLP);
   return new FinalLuaCode(r.map((v) => outerFront + v + outerBottom), haveOverRun, haveColorDiv);
 }
 
