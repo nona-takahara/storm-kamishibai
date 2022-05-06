@@ -16,6 +16,7 @@ function onDraw()S=screen C=S.setColor`;
   let outerBottom = '\nend';
   let maxLength = 4090 - (bytelen(outerFront) + bytelen(outerBottom));
   let haveOverRun = false;
+  let haveColorDiv = false;
 
   let r: string [] = [];
   let t = '';
@@ -27,6 +28,22 @@ function onDraw()S=screen C=S.setColor`;
 
     if (bytelen(t2) > maxLength) {
       haveOverRun = true;
+      while(bytelen(t2) > maxLength) {
+        let cutpoint = t2.lastIndexOf(')C(', maxLength - 1) + 1;
+        if (cutpoint == 0) {
+          haveColorDiv = true;
+
+          let nextColpt = t2.indexOf(')C(') + 1;
+          t2 = t2.slice(nextColpt, t2.indexOf(')', nextColpt) + 1) + t2;
+          cutpoint = t2.lastIndexOf(')', maxLength - 1) + 1;
+          if (cutpoint == 0) {
+
+            cutpoint = maxLength;
+          }
+        }
+        r.push(t2.slice(0, cutpoint))
+        t2 = t2.slice(cutpoint);
+      }
     }
 
     if (bytelen(t) + bytelen(t2) > maxLength) {
@@ -37,7 +54,7 @@ function onDraw()S=screen C=S.setColor`;
     }
   }
   if (t !== '') r.push(t);
-  return new FinalLuaCode(r.map((v) => outerFront + v + outerBottom), haveOverRun);
+  return new FinalLuaCode(r.map((v) => outerFront + v + outerBottom), haveOverRun, haveColorDiv);
 }
 
 function frame(index: number, snippet: string) {

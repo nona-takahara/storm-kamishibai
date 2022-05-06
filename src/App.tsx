@@ -59,7 +59,7 @@ export default class App extends React.Component<any, AppState> {
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
     this.state = {
       convertProgress: 0, orderTable: [], drawFlagTable: [], isWorking: false,
-      generatedCode: new FinalLuaCode([], false), luaCodeOption: getDefault(), modalShow: ''
+      generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: ''
     };
   }
 
