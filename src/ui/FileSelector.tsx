@@ -53,8 +53,10 @@ export default class FileSelector extends React.Component<FileSelectorProps, Fil
               value={this.state.loadingPhase}
               max={this.state.loadingPhaseMax} />
             <OverlayTrigger overlay={<Tooltip>幅{this.state.width}&#xd7;高さ{this.state.height}</Tooltip>}>
-              <img src={this.state.image}
+              <div style={{overflow : 'auto'}}>
+                <img src={this.state.image}
                 style={{ height: this.state.height * this.state.scale, width: this.state.width * this.state.scale, imageRendering: 'pixelated' }} />
+              </div>
             </OverlayTrigger>
           </Stack>
         </Card.Body>
