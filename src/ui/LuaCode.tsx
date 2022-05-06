@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, InputGroup, Row, Button } from "react-bootstrap";
+import { Card, Col, InputGroup, Row, Button, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
 import FinalLuaCode from "../gencode/FinalLuaCode";
 
 type LuaCodeProps = {
@@ -45,6 +45,15 @@ constructor(props: LuaCodeProps) {
             <Col xs="auto">
               {bytelen(this.props.code.codes[i] || "")} 文字
             </Col>
+            {
+              (this.props.code.overrun) ? (
+                <Col xs="auto">
+                  <OverlayTrigger overlay={<Tooltip><>生成されたコードが長いため、<br />Luaコードを分割しました。{(this.props.code.samecolordiv) ? (<><br />色設定も分散しています。</>) : (false)}</></Tooltip>}>
+                    <Badge bg="warning" text="dark">!</Badge>
+                  </OverlayTrigger>
+                </Col>
+              ) : ( false )
+            }
           </Row>
         </Card.Header>
         <Card.Body as="textarea" className="font-monospace p-1" value={this.props.code.codes[this.state.index] || ""} readOnly={true}/>
