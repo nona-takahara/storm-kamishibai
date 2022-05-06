@@ -70,10 +70,7 @@ export default function (props: ModalProps) {
               </ul>
             </p>
             <p>
-              それでも動かない時は、たぶんこちらの不手際です。お気軽にお知らせください。
-            </p>
-            <p>
-              現状はTwitter(<a href="https://twitter.com/nona_takahara">@nona_takahara</a>)が主要な窓口です。今後不具合報告フォームを設ける予定です。
+              それでも動かない時は、たぶんこちらの不手際です。お気軽にお知らせください。メニューに問い合わせフォームがあります。
             </p>
           </section>
         </div>
