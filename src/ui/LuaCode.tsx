@@ -1,8 +1,9 @@
 import React from "react";
 import { Card, Col, InputGroup, Row, Button } from "react-bootstrap";
+import FinalLuaCode from "../gencode/FinalLuaCode";
 
 type LuaCodeProps = {
-  code: string[];
+  code: FinalLuaCode;
 }
 
 type LuaCodeState = {
@@ -18,7 +19,7 @@ constructor(props: LuaCodeProps) {
   }
 
   handleOnClickUp() {
-    this.setState({index: Math.min(this.state.index + 1, this.props.code.length - 1)});
+    this.setState({index: Math.min(this.state.index + 1, this.props.code.codes.length - 1)});
   }
 
   handleOnClickDown() {
@@ -26,7 +27,7 @@ constructor(props: LuaCodeProps) {
   }
 
   render() {
-    let i = Math.min(Math.max(this.state.index, 0), this.props.code.length - 1);
+    let i = Math.min(Math.max(this.state.index, 0), this.props.code.codes.length - 1);
     return (
       <Card>
         <Card.Header>
@@ -37,16 +38,16 @@ constructor(props: LuaCodeProps) {
             <Col xs="auto">
               <InputGroup>
                 <Button variant="outline-secondary" onClick={this.handleOnClickDown}>&lt;</Button>
-                <InputGroup.Text>{i + 1} / {this.props.code.length}</InputGroup.Text>
+                <InputGroup.Text>{i + 1} / {this.props.code.codes.length}</InputGroup.Text>
                 <Button variant="outline-secondary" onClick={this.handleOnClickUp}>&gt;</Button>
               </InputGroup>
             </Col>
             <Col xs="auto">
-              {bytelen(this.props.code[i] || "")} 文字
+              {bytelen(this.props.code.codes[i] || "")} 文字
             </Col>
           </Row>
         </Card.Header>
-        <Card.Body as="textarea" className="font-monospace p-1" value={this.props.code[this.state.index] || ""} readOnly={true}/>
+        <Card.Body as="textarea" className="font-monospace p-1" value={this.props.code.codes[this.state.index] || ""} readOnly={true}/>
       </Card>);
   }
 }

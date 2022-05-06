@@ -19,6 +19,7 @@ import FinalizeLuaCode from './gencode/FinalizeLuaCode';
 import HelpModal from './ui/HelpModal';
 import AboutModal from './ui/AboutModal';
 import LandingBox from './ui/LandingBox';
+import FinalLuaCode from './gencode/FinalLuaCode';
 
 type AppState = {
   pictureData?: PictureData;
@@ -31,7 +32,7 @@ type AppState = {
   isWorking: boolean;
 
   luaCodes?: Array<LuaCodeSnippet>;
-  generatedCode: string[];
+  generatedCode: FinalLuaCode;
 
   luaCodeOption: LuaCodeOption;
 
@@ -58,7 +59,7 @@ export default class App extends React.Component<any, AppState> {
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
     this.state = {
       convertProgress: 0, orderTable: [], drawFlagTable: [], isWorking: false,
-      generatedCode: [], luaCodeOption: getDefault(), modalShow: ''
+      generatedCode: new FinalLuaCode([], false), luaCodeOption: getDefault(), modalShow: ''
     };
   }
 

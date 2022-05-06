@@ -1,7 +1,8 @@
 import LuaCodeOption from "../LuaCodeOption";
 import LuaCodeSnippet from "../LuaCodeSnippet";
+import FinalLuaCode from "./FinalLuaCode";
 
-export default function FinalizeLuaCode(sn: Array<LuaCodeSnippet>, opt: LuaCodeOption): string[] {
+export default function FinalizeLuaCode(sn: Array<LuaCodeSnippet>, opt: LuaCodeOption): FinalLuaCode {
   let ph = {
     offsetX: (opt.offsetX === 0) ? '' : `+${opt.offsetX}`,
     offsetY: (opt.offsetY === 0) ? '' : `+${opt.offsetY}`,
@@ -14,6 +15,7 @@ function onTick()I=input.getNumber(${opt.readChannel})end
 function onDraw()S=screen C=S.setColor`;
   let outerBottom = '\nend';
   let maxLength = 4090 - (bytelen(outerFront) + bytelen(outerBottom));
+  let haveOverRun = false;
 
   let r: string [] = [];
   let t = '';
@@ -24,7 +26,7 @@ function onDraw()S=screen C=S.setColor`;
     let t2 = frame(i + opt.startWith, k.join(''));
 
     if (bytelen(t2) > maxLength) {
-
+      haveOverRun = true;
     }
 
     if (bytelen(t) + bytelen(t2) > maxLength) {
@@ -35,7 +37,7 @@ function onDraw()S=screen C=S.setColor`;
     }
   }
   if (t !== '') r.push(t);
-  return r.map((v) => outerFront + v + outerBottom);
+  return new FinalLuaCode(r.map((v) => outerFront + v + outerBottom), haveOverRun);
 }
 
 function frame(index: number, snippet: string) {
