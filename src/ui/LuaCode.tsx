@@ -57,7 +57,12 @@ constructor(props: LuaCodeProps) {
             }
           </Row>
         </Card.Header>
-        <Card.Body as="textarea" className="font-monospace p-1" value={this.props.code.codes[this.state.index] || ""} readOnly={true}/>
+        <Card.Body
+          as="textarea"
+          rows={12}
+          className="font-monospace p-1"
+          value={this.props.code.codes[this.state.index] || ""}
+          readOnly={true}/>
       </Card>) || <></>;
   }
 }
