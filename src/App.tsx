@@ -58,8 +58,16 @@ export default class App extends React.Component<any, AppState> {
     };
   }
 
+  restartWorker() {
+    this.state.worker?.terminate();
+    const _worker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
+    _worker.onmessage = this.handleWorkerMessage.bind(this);
+    this.setState({worker: _worker});
+  }
+
   componentDidMount() {
     window.addEventListener("beforeunload", this.handleBeforeUnloadEvent);
+    this.restartWorker();
   }
 
   componentWillUnmount() {
@@ -113,12 +121,11 @@ export default class App extends React.Component<any, AppState> {
 
   handleStartConvertClick() {
     if (this.state.pictureData !== undefined) {
-      const _worker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
+      //const _worker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
       let m = new ConvertCommand(
         this.state.pictureData, this.state.orderTable, this.state.drawFlagTable, this.state.luaCodeOption.width, this.state.luaCodeOption.height);
-      _worker.onmessage = this.handleWorkerMessage.bind(this);
-      _worker.postMessage(m, m.getTransfer());
-      this.setState({ worker: _worker, isWorking: true, convertProgress: 0, luaCodes: undefined });
+      this.state.worker?.postMessage(m, m.getTransfer());
+      this.setState({ isWorking: true, convertProgress: 0, luaCodes: undefined });
     }
   }
 
@@ -132,15 +139,15 @@ export default class App extends React.Component<any, AppState> {
     }
     if (evt.data.working === false) {
       // 終了処理
-      this.setState({ worker: undefined, isWorking: false, generatedCode: FinalizeLuaCode(this.state.luaCodes || [], this.state.luaCodeOption) });
-      this.state.worker?.terminate();
+      this.setState({ isWorking: false, generatedCode: FinalizeLuaCode(this.state.luaCodes || [], this.state.luaCodeOption) });
+      //this.state.worker?.terminate();
     }
     this.setState({ convertProgress: evt.data.progress });
   }
 
   handleStopConvertClick() {
-    this.state.worker?.terminate();
-    this.setState({ worker: undefined, isWorking: false });
+    this.restartWorker();
+    this.setState({ isWorking: false });
   }
 
   handleModalClose() {
