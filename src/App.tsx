@@ -24,6 +24,7 @@ import StartConvertCommand from './worker/StartConvertCommand';
 import OpenFileCommand from './worker/OpenFileCommand';
 import { fileToU8Image } from './PictureFileReader';
 import Color from './Color';
+import FileLoadedCommand from './worker/FileLoadedCommand';
 
 type AppState = {
   imageUrl: string;
@@ -99,6 +100,13 @@ export default class App extends React.Component<any, AppState> {
     } else if (data instanceof ConvertSucceedCommand) {
       data.post(this.getWorker());
 
+    } else if (data instanceof FileLoadedCommand) {
+      const colorSet: Color[] = [];
+      const cs = new Uint8ClampedArray(data.colorPallete.buffer);
+      for (let i = 0; i < cs.length; i += 4) {
+        colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], data.colorPallete[i / 4]));
+      }
+      this.setState({ colorSet: colorSet });
     }
   }
 
@@ -162,7 +170,11 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleStartConvertClick() {
-    (new StartConvertCommand(this.state.luaCodeOption, [])).post(this.getWorker());
+    const u = new Uint32Array(this.state.orderTable.length);
+    for (let i = 0; i < this.state.orderTable.length; i++) {
+      u[i] = this.state.colorSet[this.state.orderTable[i]].raw || 0;
+    }
+    (new StartConvertCommand(this.state.luaCodeOption, u)).post(this.getWorker());
   }
 
   handleStopConvertClick() {
