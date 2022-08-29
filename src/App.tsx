@@ -175,7 +175,7 @@ export default class App extends React.Component<any, AppState> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Container>
+        <Container className='mb-4'>
           <Row>
             <Col md={6} className='mt-4'>
               <Stack gap={2}>
