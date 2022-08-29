@@ -1,6 +1,9 @@
 import Color from "../Color";
+import ConvertSucceedCommand from "./ConvertSucceedCommand";
 import FileLoadedCommand from "./FileLoadedCommand";
 import OpenFileCommand from "./OpenFileCommand";
+import StartConvertCommand from "./StartConvertCommand";
+import TerminateConverterCommand from "./TerminateConverterCommand";
 import WorkerCommand from "./WorkerCommand";
 
 export default {}
@@ -34,6 +37,29 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     // Worker <-> App：元画像の色
     // Appでのみ変換後にLuaで使う色を知っている状態にしてしまう
   }
+  else if (data instanceof StartConvertCommand) {
+    workerData.convCurrent = undefined;
+    workerData.convRule = data.settings;
+    workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
+    if (!convertCard()) {
+      // convert-end発行処理
+    }
+  }
+  else if (data instanceof ConvertSucceedCommand) {
+    if (convertCard()) {
+      // convert-result発行処理
+    } else {
+      // convert-end発行処理
+    }
+  }
+  else if (data instanceof TerminateConverterCommand) {
+    if (ctx.Worker) {
+      workerData.subWorker.terminate();
+      workerData.subWorker = undefined;
+    } else {
+      data.post(ctx);
+    }
+  }
   
   // Nested Workerに対応かどうかによって.subWorkerの指すWorkerが変わる！
   //
@@ -50,3 +76,9 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   // terminateコマンドは、Nested Worker対応ならば直接SubWorkerを止めるが、
   // 非対応ならAppsにterminateコマンドを送り付ける必要がある。
 });
+
+function convertCard(): boolean {
+  return true;
+  // 次の1枚を変換するコマンドを作成・発行
+  // 新しいconvert-cardコマンドが発行できなかった時、falseを返す
+}
