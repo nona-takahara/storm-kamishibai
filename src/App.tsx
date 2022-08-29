@@ -165,8 +165,7 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleOnColorChange(colorIndex: number, colorInput: string) {
-    //this.state.imageUrl?.setConvertedRGB(colorIndex, colorInput);
-    this.setState({ imageUrl: this.state.imageUrl });
+    this.state.colorSet[colorIndex].setConvertedRGB(colorInput);
   }
 
   handleStartConvertClick() {
