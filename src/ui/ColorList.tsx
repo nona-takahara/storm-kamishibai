@@ -5,7 +5,7 @@ import Lut from "../Lut";
 import ColorBox from "./ColorBox";
 import ColorBoxOverlays from "./ColorBoxOverlays";
 
-type ColorListProps = {
+export type ColorListProps = {
   colorSet?: Array<Color>;
   colorOrder: number[];
   undrawFlag: boolean[];

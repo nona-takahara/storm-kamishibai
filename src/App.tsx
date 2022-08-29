@@ -176,45 +176,40 @@ export default class App extends React.Component<any, AppState> {
           </Container>
         </Navbar>
         <Container>
-          <Row><Col md={6} className='mt-4'>
-            <Stack gap={2}>
-              <FileSelector onFileChange={this.handleFileChange} />
-              {
-                (this.state.pictureData === undefined) ? (
-                  <></>
-                ) : (
-                <>
-                  <ConvertBox
-                    isWorking={this.state.isWorking}
-                    onStartConvertClick={this.handleStartConvertClick}
-                    onStopConvertClick={this.handleStopConvertClick}
-                    disableStartButton={this.state.pictureData === undefined}
-                    convertProgress={this.state.convertProgress} />
-                  <LuaCode code={this.state.generatedCode} />
-                </>
-                )}
-            </Stack>
-          </Col><Col md={6} className='mt-4'>
-              {
-                (this.state.pictureData === undefined) ? (
-                  <LandingBox />
-                ) : (
-                <Stack gap={2}>
-                  <Settings
-                    changeSettings={this.handleChangeSettings}
-                    luaCodeOption={this.state.luaCodeOption}
-                  />
-                  <ColorList
-                    colorSet={this.state.pictureData?.colorSet}
-                    colorOrder={this.state.orderTable}
-                    undrawFlag={this.state.drawFlagTable}
-                    onDrawFlagChange={this.handleOnDrawChange}
-                    onMoveUpClick={this.handleOnMoveUpClick}
-                    onMoveDownClick={this.handleOnMoveDownClick}
-                    onColorChange={this.handleOnColorChange}
-                  />
-                </Stack>)
-              }
+          <Row>
+            <Col md={6} className='mt-4'>
+              <Stack gap={2}>
+                <FileSelector onFileChange={this.handleFileChange} />
+                <ConvertBox
+                  isVisible={this.state.pictureData !== undefined}
+                  isWorking={this.state.isWorking}
+                  onStartConvertClick={this.handleStartConvertClick}
+                  onStopConvertClick={this.handleStopConvertClick}
+                  disableStartButton={this.state.pictureData === undefined}
+                  convertProgress={this.state.convertProgress} />
+                <LuaCode
+                  isVisible={this.state.pictureData !== undefined}
+                  code={this.state.generatedCode} />
+              </Stack>
+            </Col>
+            <Col md={6} className='mt-4'>
+              <LandingBox
+                isVisible={this.state.pictureData === undefined} />
+              <Settings
+                isVisible={this.state.pictureData !== undefined}
+                tab={{
+                  changeSettings: this.handleChangeSettings,
+                  luaCodeOption: this.state.luaCodeOption
+                }}
+                colorList={{
+                  colorSet: this.state.pictureData?.colorSet,
+                  colorOrder: this.state.orderTable,
+                  undrawFlag: this.state.drawFlagTable,
+                  onDrawFlagChange: this.handleOnDrawChange,
+                  onMoveUpClick: this.handleOnMoveUpClick,
+                  onMoveDownClick: this.handleOnMoveDownClick,
+                  onColorChange: this.handleOnColorChange
+                }} />
             </Col>
           </Row>
         </Container>

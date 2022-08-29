@@ -1,6 +1,7 @@
 import { Card, Stack, Button } from "react-bootstrap";
 
 type ConvertBoxProps = {
+  isVisible: boolean;
   isWorking: boolean;
   disableStartButton: boolean;
   onStartConvertClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -10,7 +11,7 @@ type ConvertBoxProps = {
 
 export default function ConvertBox(props: ConvertBoxProps) {
   let progress = (props.isWorking || props.convertProgress === 1) ? props.convertProgress : 0;
-  return (
+  return props.isVisible && (
     <Card>
       <Card.Body>
         <Stack gap={2}>
@@ -23,5 +24,5 @@ export default function ConvertBox(props: ConvertBoxProps) {
         </Stack>
       </Card.Body>
     </Card>
-  );
+  ) || <></>;
 }

@@ -1,7 +1,11 @@
 import { Card } from "react-bootstrap";
 
-export default function LandingBox() {
-  return (
+type LandingBoxProps = {
+  isVisible: boolean;
+}
+
+export default function LandingBox(props: LandingBoxProps) {
+  return props.isVisible && (
     <Card>
       <Card.Header>
           Storm Kamishibaiで何ができる？
@@ -14,5 +18,5 @@ export default function LandingBox() {
         <p>バグや要望など、お問い合わせは<a href="https://forms.gle/TRxMsVQLBrCc3yJF7">こちらのフォーム</a>からどうぞ。</p>
       </Card.Body>
     </Card>
-  );
+  ) || <></>;
 }

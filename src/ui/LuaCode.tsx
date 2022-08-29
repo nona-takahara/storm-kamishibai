@@ -3,6 +3,7 @@ import { Card, Col, InputGroup, Row, Button, Badge, OverlayTrigger, Tooltip } fr
 import FinalLuaCode from "../gencode/FinalLuaCode";
 
 type LuaCodeProps = {
+  isVisible: boolean;
   code: FinalLuaCode;
 }
 
@@ -28,7 +29,7 @@ constructor(props: LuaCodeProps) {
 
   render() {
     let i = Math.min(Math.max(this.state.index, 0), this.props.code.codes.length - 1);
-    return (
+    return this.props.isVisible && (
       <Card>
         <Card.Header>
           <Row className="align-items-center">
@@ -57,7 +58,7 @@ constructor(props: LuaCodeProps) {
           </Row>
         </Card.Header>
         <Card.Body as="textarea" className="font-monospace p-1" value={this.props.code.codes[this.state.index] || ""} readOnly={true}/>
-      </Card>);
+      </Card>) || <></>;
   }
 }
 
