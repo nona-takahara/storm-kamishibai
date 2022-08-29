@@ -1,4 +1,5 @@
 import Color from "../Color";
+import FileLoadedCommand from "./FileLoadedCommand";
 import OpenFileCommand from "./OpenFileCommand";
 import WorkerCommand from "./WorkerCommand";
 
@@ -22,7 +23,8 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
     const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
 
-    // コマンドを生成し、postする
+    const cmd = new FileLoadedCommand(cs32);
+    cmd.post(ctx);
 
     workerData.rdata = rdata;
 
