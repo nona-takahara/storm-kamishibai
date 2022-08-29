@@ -46,7 +46,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
 
   } else if (data instanceof ConvertSucceedCommand) {
     if (convertCard()) {
-      const cmd = new ConvertResultCommand(data.rectangleList);
+      const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
       cmd.post(ctx);
     } else {
       const cmd = new EndConvertCommand();

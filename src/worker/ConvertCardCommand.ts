@@ -1,4 +1,4 @@
-import LuaCodeOption from "../LuaCodeOption";
+import { ConvertCardInfo } from "../LuaCodeOption";
 import WorkerCommand from "./WorkerCommand";
 
 export default class ConvertCardCommand extends WorkerCommand {
@@ -6,7 +6,8 @@ export default class ConvertCardCommand extends WorkerCommand {
     public picture: Uint32Array, 
     public width: number,
     public height: number,
-    public palleteLength: number
+    public palleteLength: number,
+    public metaData: ConvertCardInfo
   ) {
     super(); 
   }

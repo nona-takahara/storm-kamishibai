@@ -1,10 +1,6 @@
 import React from 'react';
 import { Container, Navbar, Row, Col, Stack, Nav } from 'react-bootstrap';
 
-import ConvertCommand from './gencode/ConvertCommand';
-import Results from './gencode/Results';
-import ConvertedData from './gencode/ConvertedData';
-
 import FileSelector from './ui/FileSelector';
 import ColorList from './ui/ColorList';
 import LuaCode from './ui/LuaCode';
@@ -20,6 +16,11 @@ import HelpModal from './ui/HelpModal';
 import AboutModal from './ui/AboutModal';
 import LandingBox from './ui/LandingBox';
 import FinalLuaCode from './gencode/FinalLuaCode';
+import WorkerCommand from './worker/WorkerCommand';
+import ConvertCardCommand from './worker/ConvertCardCommand';
+import ConvertSucceedCommand from './worker/ConvertSucceedCommand';
+import TerminateConverterCommand from './worker/TerminateConverterCommand';
+import StartConvertCommand from './worker/StartConvertCommand';
 
 type AppState = {
   pictureData?: PictureData;
@@ -29,6 +30,7 @@ type AppState = {
 
   convertProgress: number;
   worker?: Worker;
+  subWorker?: Worker;
   isWorking: boolean;
 
   luaCodes?: Array<LuaCodeSnippet>;
@@ -58,13 +60,40 @@ export default class App extends React.Component<any, AppState> {
     };
   }
 
+  // ----- WebWorker
   restartWorker() {
     this.state.worker?.terminate();
     const _worker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
     _worker.onmessage = this.handleWorkerMessage.bind(this);
     this.setState({worker: _worker});
+    return _worker;
   }
 
+  handleWorkerMessage(evt: MessageEvent<WorkerCommand>) {
+    const data = evt.data;
+    let _worker = this.state.worker;
+    let _subworker = this.state.subWorker;
+    if (_worker === undefined) { _worker = this.restartWorker(); }
+
+    if (data instanceof ConvertCardCommand) {
+      if (!_subworker) {
+        _subworker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
+        _subworker.onmessage = this.handleWorkerMessage.bind(this);
+        this.setState({subWorker: _subworker});
+      }
+      data.post(_subworker);
+
+    } else if (data instanceof TerminateConverterCommand) {
+      _subworker?.terminate();
+      this.setState({subWorker: undefined});
+
+    } else if (data instanceof ConvertSucceedCommand) {
+      data.post(_worker);
+
+    }
+  }
+
+  // ----- Unload Dialog
   componentDidMount() {
     window.addEventListener("beforeunload", this.handleBeforeUnloadEvent);
     this.restartWorker();
@@ -72,6 +101,8 @@ export default class App extends React.Component<any, AppState> {
 
   componentWillUnmount() {
     window.removeEventListener("beforeunload", this.handleBeforeUnloadEvent);
+    this.state.worker?.terminate();
+    this.state.subWorker?.terminate();
   }
 
   handleBeforeUnloadEvent(evt: BeforeUnloadEvent) {
@@ -81,6 +112,7 @@ export default class App extends React.Component<any, AppState> {
     evt.returnValue = "";
   }
 
+  // ----- Other Change Event
   handleFileChange(_pictureData: PictureData) {
     let a = _pictureData.colorSet.map((v, i) => i);
     let b = new Array<boolean>(_pictureData.colorSet.length);
@@ -120,36 +152,24 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleStartConvertClick() {
-    if (this.state.pictureData !== undefined) {
-      //const _worker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
-      let m = new ConvertCommand(
-        this.state.pictureData, this.state.orderTable, this.state.drawFlagTable, this.state.luaCodeOption.width, this.state.luaCodeOption.height);
-      this.state.worker?.postMessage(m, m.getTransfer());
-      this.setState({ isWorking: true, convertProgress: 0, luaCodes: undefined });
-    }
-  }
+    let _worker = this.state.worker;
+    if (_worker === undefined) { _worker = this.restartWorker(); }
 
-  handleWorkerMessage(evt: MessageEvent<Results>) {
-    if (evt.data.result !== undefined) {
-      let data = evt.data.result as ConvertedData;
-      let code = this.state.luaCodes?.slice() || new Array<LuaCodeSnippet>();
-      code[data.index] = code[data.index] || new LuaCodeSnippet(this.state.luaCodeOption);
-      code[data.index].push(data.convertedData, data.color, data.layer);
-      this.setState({ luaCodes: code });
-    }
-    if (evt.data.working === false) {
-      // 終了処理
-      this.setState({ isWorking: false, generatedCode: FinalizeLuaCode(this.state.luaCodes || [], this.state.luaCodeOption) });
-      //this.state.worker?.terminate();
-    }
-    this.setState({ convertProgress: evt.data.progress });
+    const cmd = new StartConvertCommand({}, {});
+    cmd.post(_worker);
   }
 
   handleStopConvertClick() {
-    this.restartWorker();
+    let _worker = this.state.worker;
+    if (_worker === undefined) { _worker = this.restartWorker(); }
+
+    const cmd = new StartConvertCommand({}, {});
+    cmd.post(_worker);
+    
     this.setState({ isWorking: false });
   }
 
+  // 対応済み
   handleModalClose() {
     this.setState({ modalShow: '' });
   }

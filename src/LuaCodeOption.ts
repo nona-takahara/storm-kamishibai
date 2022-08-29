@@ -22,4 +22,8 @@ export function getDefault(): LuaCodeOption {
   };
 }
 
+export type ConvertCardInfo = {
+
+}
+
 export default LuaCodeOption;

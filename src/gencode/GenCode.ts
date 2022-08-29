@@ -15,7 +15,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     for (let i = 0; i < data.palleteLength; i++) {
       res.push(convertLayer(data.picture, data.width, data.height, i));
     }
-    const cmd = new ConvertSucceedCommand(res);
+    const cmd = new ConvertSucceedCommand(res, data.metaData);
     cmd.post(ctx);
   }
 });

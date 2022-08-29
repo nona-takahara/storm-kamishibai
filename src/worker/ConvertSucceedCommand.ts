@@ -1,9 +1,10 @@
-import IWorkerMessage from "../IWorkerMessage";
+import { ConvertCardInfo } from "../LuaCodeOption";
 import WorkerCommand from "./WorkerCommand";
 
 export default class ConvertSucceedCommand extends WorkerCommand {
   constructor(
-    public rectangleList: Uint32Array[]
+    public rectangleList: Uint32Array[],
+    public metaData: ConvertCardInfo
   ) {
     super(); 
   }
