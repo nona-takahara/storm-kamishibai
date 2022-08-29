@@ -100,13 +100,13 @@ export default class App extends React.Component<any, AppState> {
       this.getWorker().postMessage(data, data.getTransfer());
 
     } else if (FileLoadedCommand.is(data)) {
-      const colorSet = new Array<Color>();
-      const orderTable = [];
-      const drawFlagTable = [];
+      const colorSet: Color[] = [];
+      const orderTable: number[] = [];
+      const drawFlagTable: boolean[] = [];
       const cs = new Uint8ClampedArray(data.colorPallete.buffer);
       for (let i = 0; i < cs.length; i += 4) {
         colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], data.colorPallete[i / 4]));
-        orderTable.push(i);
+        orderTable.push(i / 4);
         drawFlagTable.push(false);
       }
       this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable });
@@ -174,6 +174,7 @@ export default class App extends React.Component<any, AppState> {
 
   handleStartConvertClick() {
     const u = new Uint32Array(this.state.orderTable.length);
+    console.log(this.state)
     for (let i = 0; i < this.state.orderTable.length; i++) {
       u[i] = this.state.colorSet[this.state.orderTable[i]].raw || 0;
     }
