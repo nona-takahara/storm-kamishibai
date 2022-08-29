@@ -1,9 +1,13 @@
-import IWorkerMessage from "../IWorkerMessage";
+import WorkerCommand from "./WorkerCommand";
 
-export default class FileLoadedCommand implements IWorkerMessage {
+const commandName = 'file-loaded';
+
+export default class FileLoadedCommand extends WorkerCommand {
   constructor(
-    public colorPallete: Uint32Array
-  ) { }
-  
+    public colorPallete: Uint32Array,
+    public command = commandName
+  ) { super(); }
+
   getTransfer() { return []; }
+  static is(data: WorkerCommand): data is FileLoadedCommand { return data.command === commandName; }
 }

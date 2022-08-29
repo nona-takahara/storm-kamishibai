@@ -1,5 +1,9 @@
-import IWorkerMessage from "../IWorkerMessage";
+import WorkerCommand from "./WorkerCommand";
 
-export default class EndConvertCommand implements IWorkerMessage {
-  getTransfer() { return []; } 
+const commandName = 'end-convert';
+
+export default class EndConvertCommand extends WorkerCommand {
+  constructor(public command = commandName) { super(); }
+  getTransfer() { return []; }
+  static is(data: WorkerCommand): data is EndConvertCommand { return data.command === commandName; }
 }

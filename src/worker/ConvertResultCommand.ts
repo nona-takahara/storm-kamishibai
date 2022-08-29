@@ -1,11 +1,15 @@
-import IWorkerMessage from "../IWorkerMessage";
+import WorkerCommand from "./WorkerCommand";
 import { ConvertCardInfo } from "../LuaCodeOption";
 
-export default class ConvertResultCommand implements IWorkerMessage {
+const commandName = 'convert-result';
+
+export default class ConvertResultCommand extends WorkerCommand {
   constructor(
     public rectangleList: Uint32Array[],
-    public metaData: ConvertCardInfo
-  ) { }
+    public metaData: ConvertCardInfo,
+    public command = commandName
+  ) { super(); }
 
   getTransfer() { return this.rectangleList.map((v) => v.buffer); }
+  static is(data: WorkerCommand): data is ConvertResultCommand { return data.command === commandName; }
 }

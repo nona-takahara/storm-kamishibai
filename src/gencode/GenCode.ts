@@ -1,4 +1,4 @@
-import IWorkerMessage from '../IWorkerMessage';
+import WorkerCommand from '../worker/WorkerCommand';
 import Vector2D from '../Vector2D';
 import ConvertCardCommand from '../worker/ConvertCardCommand';
 import ConvertSucceedCommand from '../worker/ConvertSucceedCommand';
@@ -8,7 +8,7 @@ export default {}
 // eslint-disable-next-line
 const ctx: Worker = self as any;
 
-ctx.addEventListener('message', (evt: MessageEvent<IWorkerMessage>) => {
+ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   const data = evt.data;
   if (data instanceof ConvertCardCommand) {
     const res: Uint32Array[] = [];

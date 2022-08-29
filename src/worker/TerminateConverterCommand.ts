@@ -1,5 +1,9 @@
-import IWorkerMessage from "../IWorkerMessage";
+import WorkerCommand from "./WorkerCommand";
 
-export default class TerminateConverterCommand implements IWorkerMessage {
+const commandName = 'terminate-convert';
+
+export default class TerminateConverterCommand extends WorkerCommand {
+  constructor(public command = commandName) { super(); }
   getTransfer() { return []; }
+  static is(data: WorkerCommand): data is TerminateConverterCommand { return data.command === commandName; }
 }

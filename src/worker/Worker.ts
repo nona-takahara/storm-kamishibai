@@ -1,5 +1,4 @@
-import Color from "../Color";
-import IWorkerMessage from "../IWorkerMessage";
+import WorkerCommand from "./WorkerCommand";
 import LuaCodeOption, { getDefault } from "../LuaCodeOption";
 import ConvertResultCommand from "./ConvertResultCommand";
 import ConvertSucceedCommand from "./ConvertSucceedCommand";
@@ -25,7 +24,7 @@ type WorkerData = {
 const ctx: any = self as any;
 let workerData: WorkerData;
 
-ctx.addEventListener('message', (evt: MessageEvent<IWorkerMessage>) => {
+ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   const data = evt.data;
   if (!workerData) {
     workerData = {
@@ -44,18 +43,20 @@ ctx.addEventListener('message', (evt: MessageEvent<IWorkerMessage>) => {
     }
   }
 
-  if (data instanceof OpenFileCommand) {
+  console.log(data);
+
+  if (OpenFileCommand.is(data)) {
     const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
     const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
 
     const cmd = (new FileLoadedCommand(cs32));
     postMessage(cmd, cmd.getTransfer());
-
+    
     workerData.rdata = rdata; // 生データのみ保持する
     workerData.width = data.width; // 画像幅
     workerData.height = data.height; // 画像高さ
 
-  } else if (data instanceof StartConvertCommand) {
+  } else if (StartConvertCommand.is(data)) {
     workerData.convCurrent = undefined;
     workerData.convRule = data.settings;
     // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
@@ -65,7 +66,7 @@ ctx.addEventListener('message', (evt: MessageEvent<IWorkerMessage>) => {
       postMessage(cmd, cmd.getTransfer());
     }
 
-  } else if (data instanceof ConvertSucceedCommand) {
+  } else if (ConvertSucceedCommand.is(data)) {
     if (convertCard()) {
       const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
       postMessage(cmd, cmd.getTransfer());
@@ -74,7 +75,7 @@ ctx.addEventListener('message', (evt: MessageEvent<IWorkerMessage>) => {
       postMessage(cmd, cmd.getTransfer());
     }
 
-  } else if (data instanceof TerminateConverterCommand) {
+  } else if (TerminateConverterCommand.is(data)) {
     if (ctx.Worker) {
       workerData.subWorker?.terminate();
       workerData.subWorker = undefined;

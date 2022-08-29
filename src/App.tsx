@@ -24,7 +24,7 @@ import OpenFileCommand from './worker/OpenFileCommand';
 import { fileToU8Image } from './PictureFileReader';
 import Color from './Color';
 import FileLoadedCommand from './worker/FileLoadedCommand';
-import IWorkerMessage from './IWorkerMessage';
+import WorkerCommand from './worker/WorkerCommand';
 
 type AppState = {
   imageUrl: string;
@@ -81,10 +81,10 @@ export default class App extends React.Component<any, AppState> {
     return this.state?.worker || this.restartWorker();
   }
 
-  handleWorkerMessage(evt: MessageEvent<IWorkerMessage>) {
+  handleWorkerMessage(evt: MessageEvent<WorkerCommand>) {
     const data = evt.data;
-
-    if (data instanceof ConvertCardCommand) {
+    console.log(evt.data);
+    if (ConvertCardCommand.is(data)) {
       let _subworker = this.state.subWorker;
       if (!_subworker) {
         _subworker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
@@ -93,14 +93,14 @@ export default class App extends React.Component<any, AppState> {
       }
       _subworker.postMessage(data, data.getTransfer());
 
-    } else if (data instanceof TerminateConverterCommand) {
+    } else if (TerminateConverterCommand.is(data)) {
       this.state.subWorker?.terminate();
       this.setState({subWorker: undefined});
 
-    } else if (data instanceof ConvertSucceedCommand) {
+    } else if (ConvertSucceedCommand.is(data)) {
       this.getWorker().postMessage(data, data.getTransfer());
 
-    } else if (data instanceof FileLoadedCommand) {
+    } else if (FileLoadedCommand.is(data)) {
       const colorSet: Color[] = [];
       const cs = new Uint8ClampedArray(data.colorPallete.buffer);
       console.log(data.colorPallete);
@@ -108,7 +108,6 @@ export default class App extends React.Component<any, AppState> {
         colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], data.colorPallete[i / 4]));
       }
       this.setState({ colorSet: colorSet });
-      console.log(colorSet);
     }
   }
 
