@@ -1,5 +1,7 @@
 import Color from "../Color";
+import ConvertResultCommand from "./ConvertResultCommand";
 import ConvertSucceedCommand from "./ConvertSucceedCommand";
+import EndConvertCommand from "./EndConvertCommand";
 import FileLoadedCommand from "./FileLoadedCommand";
 import OpenFileCommand from "./OpenFileCommand";
 import StartConvertCommand from "./StartConvertCommand";
@@ -38,14 +40,17 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
     workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
     if (!convertCard()) {
-      // convert-end発行処理
+      const cmd = new EndConvertCommand();
+      cmd.post(ctx);
     }
 
   } else if (data instanceof ConvertSucceedCommand) {
     if (convertCard()) {
-      // convert-result発行処理
+      const cmd = new ConvertResultCommand(data.rectangleList);
+      cmd.post(ctx);
     } else {
-      // convert-end発行処理
+      const cmd = new EndConvertCommand();
+      cmd.post(ctx);
     }
     
   } else if (data instanceof TerminateConverterCommand) {

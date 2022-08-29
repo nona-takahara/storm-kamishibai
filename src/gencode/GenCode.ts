@@ -1,11 +1,7 @@
-import PictureData from '../PictureData';
 import Vector2D from '../Vector2D';
 import ConvertCardCommand from '../worker/ConvertCardCommand';
 import ConvertSucceedCommand from '../worker/ConvertSucceedCommand';
 import WorkerCommand from '../worker/WorkerCommand';
-import ConvertCommands from './ConvertCommand';
-import ConvertedData from './ConvertedData';
-import Results from './Results';
 
 export default {}
 
