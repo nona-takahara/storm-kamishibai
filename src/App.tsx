@@ -83,7 +83,6 @@ export default class App extends React.Component<any, AppState> {
 
   handleWorkerMessage(evt: MessageEvent<WorkerCommand>) {
     const data = evt.data;
-    console.log(evt.data);
     if (ConvertCardCommand.is(data)) {
       let _subworker = this.state.subWorker;
       if (!_subworker) {
@@ -101,13 +100,16 @@ export default class App extends React.Component<any, AppState> {
       this.getWorker().postMessage(data, data.getTransfer());
 
     } else if (FileLoadedCommand.is(data)) {
-      const colorSet: Color[] = [];
+      const colorSet = new Array<Color>();
+      const orderTable = [];
+      const drawFlagTable = [];
       const cs = new Uint8ClampedArray(data.colorPallete.buffer);
-      console.log(data.colorPallete);
       for (let i = 0; i < cs.length; i += 4) {
         colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], data.colorPallete[i / 4]));
+        orderTable.push(i);
+        drawFlagTable.push(false);
       }
-      this.setState({ colorSet: colorSet });
+      this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable });
     }
   }
 
