@@ -49,14 +49,9 @@ export default class App extends React.Component<any, AppState> {
     this.handleOnColorChange = this.handleOnColorChange.bind(this);
     this.handleStartConvertClick = this.handleStartConvertClick.bind(this);
     this.handleStopConvertClick = this.handleStopConvertClick.bind(this);
-    this.handleCropWidthChanged = this.handleCropWidthChanged.bind(this);
-    this.handleCropHeightChanged = this.handleCropHeightChanged.bind(this);
-    this.handleChannelChanged = this.handleChannelChanged.bind(this);
-    this.handleKamishibaiStartWithChanged = this.handleKamishibaiStartWithChanged.bind(this);
-    this.handleOffsetXChanged = this.handleOffsetXChanged.bind(this);
-    this.handleOffsetYChanged = this.handleOffsetYChanged.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
+    this.handleChangeSettings = this.handleChangeSettings.bind(this);
     this.state = {
       convertProgress: 0, orderTable: [], drawFlagTable: [], isWorking: false,
       generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: ''
@@ -148,46 +143,21 @@ export default class App extends React.Component<any, AppState> {
     this.setState({ worker: undefined, isWorking: false });
   }
 
-  handleCropWidthChanged(width: number) {
-    let k = this.state.luaCodeOption;
-    k.width = width;
-    this.setState({ luaCodeOption: k });
-  }
-
-  handleCropHeightChanged(height: number) {
-    let k = this.state.luaCodeOption;
-    k.height = height;
-    this.setState({ luaCodeOption: k });
-  }
-
-  handleChannelChanged(channel: number) {
-    let k = this.state.luaCodeOption;
-    k.readChannel = channel;
-    this.setState({ luaCodeOption: k });
-  }
-
-  handleKamishibaiStartWithChanged(index: number) {
-    let k = this.state.luaCodeOption;
-    k.startWith = index;
-    this.setState({ luaCodeOption: k });
-  }
-
-  handleOffsetXChanged(x: number) {
-    let k = this.state.luaCodeOption;
-    k.offsetX = x;
-    this.setState({ luaCodeOption: k });
-  }
-
-  handleOffsetYChanged(y: number) {
-    let k = this.state.luaCodeOption;
-    k.offsetY = y;
-    this.setState({ luaCodeOption: k });
-  }
-
   handleModalClose() {
     this.setState({ modalShow: '' });
   }
 
+  handleChangeSettings(opt: LuaCodeOption) {
+    this.setState((state) => {
+      const oldOpt = state.luaCodeOption;
+      for (const key in opt) {
+        if (Object.prototype.hasOwnProperty.call(opt, key)) {
+          (state.luaCodeOption as any)[key] = (opt as any)[key];
+        }
+      }
+      return state;
+    });
+  }
 
   render(): React.ReactNode {
     return (
@@ -231,12 +201,7 @@ export default class App extends React.Component<any, AppState> {
                 ) : (
                 <Stack gap={2}>
                   <Settings
-                    onWidthChanged={this.handleCropWidthChanged}
-                    onHeightChanged={this.handleCropHeightChanged}
-                    onChannelChanged={this.handleChannelChanged}
-                    onKamishibaiStartWithChanged={this.handleKamishibaiStartWithChanged}
-                    onOffsetXChanged={this.handleOffsetXChanged}
-                    onOffsetYChanged={this.handleOffsetYChanged}
+                    changeSettings={this.handleChangeSettings}
                     luaCodeOption={this.state.luaCodeOption}
                   />
                   <ColorList
