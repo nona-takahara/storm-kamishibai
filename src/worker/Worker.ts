@@ -28,7 +28,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
     const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
 
-    const cmd = new FileLoadedCommand(cs32); cmd.post(ctx);
+    (new FileLoadedCommand(cs32)).post(ctx);
 
     workerData.rdata = rdata; // 生データのみ保持する
     workerData.width = data.width; // 画像幅
@@ -40,17 +40,14 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
     workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
     if (!convertCard()) {
-      const cmd = new EndConvertCommand();
-      cmd.post(ctx);
+      (new EndConvertCommand()).post(ctx);
     }
 
   } else if (data instanceof ConvertSucceedCommand) {
     if (convertCard()) {
-      const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
-      cmd.post(ctx);
+      (new ConvertResultCommand(data.rectangleList, data.metaData)).post(ctx);
     } else {
-      const cmd = new EndConvertCommand();
-      cmd.post(ctx);
+      (new EndConvertCommand()).post(ctx);
     }
     
   } else if (data instanceof TerminateConverterCommand) {

@@ -21,6 +21,7 @@ import ConvertCardCommand from './worker/ConvertCardCommand';
 import ConvertSucceedCommand from './worker/ConvertSucceedCommand';
 import TerminateConverterCommand from './worker/TerminateConverterCommand';
 import StartConvertCommand from './worker/StartConvertCommand';
+import OpenFileCommand from './worker/OpenFileCommand';
 
 type AppState = {
   pictureData?: PictureData;
@@ -69,13 +70,15 @@ export default class App extends React.Component<any, AppState> {
     return _worker;
   }
 
+  getWorker() {
+    return this.state?.worker || this.restartWorker();
+  }
+
   handleWorkerMessage(evt: MessageEvent<WorkerCommand>) {
     const data = evt.data;
-    let _worker = this.state.worker;
-    let _subworker = this.state.subWorker;
-    if (_worker === undefined) { _worker = this.restartWorker(); }
 
     if (data instanceof ConvertCardCommand) {
+      let _subworker = this.state.subWorker;
       if (!_subworker) {
         _subworker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
         _subworker.onmessage = this.handleWorkerMessage.bind(this);
@@ -84,11 +87,11 @@ export default class App extends React.Component<any, AppState> {
       data.post(_subworker);
 
     } else if (data instanceof TerminateConverterCommand) {
-      _subworker?.terminate();
+      this.state.subWorker?.terminate();
       this.setState({subWorker: undefined});
 
     } else if (data instanceof ConvertSucceedCommand) {
-      data.post(_worker);
+      data.post(this.getWorker());
 
     }
   }
@@ -118,6 +121,8 @@ export default class App extends React.Component<any, AppState> {
     let b = new Array<boolean>(_pictureData.colorSet.length);
     b = b.fill(false);
     this.setState({ pictureData: _pictureData, orderTable: a, drawFlagTable: b });
+
+    //(new OpenFileCommand()).post(this.getWorker());
   }
 
   handleOnDrawChange(colorIndex: number, drawFlag: boolean) {
@@ -152,20 +157,11 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleStartConvertClick() {
-    let _worker = this.state.worker;
-    if (_worker === undefined) { _worker = this.restartWorker(); }
-
-    const cmd = new StartConvertCommand({}, {});
-    cmd.post(_worker);
+    (new StartConvertCommand({}, {})).post(this.getWorker());
   }
 
   handleStopConvertClick() {
-    let _worker = this.state.worker;
-    if (_worker === undefined) { _worker = this.restartWorker(); }
-
-    const cmd = new StartConvertCommand({}, {});
-    cmd.post(_worker);
-    
+    (new TerminateConverterCommand()).post(this.getWorker());
     this.setState({ isWorking: false });
   }
 
@@ -176,7 +172,6 @@ export default class App extends React.Component<any, AppState> {
 
   handleChangeSettings(opt: LuaCodeOption) {
     this.setState((state) => {
-      const oldOpt = state.luaCodeOption;
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
           (state.luaCodeOption as any)[key] = (opt as any)[key];
