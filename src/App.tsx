@@ -22,10 +22,15 @@ import ConvertSucceedCommand from './worker/ConvertSucceedCommand';
 import TerminateConverterCommand from './worker/TerminateConverterCommand';
 import StartConvertCommand from './worker/StartConvertCommand';
 import OpenFileCommand from './worker/OpenFileCommand';
+import { fileToU8Image } from './PictureFileReader';
+import Color from './Color';
 
 type AppState = {
-  pictureData?: PictureData;
+  imageUrl: string;
+  width: number;
+  height: number;
 
+  colorSet: Color[];
   orderTable: number[];
   drawFlagTable: boolean[];
 
@@ -56,8 +61,9 @@ export default class App extends React.Component<any, AppState> {
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
     this.handleChangeSettings = this.handleChangeSettings.bind(this);
     this.state = {
-      convertProgress: 0, orderTable: [], drawFlagTable: [], isWorking: false,
-      generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: ''
+      convertProgress: 0, colorSet: [], orderTable: [], drawFlagTable: [], isWorking: false,
+      generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: '',
+      imageUrl: '', width: 0, height: 0
     };
   }
 
@@ -109,22 +115,21 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleBeforeUnloadEvent(evt: BeforeUnloadEvent) {
-    if (this.state.pictureData !== undefined) {
+    if (this.state.imageUrl !== undefined) {
       evt.preventDefault();
     }
     evt.returnValue = "";
   }
 
   // ----- Other Change Event
-  handleFileChange(_pictureData: PictureData) {
-    let a = _pictureData.colorSet.map((v, i) => i);
-    let b = new Array<boolean>(_pictureData.colorSet.length);
-    b = b.fill(false);
-    this.setState({ pictureData: _pictureData, orderTable: a, drawFlagTable: b });
-
-    //(new OpenFileCommand()).post(this.getWorker());
+  handleFileChange(file: File) {
+    fileToU8Image(file, true).then((res) => {
+      this.setState({ imageUrl: res.dataUrl, width: res.width, height: res.height });
+      (new OpenFileCommand(res.u8Image, res.width, res.height, true)).post(this.getWorker())
+    });
   }
 
+  // 未チェック
   handleOnDrawChange(colorIndex: number, drawFlag: boolean) {
     let k = this.state.drawFlagTable.slice();
     k[colorIndex] = drawFlag;
@@ -152,12 +157,12 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleOnColorChange(colorIndex: number, colorInput: string) {
-    this.state.pictureData?.setConvertedRGB(colorIndex, colorInput);
-    this.setState({ pictureData: this.state.pictureData });
+    //this.state.imageUrl?.setConvertedRGB(colorIndex, colorInput);
+    this.setState({ imageUrl: this.state.imageUrl });
   }
 
   handleStartConvertClick() {
-    (new StartConvertCommand({}, {})).post(this.getWorker());
+    (new StartConvertCommand(this.state.luaCodeOption, [])).post(this.getWorker());
   }
 
   handleStopConvertClick() {
@@ -201,30 +206,34 @@ export default class App extends React.Component<any, AppState> {
           <Row>
             <Col md={6} className='mt-4'>
               <Stack gap={2}>
-                <FileSelector onFileChange={this.handleFileChange} />
+                <FileSelector
+                  onFileChange={this.handleFileChange}
+                  imageUrl={this.state.imageUrl}
+                  width={this.state.width}
+                  height={this.state.height} />
                 <ConvertBox
-                  isVisible={this.state.pictureData !== undefined}
+                  isVisible={this.state.imageUrl !== undefined}
                   isWorking={this.state.isWorking}
                   onStartConvertClick={this.handleStartConvertClick}
                   onStopConvertClick={this.handleStopConvertClick}
-                  disableStartButton={this.state.pictureData === undefined}
+                  disableStartButton={this.state.imageUrl === undefined}
                   convertProgress={this.state.convertProgress} />
                 <LuaCode
-                  isVisible={this.state.pictureData !== undefined}
+                  isVisible={this.state.imageUrl !== undefined}
                   code={this.state.generatedCode} />
               </Stack>
             </Col>
             <Col md={6} className='mt-4'>
               <LandingBox
-                isVisible={this.state.pictureData === undefined} />
+                isVisible={this.state.imageUrl === undefined} />
               <Settings
-                isVisible={this.state.pictureData !== undefined}
+                isVisible={this.state.imageUrl !== undefined}
                 tab={{
                   changeSettings: this.handleChangeSettings,
                   luaCodeOption: this.state.luaCodeOption
                 }}
                 colorList={{
-                  colorSet: this.state.pictureData?.colorSet,
+                  colorSet: this.state.colorSet,
                   colorOrder: this.state.orderTable,
                   undrawFlag: this.state.drawFlagTable,
                   onDrawFlagChange: this.handleOnDrawChange,
