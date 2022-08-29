@@ -26,33 +26,29 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
     const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
 
-    const cmd = new FileLoadedCommand(cs32);
-    cmd.post(ctx);
+    const cmd = new FileLoadedCommand(cs32); cmd.post(ctx);
 
-    workerData.rdata = rdata;
+    workerData.rdata = rdata; // 生データのみ保持する
+    workerData.width = data.width; // 画像幅
+    workerData.height = data.height; // 画像高さ
 
-    // Appにはuint32のパレットデータのコピーのみ返却し、App側でUI処理を実施
-    // Appからuint32のパレットデータを再度受け取り、インデックスで処理する
-
-    // Worker <-> App：元画像の色
-    // Appでのみ変換後にLuaで使う色を知っている状態にしてしまう
-  }
-  else if (data instanceof StartConvertCommand) {
+  } else if (data instanceof StartConvertCommand) {
     workerData.convCurrent = undefined;
     workerData.convRule = data.settings;
+    // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
     workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
     if (!convertCard()) {
       // convert-end発行処理
     }
-  }
-  else if (data instanceof ConvertSucceedCommand) {
+
+  } else if (data instanceof ConvertSucceedCommand) {
     if (convertCard()) {
       // convert-result発行処理
     } else {
       // convert-end発行処理
     }
-  }
-  else if (data instanceof TerminateConverterCommand) {
+    
+  } else if (data instanceof TerminateConverterCommand) {
     if (ctx.Worker) {
       workerData.subWorker.terminate();
       workerData.subWorker = undefined;
@@ -60,7 +56,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       data.post(ctx);
     }
   }
-  
+
   // Nested Workerに対応かどうかによって.subWorkerの指すWorkerが変わる！
   //
   // 1. Apps -> Worker (start-convert)
