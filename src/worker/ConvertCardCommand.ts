@@ -1,18 +1,14 @@
+import IWorkerMessage from "../IWorkerMessage";
 import { ConvertCardInfo } from "../LuaCodeOption";
-import WorkerCommand from "./WorkerCommand";
 
-export default class ConvertCardCommand extends WorkerCommand {
+export default class ConvertCardCommand implements IWorkerMessage {
   constructor(
     public picture: Uint32Array, 
     public width: number,
     public height: number,
     public palleteLength: number,
     public metaData: ConvertCardInfo
-  ) {
-    super(); 
-  }
+  ) { }
 
-  post(worker: Worker): void {
-    worker.postMessage(this, [this.picture.buffer]);
-  }
+  getTransfer() { return [this.picture.buffer]; }
 }

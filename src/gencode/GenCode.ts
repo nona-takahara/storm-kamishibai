@@ -1,14 +1,14 @@
+import IWorkerMessage from '../IWorkerMessage';
 import Vector2D from '../Vector2D';
 import ConvertCardCommand from '../worker/ConvertCardCommand';
 import ConvertSucceedCommand from '../worker/ConvertSucceedCommand';
-import WorkerCommand from '../worker/WorkerCommand';
 
 export default {}
 
 // eslint-disable-next-line
 const ctx: Worker = self as any;
 
-ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
+ctx.addEventListener('message', (evt: MessageEvent<IWorkerMessage>) => {
   const data = evt.data;
   if (data instanceof ConvertCardCommand) {
     const res: Uint32Array[] = [];
@@ -16,7 +16,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       res.push(convertLayer(data.picture, data.width, data.height, i));
     }
     const cmd = new ConvertSucceedCommand(res, data.metaData);
-    cmd.post(ctx);
+    postMessage(cmd, cmd.getTransfer());
   }
 });
 

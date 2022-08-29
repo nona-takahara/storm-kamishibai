@@ -1,4 +1,6 @@
 import Color from "../Color";
+import IWorkerMessage from "../IWorkerMessage";
+import LuaCodeOption, { getDefault } from "../LuaCodeOption";
 import ConvertResultCommand from "./ConvertResultCommand";
 import ConvertSucceedCommand from "./ConvertSucceedCommand";
 import EndConvertCommand from "./EndConvertCommand";
@@ -6,21 +8,39 @@ import FileLoadedCommand from "./FileLoadedCommand";
 import OpenFileCommand from "./OpenFileCommand";
 import StartConvertCommand from "./StartConvertCommand";
 import TerminateConverterCommand from "./TerminateConverterCommand";
-import WorkerCommand from "./WorkerCommand";
 
 export default {}
 
+type WorkerData = {
+  subWorker: Worker | undefined;
+  rdata: Uint32Array;
+  width: number;
+  height: number;
+  convCurrent: number | undefined;
+  convRule: LuaCodeOption;
+  convData: Uint32Array;
+}
+
 // eslint-disable-next-line
 const ctx: any = self as any;
-let workerData: any;
+let workerData: WorkerData;
 
-ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
+ctx.addEventListener('message', (evt: MessageEvent<IWorkerMessage>) => {
   const data = evt.data;
-  if (!workerData.subWorker) {
-    if (ctx.Worker) {
+  if (!workerData) {
+    workerData = {
+      subWorker: undefined,
+      rdata: new Uint32Array(),
+      width: 0,
+      height: 0,
+      convCurrent: undefined,
+      convRule: getDefault(),
+      convData: new Uint32Array()
+    }
+  }
+  if (ctx.Worker) {
+    if (!workerData.subWorker) {
       workerData.subWorker = new Worker(new URL('../gencode/GenCode.ts', import.meta.url));
-    } else {
-      workerData.subWorker = ctx;
     }
   }
 
@@ -28,7 +48,8 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
     const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
 
-    (new FileLoadedCommand(cs32)).post(ctx);
+    const cmd = (new FileLoadedCommand(cs32));
+    postMessage(cmd, cmd.getTransfer());
 
     workerData.rdata = rdata; // 生データのみ保持する
     workerData.width = data.width; // 画像幅
@@ -40,22 +61,25 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
     workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
     if (!convertCard()) {
-      (new EndConvertCommand()).post(ctx);
+      const cmd = (new EndConvertCommand());
+      postMessage(cmd, cmd.getTransfer());
     }
 
   } else if (data instanceof ConvertSucceedCommand) {
     if (convertCard()) {
-      (new ConvertResultCommand(data.rectangleList, data.metaData)).post(ctx);
+      const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
+      postMessage(cmd, cmd.getTransfer());
     } else {
-      (new EndConvertCommand()).post(ctx);
+      const cmd = new EndConvertCommand();
+      postMessage(cmd, cmd.getTransfer());
     }
-    
+
   } else if (data instanceof TerminateConverterCommand) {
     if (ctx.Worker) {
-      workerData.subWorker.terminate();
+      workerData.subWorker?.terminate();
       workerData.subWorker = undefined;
     } else {
-      data.post(ctx);
+      postMessage(data, data.getTransfer());
     }
   }
 

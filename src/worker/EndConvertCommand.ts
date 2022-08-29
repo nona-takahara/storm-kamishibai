@@ -1,11 +1,5 @@
-import WorkerCommand from "./WorkerCommand";
+import IWorkerMessage from "../IWorkerMessage";
 
-export default class EndConvertCommand extends WorkerCommand {
-  constructor() {
-    super(); 
-  }
-
-  post(worker: Worker): void {
-    worker.postMessage(this);
-  }
+export default class EndConvertCommand implements IWorkerMessage {
+  getTransfer() { return []; } 
 }

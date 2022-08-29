@@ -1,15 +1,11 @@
+import IWorkerMessage from "../IWorkerMessage";
 import LuaCodeOption from "../LuaCodeOption";
-import WorkerCommand from "./WorkerCommand";
 
-export default class StartConvertCommand extends WorkerCommand {
+export default class StartConvertCommand implements IWorkerMessage  {
   constructor(
     public settings: LuaCodeOption,
     public colorPallete: Uint32Array
-  ) {
-    super(); 
-  }
+  ) { }
 
-  post(worker: Worker): void {
-    worker.postMessage(this, [this.colorPallete.buffer]);
-  }
+  getTransfer() { return [this.colorPallete.buffer]; }
 }

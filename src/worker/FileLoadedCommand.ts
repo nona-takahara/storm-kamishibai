@@ -1,13 +1,9 @@
-import WorkerCommand from "./WorkerCommand";
+import IWorkerMessage from "../IWorkerMessage";
 
-export default class FileLoadedCommand extends WorkerCommand {
+export default class FileLoadedCommand implements IWorkerMessage {
   constructor(
     public colorPallete: Uint32Array
-  ) {
-    super(); 
-  }
-
-  post(worker: Worker): void {
-    worker.postMessage(this);
-  }
+  ) { }
+  
+  getTransfer() { return []; }
 }

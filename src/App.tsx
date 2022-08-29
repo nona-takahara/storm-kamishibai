@@ -16,7 +16,6 @@ import HelpModal from './ui/HelpModal';
 import AboutModal from './ui/AboutModal';
 import LandingBox from './ui/LandingBox';
 import FinalLuaCode from './gencode/FinalLuaCode';
-import WorkerCommand from './worker/WorkerCommand';
 import ConvertCardCommand from './worker/ConvertCardCommand';
 import ConvertSucceedCommand from './worker/ConvertSucceedCommand';
 import TerminateConverterCommand from './worker/TerminateConverterCommand';
@@ -25,6 +24,7 @@ import OpenFileCommand from './worker/OpenFileCommand';
 import { fileToU8Image } from './PictureFileReader';
 import Color from './Color';
 import FileLoadedCommand from './worker/FileLoadedCommand';
+import IWorkerMessage from './IWorkerMessage';
 
 type AppState = {
   imageUrl: string;
@@ -71,7 +71,7 @@ export default class App extends React.Component<any, AppState> {
   // ----- WebWorker
   restartWorker() {
     this.state.worker?.terminate();
-    const _worker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
+    const _worker = new Worker(new URL('./worker/Worker.ts', import.meta.url));
     _worker.onmessage = this.handleWorkerMessage.bind(this);
     this.setState({worker: _worker});
     return _worker;
@@ -81,7 +81,7 @@ export default class App extends React.Component<any, AppState> {
     return this.state?.worker || this.restartWorker();
   }
 
-  handleWorkerMessage(evt: MessageEvent<WorkerCommand>) {
+  handleWorkerMessage(evt: MessageEvent<IWorkerMessage>) {
     const data = evt.data;
 
     if (data instanceof ConvertCardCommand) {
@@ -91,22 +91,24 @@ export default class App extends React.Component<any, AppState> {
         _subworker.onmessage = this.handleWorkerMessage.bind(this);
         this.setState({subWorker: _subworker});
       }
-      data.post(_subworker);
+      _subworker.postMessage(data, data.getTransfer());
 
     } else if (data instanceof TerminateConverterCommand) {
       this.state.subWorker?.terminate();
       this.setState({subWorker: undefined});
 
     } else if (data instanceof ConvertSucceedCommand) {
-      data.post(this.getWorker());
+      this.getWorker().postMessage(data, data.getTransfer());
 
     } else if (data instanceof FileLoadedCommand) {
       const colorSet: Color[] = [];
       const cs = new Uint8ClampedArray(data.colorPallete.buffer);
+      console.log(data.colorPallete);
       for (let i = 0; i < cs.length; i += 4) {
         colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], data.colorPallete[i / 4]));
       }
       this.setState({ colorSet: colorSet });
+      console.log(colorSet);
     }
   }
 
@@ -133,7 +135,8 @@ export default class App extends React.Component<any, AppState> {
   handleFileChange(file: File) {
     fileToU8Image(file, true).then((res) => {
       this.setState({ imageUrl: res.dataUrl, width: res.width, height: res.height });
-      (new OpenFileCommand(res.u8Image, res.width, res.height, true)).post(this.getWorker())
+      const cmd = new OpenFileCommand(res.u8Image, res.width, res.height, true);
+      this.getWorker().postMessage(cmd, cmd.getTransfer());
     });
   }
 
@@ -173,11 +176,13 @@ export default class App extends React.Component<any, AppState> {
     for (let i = 0; i < this.state.orderTable.length; i++) {
       u[i] = this.state.colorSet[this.state.orderTable[i]].raw || 0;
     }
-    (new StartConvertCommand(this.state.luaCodeOption, u)).post(this.getWorker());
+    const cmd = new StartConvertCommand(this.state.luaCodeOption, u);
+    this.getWorker().postMessage(cmd, cmd.getTransfer());
   }
 
   handleStopConvertClick() {
-    (new TerminateConverterCommand()).post(this.getWorker());
+    const cmd = new TerminateConverterCommand();
+    this.getWorker().postMessage(cmd, cmd.getTransfer());
     this.setState({ isWorking: false });
   }
 

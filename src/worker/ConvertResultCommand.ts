@@ -1,15 +1,11 @@
+import IWorkerMessage from "../IWorkerMessage";
 import { ConvertCardInfo } from "../LuaCodeOption";
-import WorkerCommand from "./WorkerCommand";
 
-export default class ConvertResultCommand extends WorkerCommand {
+export default class ConvertResultCommand implements IWorkerMessage {
   constructor(
     public rectangleList: Uint32Array[],
     public metaData: ConvertCardInfo
-  ) {
-    super(); 
-  }
+  ) { }
 
-  post(worker: Worker): void {
-    worker.postMessage(this, this.rectangleList.map((v) => v.buffer));
-  }
+  getTransfer() { return this.rectangleList.map((v) => v.buffer); }
 }
