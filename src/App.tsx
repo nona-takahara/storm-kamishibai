@@ -174,7 +174,6 @@ export default class App extends React.Component<any, AppState> {
 
   handleStartConvertClick() {
     const u = new Uint32Array(this.state.orderTable.length);
-    console.log(this.state)
     for (let i = 0; i < this.state.orderTable.length; i++) {
       u[i] = this.state.colorSet[this.state.orderTable[i]].raw || 0;
     }
@@ -230,22 +229,22 @@ export default class App extends React.Component<any, AppState> {
                   width={this.state.width}
                   height={this.state.height} />
                 <ConvertBox
-                  isVisible={this.state.imageUrl !== undefined}
+                  isVisible={this.state.imageUrl !== ''}
                   isWorking={this.state.isWorking}
                   onStartConvertClick={this.handleStartConvertClick}
                   onStopConvertClick={this.handleStopConvertClick}
-                  disableStartButton={this.state.imageUrl === undefined}
+                  disableStartButton={this.state.imageUrl === ''}
                   convertProgress={this.state.convertProgress} />
                 <LuaCode
-                  isVisible={this.state.imageUrl !== undefined}
+                  isVisible={this.state.imageUrl !== ''}
                   code={this.state.generatedCode} />
               </Stack>
             </Col>
             <Col md={6} className='mt-4'>
               <LandingBox
-                isVisible={this.state.imageUrl === undefined} />
+                isVisible={this.state.imageUrl === ''} />
               <Settings
-                isVisible={this.state.imageUrl !== undefined}
+                isVisible={this.state.imageUrl !== ''}
                 tab={{
                   changeSettings: this.handleChangeSettings,
                   luaCodeOption: this.state.luaCodeOption
