@@ -10,7 +10,7 @@ const ctx: Worker = self as any;
 
 ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   const data = evt.data;
-  if (data instanceof ConvertCardCommand) {
+  if (ConvertCardCommand.is(data)) {
     const res: Uint32Array[] = [];
     for (let i = 0; i < data.palleteLength; i++) {
       res.push(convertLayer(data.picture, data.width, data.height, i));
