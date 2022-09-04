@@ -4,14 +4,14 @@ import FinalLuaCode from "./FinalLuaCode";
 
 export default function FinalizeLuaCode(sn: Array<LuaCodeSnippet>, opt: LuaCodeOption): FinalLuaCode {
   let ph = {
-    offsetX: (opt.offsetX === 0) ? '' : `+${opt.offsetX}`,
-    offsetY: (opt.offsetY === 0) ? '' : `+${opt.offsetY}`,
-    funcV: (opt.compressV)? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
-    funcH: (opt.compressH)? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
+    offsetX: (opt.luaOffsetX === 0) ? '' : `+${opt.luaOffsetX}`,
+    offsetY: (opt.luaOffsetY === 0) ? '' : `+${opt.luaOffsetY}`,
+    funcV: (opt.luaVCompress)? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
+    funcH: (opt.luaHCompress)? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
   }
   let outerFront = `function R(x,y,w,h)S.drawRectF(x${ph.offsetX},y${ph.offsetY},w,h)end${ph.funcV}${ph.funcH}
 I=0
-function onTick()I=input.getNumber(${opt.readChannel})end
+function onTick()I=input.getNumber(${opt.luaReadChannel})end
 function onDraw()S=screen C=S.setColor`;
   let outerBottom = '\nend';
   let maxLength = 4090 - (bytelen(outerFront) + bytelen(outerBottom));
@@ -24,8 +24,8 @@ function onDraw()S=screen C=S.setColor`;
     const v = sn[i];
     const k = v.layers.reverse();
     
-    let frameLP = frame(i + opt.startWith, k.join(''));
-    let frameSize = bytelen(frame(i + opt.startWith, ''));
+    let frameLP = frame(i + opt.luaCardIndexStartWith, k.join(''));
+    let frameSize = bytelen(frame(i + opt.luaCardIndexStartWith, ''));
 
     if (blockLP !== '' && (bytelen(blockLP) + bytelen(frameLP)) > maxLength) {
       r.push(blockLP);
@@ -39,7 +39,7 @@ function onDraw()S=screen C=S.setColor`;
         if (colorLP === undefined) colorLP = '';
         if ((bytelen(frameLP + colorLP) + frameSize) > maxLength) {
           if (frameLP !== '') {
-            r.push(frame(i + opt.startWith, frameLP));
+            r.push(frame(i + opt.luaCardIndexStartWith, frameLP));
           }
 
           if ((bytelen(colorLP) + frameSize) > maxLength) {
@@ -51,7 +51,7 @@ function onDraw()S=screen C=S.setColor`;
 
             while(bytelen(colorLP) > localMaxLength) {
               let cutpoint = colorLP.lastIndexOf(')', localMaxLength - 1) + 1;
-              r.push(frame(i + opt.startWith, v_color + colorLP.slice(0, cutpoint)));
+              r.push(frame(i + opt.luaCardIndexStartWith, v_color + colorLP.slice(0, cutpoint)));
               colorLP = colorLP.slice(cutpoint);
             }
 
@@ -61,7 +61,7 @@ function onDraw()S=screen C=S.setColor`;
         }
         frameLP += colorLP;
       }
-      frameLP = frame(i + opt.startWith, frameLP);
+      frameLP = frame(i + opt.luaCardIndexStartWith, frameLP);
     }
 
     blockLP += frameLP;

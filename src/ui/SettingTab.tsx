@@ -64,39 +64,39 @@ function W`, luaCodeTemplateB: '' };
               <InputGroup.Text>幅</InputGroup.Text>
               <FormControl
                 type="number"
-                defaultValue={this.props.luaCodeOption.width}
+                defaultValue={this.props.luaCodeOption.luaCardWidth}
                 onChange={this.handleChangeHeight} />
               <InputGroup.Text>&#xd7;</InputGroup.Text>
               <InputGroup.Text>高さ</InputGroup.Text>
               <FormControl
                 type="number"
-                defaultValue={this.props.luaCodeOption.height}
+                defaultValue={this.props.luaCodeOption.luaCardHeight}
                 onChange={this.handleChangeHeight} />
             </InputGroup>
             <InputGroup>
               <InputGroup.Text>先頭の画像インデックス</InputGroup.Text>
               <FormControl
                 type="number"
-                defaultValue={this.props.luaCodeOption.startWith}
+                defaultValue={this.props.luaCodeOption.luaCardIndexStartWith}
                 onChange={this.handleStartWithChanged} />
             </InputGroup>
             <InputGroup>
               <InputGroup.Text>読み込む数値チャンネル</InputGroup.Text>
               <FormControl
                 type="number"
-                defaultValue={this.props.luaCodeOption.readChannel}
+                defaultValue={this.props.luaCodeOption.luaReadChannel}
                 onChange={this.handleChannelChanged} />
             </InputGroup>
             <InputGroup>
               <InputGroup.Text>左側<br />オフセット</InputGroup.Text>
               <FormControl
                 type="number"
-                defaultValue={this.props.luaCodeOption.offsetX}
+                defaultValue={this.props.luaCodeOption.luaOffsetX}
                 onChange={this.handleOffsetXChanged} />
               <InputGroup.Text>上側<br />オフセット</InputGroup.Text>
               <FormControl
                 type="number"
-                defaultValue={this.props.luaCodeOption.offsetY}
+                defaultValue={this.props.luaCodeOption.luaOffsetY}
                 onChange={this.handleOffsetYChanged} />
             </InputGroup>
           </Stack>

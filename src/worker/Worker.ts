@@ -2,20 +2,26 @@ import WorkerCommand from "./WorkerCommand";
 import LuaCodeOption, { getDefault } from "../LuaCodeOption";
 import ConvertResultCommand from "./ConvertResultCommand";
 import ConvertSucceedCommand from "./ConvertSucceedCommand";
-import EndConvertCommand from "./EndConvertCommand";
 import FileLoadedCommand from "./FileLoadedCommand";
 import OpenFileCommand from "./OpenFileCommand";
 import StartConvertCommand from "./StartConvertCommand";
 import TerminateConverterCommand from "./TerminateConverterCommand";
+import ConvertCardCommand from "./ConvertCardCommand";
 
 export default {}
+
+type ConvertProgress = {
+  x: number;
+  y: number;
+};
 
 type WorkerData = {
   subWorker: Worker | undefined;
   rdata: Uint32Array;
   width: number;
   height: number;
-  convCurrent: number | undefined;
+  palleteLength: number;
+  convCurrent: ConvertProgress | undefined;
   convRule: LuaCodeOption;
   convData: Uint32Array;
 }
@@ -32,6 +38,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       rdata: new Uint32Array(),
       width: 0,
       height: 0,
+      palleteLength: 0,
       convCurrent: undefined,
       convRule: getDefault(),
       convData: new Uint32Array()
@@ -40,10 +47,17 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   if (ctx.Worker) {
     if (!workerData.subWorker) {
       workerData.subWorker = new Worker(new URL('../gencode/GenCode.ts', import.meta.url));
+      workerData.subWorker.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
+        const data = evt.data;
+        if (ConvertSucceedCommand.is(data)) {
+          if (convertCard()) {
+            const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
+            ctx.postMessage(cmd, cmd.getTransfer());
+          }
+        }
+      });
     }
   }
-
-  console.log(data);
 
   if (OpenFileCommand.is(data)) {
     const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
@@ -61,20 +75,12 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     workerData.convRule = data.settings;
     // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
     workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
+    workerData.palleteLength = data.colorPallete.length;
     if (!convertCard()) {
-      const cmd = (new EndConvertCommand());
-      postMessage(cmd, cmd.getTransfer());
+      // Resultコマンドで終了の旨を送信する
+      //const cmd = (new EndConvertCommand());
+      //postMessage(cmd, cmd.getTransfer());
     }
-
-  } else if (ConvertSucceedCommand.is(data)) {
-    if (convertCard()) {
-      const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
-      postMessage(cmd, cmd.getTransfer());
-    } else {
-      const cmd = new EndConvertCommand();
-      postMessage(cmd, cmd.getTransfer());
-    }
-
   } else if (TerminateConverterCommand.is(data)) {
     if (ctx.Worker) {
       workerData.subWorker?.terminate();
@@ -101,7 +107,45 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
 });
 
 function convertCard(): boolean {
+  if (workerData.convCurrent === undefined) {
+    workerData.convCurrent = {
+      x: workerData.convRule.pictureOffsetX,
+      y: workerData.convRule.pictureOffsetY,
+    }
+  } else {
+    workerData.convCurrent.y +=
+      workerData.convRule.luaCardHeight + workerData.convRule.pictureSkipV;
+    
+    if (workerData.convCurrent.y + workerData.convRule.luaCardHeight >= workerData.height) {
+      workerData.convCurrent.x += workerData.convRule.luaCardWidth + workerData.convRule.pictureSkipH;
+      workerData.convCurrent.y = workerData.convRule.pictureOffsetY;
+    }
+  }
+
+  if (workerData.convCurrent.x + workerData.convRule.luaCardWidth >= workerData.width) {
+    return false;
+  }
+
+  const d = new Uint32Array(workerData.convRule.luaCardWidth * workerData.convRule.luaCardHeight);
+  for (let x = 0; x < workerData.convRule.luaCardWidth; x++) {
+    for (let y = 0; y < workerData.convRule.luaCardHeight; y++) {
+      d[x + y * workerData.convRule.luaCardWidth] = 
+        workerData.rdata[workerData.convCurrent.x + x + 
+          (workerData.convCurrent.y + y) * workerData.width];
+    }
+  }
+
+  const cmd = new ConvertCardCommand(
+    d, 
+    workerData.convRule.luaCardWidth,
+    workerData.convRule.luaCardHeight,
+    workerData.palleteLength,
+    {});
+  console.log(cmd);
+  if (ctx.Worker) {
+    workerData.subWorker?.postMessage(cmd, cmd.getTransfer());
+  } else {
+    postMessage(cmd, cmd.getTransfer());
+  }
   return true;
-  // 次の1枚を変換するコマンドを作成・発行
-  // 新しいconvert-cardコマンドが発行できなかった時、falseを返す
 }
