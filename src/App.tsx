@@ -90,14 +90,16 @@ export default class App extends React.Component<any, AppState> {
         _subworker.onmessage = this.handleWorkerMessage.bind(this);
         this.setState({subWorker: _subworker});
       }
-      _subworker.postMessage(data, data.getTransfer());
+      const ndata = ConvertCardCommand.from(data);
+      _subworker.postMessage(ndata, ndata.getTransfer());
 
     } else if (TerminateConverterCommand.is(data)) {
       this.state.subWorker?.terminate();
       this.setState({subWorker: undefined});
 
     } else if (ConvertSucceedCommand.is(data)) {
-      this.getWorker().postMessage(data, data.getTransfer());
+      const ndata = ConvertSucceedCommand.from(data);
+      this.getWorker().postMessage(ndata, ndata.getTransfer());
 
     } else if (FileLoadedCommand.is(data)) {
       const colorSet: Color[] = [];
