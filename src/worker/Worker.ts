@@ -27,6 +27,19 @@ type WorkerData = {
   convData: Uint32Array;
 }
 
+function defaultWorkerData(): WorkerData {
+  return {
+    subWorker: undefined,
+    rdata: new Uint32Array(),
+    width: 0,
+    height: 0,
+    palleteLength: 0,
+    convCurrent: undefined,
+    convRule: getDefault(),
+    convData: new Uint32Array()
+  };
+}
+
 // eslint-disable-next-line
 const ctx: any = self as any;
 let workerData: WorkerData;
@@ -34,69 +47,69 @@ let workerData: WorkerData;
 ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   const data = evt.data;
   if (!workerData) {
-    workerData = {
-      subWorker: undefined,
-      rdata: new Uint32Array(),
-      width: 0,
-      height: 0,
-      palleteLength: 0,
-      convCurrent: undefined,
-      convRule: getDefault(),
-      convData: new Uint32Array()
-    }
+    workerData = defaultWorkerData();
   }
   if (ctx.Worker) {
     if (!workerData.subWorker) {
       workerData.subWorker = new Worker(new URL('../gencode/GenCode.ts', import.meta.url));
       workerData.subWorker.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
         const data = evt.data;
-        if (ConvertSucceedCommand.is(data)) {
-          if (convertCard()) {
-            const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
-            ctx.postMessage(cmd, cmd.getTransfer());
-          }
-        }
+        commandFromSubWorker(data);
+
       });
     }
   }
 
-  if (OpenFileCommand.is(data)) {
-    const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
-    const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
-
-    const colorSet: Color[] = [];
-    const cs = new Uint8ClampedArray(cs32.buffer);
-      for (let i = 0; i < cs.length; i += 4) {
-        colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], cs32[i / 4]));
-    }
-
-    const cmd = (new FileLoadedCommand(colorSet));
-    postMessage(cmd, cmd.getTransfer());
-    
-    workerData.rdata = rdata; // 生データのみ保持する
-    workerData.width = data.width; // 画像幅
-    workerData.height = data.height; // 画像高さ
-
-  } else if (StartConvertCommand.is(data)) {
-    workerData.convCurrent = undefined;
-    workerData.convRule = data.settings;
-    // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
-    workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
-    workerData.palleteLength = data.colorPallete.length;
-    if (!convertCard()) {
-      // Resultコマンドで終了の旨を送信する
-      //const cmd = (new EndConvertCommand());
-      //postMessage(cmd, cmd.getTransfer());
-    }
-  } else if (TerminateConverterCommand.is(data)) {
-    if (ctx.Worker) {
-      workerData.subWorker?.terminate();
-      workerData.subWorker = undefined;
+  function commandFromSubWorker(data: WorkerCommand): boolean {
+    if (ConvertSucceedCommand.is(data)) {
+      if (convertCard()) {
+        const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
+        ctx.postMessage(cmd, cmd.getTransfer());
+      }
     } else {
-      postMessage(data, data.getTransfer());
+      return false;
+    }
+    return true;
+  }
+  
+  if (!commandFromSubWorker(data)) {
+    if (OpenFileCommand.is(data)) {
+      const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
+      const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
+
+      const colorSet: Color[] = [];
+      const cs = new Uint8ClampedArray(cs32.buffer);
+      for (let i = 0; i < cs.length; i += 4) {
+        colorSet.push(new Color(cs[i], cs[i + 1], cs[i + 2], cs[i + 3], cs32[i / 4]));
+      }
+
+      const cmd = (new FileLoadedCommand(colorSet));
+      postMessage(cmd, cmd.getTransfer());
+
+      workerData.rdata = rdata; // 生データのみ保持する
+      workerData.width = data.width; // 画像幅
+      workerData.height = data.height; // 画像高さ
+
+    } else if (StartConvertCommand.is(data)) {
+      workerData.convCurrent = undefined;
+      workerData.convRule = data.settings;
+      // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
+      workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
+      workerData.palleteLength = data.colorPallete.length;
+      if (!convertCard()) {
+        // Resultコマンドで終了の旨を送信する
+        //const cmd = (new EndConvertCommand());
+        //postMessage(cmd, cmd.getTransfer());
+      }
+    } else if (TerminateConverterCommand.is(data)) {
+      if (ctx.Worker) {
+        workerData.subWorker?.terminate();
+        workerData.subWorker = undefined;
+      } else {
+        postMessage(data, data.getTransfer());
+      }
     }
   }
-
   // Nested Workerに対応かどうかによって.subWorkerの指すWorkerが変わる！
   //
   // 1. Apps -> Worker (start-convert)
@@ -122,7 +135,7 @@ function convertCard(): boolean {
   } else {
     workerData.convCurrent.y +=
       workerData.convRule.luaCardHeight + workerData.convRule.pictureSkipV;
-    
+
     if (workerData.convCurrent.y + workerData.convRule.luaCardHeight >= workerData.height) {
       workerData.convCurrent.x += workerData.convRule.luaCardWidth + workerData.convRule.pictureSkipH;
       workerData.convCurrent.y = workerData.convRule.pictureOffsetY;
@@ -136,14 +149,14 @@ function convertCard(): boolean {
   const d = new Uint32Array(workerData.convRule.luaCardWidth * workerData.convRule.luaCardHeight);
   for (let x = 0; x < workerData.convRule.luaCardWidth; x++) {
     for (let y = 0; y < workerData.convRule.luaCardHeight; y++) {
-      d[x + y * workerData.convRule.luaCardWidth] = 
-        workerData.rdata[workerData.convCurrent.x + x + 
-          (workerData.convCurrent.y + y) * workerData.width];
+      d[x + y * workerData.convRule.luaCardWidth] =
+        workerData.rdata[workerData.convCurrent.x + x +
+        (workerData.convCurrent.y + y) * workerData.width];
     }
   }
 
   const cmd = new ConvertCardCommand(
-    d, 
+    d,
     workerData.convRule.luaCardWidth,
     workerData.convRule.luaCardHeight,
     workerData.palleteLength,
