@@ -71,7 +71,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     }
     return true;
   }
-  
+
   if (!commandFromSubWorker(data)) {
     if (OpenFileCommand.is(data)) {
       const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
@@ -127,6 +127,26 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
 });
 
 function convertCard(): boolean {
+  const d = makeNextConvertData();
+
+  if (d) {
+    const cmd = new ConvertCardCommand(
+      d,
+      workerData.convRule.luaCardWidth,
+      workerData.convRule.luaCardHeight,
+      workerData.palleteLength,
+      {});
+    console.log(cmd);
+    if (ctx.Worker) {
+      workerData.subWorker?.postMessage(cmd, cmd.getTransfer());
+    } else {
+      postMessage(cmd, cmd.getTransfer());
+    }
+  }
+  return !(!(d));
+}
+
+function makeNextConvertData() {
   if (workerData.convCurrent === undefined) {
     workerData.convCurrent = {
       x: workerData.convRule.pictureOffsetX,
@@ -154,18 +174,5 @@ function convertCard(): boolean {
         (workerData.convCurrent.y + y) * workerData.width];
     }
   }
-
-  const cmd = new ConvertCardCommand(
-    d,
-    workerData.convRule.luaCardWidth,
-    workerData.convRule.luaCardHeight,
-    workerData.palleteLength,
-    {});
-  console.log(cmd);
-  if (ctx.Worker) {
-    workerData.subWorker?.postMessage(cmd, cmd.getTransfer());
-  } else {
-    postMessage(cmd, cmd.getTransfer());
-  }
-  return true;
+  return d;
 }
