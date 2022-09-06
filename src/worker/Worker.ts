@@ -167,7 +167,7 @@ function makeNextConvertData() {
   for (let x = 0; x < workerData.convRule.luaCardWidth; x++) {
     for (let y = 0; y < workerData.convRule.luaCardHeight; y++) {
       d[x + y * workerData.convRule.luaCardWidth] =
-        workerData.rdata[workerData.convCurrent.x + x +
+        workerData.convData[workerData.convCurrent.x + x +
         (workerData.convCurrent.y + y) * workerData.width];
     }
   }
