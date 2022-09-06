@@ -76,6 +76,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       // 現時点ではこれで問題ないが、おそらくLuaコードの生成はWorkerで行うことになるので、
       // 準備しておく
       const cmd = ConvertResultCommand.from(data, { 
+        offsetListIndex: data.metaData.offsetListIndex,
         finished: workerData.commandStartOffsetList.filter((v) => v).length,
         length: workerData.commandStartOffsetList.length
       });
@@ -121,14 +122,14 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       workerData.commandStartOffsetListX = [];
       for (let i = workerData.convRule.pictureOffsetX;
         i <= (workerData.width - workerData.convRule.luaCardWidth);
-        i += workerData.convRule.luaCardWidth +  + workerData.convRule.pictureSkipH) {
+        i += workerData.convRule.luaCardWidth + workerData.convRule.pictureSkipH) {
           workerData.commandStartOffsetListX.push(i);
       }
 
       workerData.commandStartOffsetListY = [];
       for (let i = workerData.convRule.pictureOffsetY;
         i <= (workerData.height - workerData.convRule.luaCardHeight);
-        i += workerData.convRule.luaCardHeight +  + workerData.convRule.pictureSkipV) {
+        i += workerData.convRule.luaCardHeight + workerData.convRule.pictureSkipV) {
           workerData.commandStartOffsetListY.push(i);
       }
 

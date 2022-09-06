@@ -35,6 +35,7 @@ export type ConvertInfo = {
 }
 
 export type ConvertResultInfo = {
+  offsetListIndex: number;
   finished: number;
   length: number;
 }
