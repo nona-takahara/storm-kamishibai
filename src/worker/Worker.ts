@@ -7,6 +7,7 @@ import OpenFileCommand from "./OpenFileCommand";
 import StartConvertCommand from "./StartConvertCommand";
 import TerminateConverterCommand from "./TerminateConverterCommand";
 import ConvertCardCommand from "./ConvertCardCommand";
+import Color from "../Color";
 
 export default {}
 
@@ -63,7 +64,13 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     const rdata = new Uint32Array(data.u8Image.buffer); // uint32による生データ
     const cs32 = Uint32Array.from(new Set(rdata)).reverse(); // 基準パレット生成
 
-    const cmd = (new FileLoadedCommand(cs32));
+    const colorSet: Color[] = [];
+    const cs = new Uint8ClampedArray(cs32.buffer);
+      for (let i = 0; i < cs.length; i += 4) {
+        colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], cs32[i / 4]));
+    }
+
+    const cmd = (new FileLoadedCommand(colorSet));
     postMessage(cmd, cmd.getTransfer());
     
     workerData.rdata = rdata; // 生データのみ保持する

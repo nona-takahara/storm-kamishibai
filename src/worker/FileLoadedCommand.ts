@@ -1,10 +1,11 @@
+import Color from "../Color";
 import WorkerCommand from "./WorkerCommand";
 
 const commandName = 'file-loaded';
 
 export default class FileLoadedCommand extends WorkerCommand {
   constructor(
-    public colorPallete: Uint32Array,
+    public colorPallete: Color[],
     public command = commandName
   ) { super(); }
 

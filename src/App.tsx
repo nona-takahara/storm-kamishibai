@@ -102,15 +102,11 @@ export default class App extends React.Component<any, AppState> {
       this.getWorker().postMessage(ndata, ndata.getTransfer());
 
     } else if (FileLoadedCommand.is(data)) {
-      const colorSet: Color[] = [];
-      const orderTable: number[] = [];
-      const drawFlagTable: boolean[] = [];
-      const cs = new Uint8ClampedArray(data.colorPallete.buffer);
-      for (let i = 0; i < cs.length; i += 4) {
-        colorSet.push(new Color(cs[i], cs[i+1], cs[i+2], cs[i+3], data.colorPallete[i / 4]));
-        orderTable.push(i / 4);
-        drawFlagTable.push(false);
-      }
+      const colorSet = data.colorPallete.map((v) => new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw));
+      const orderTable = colorSet.map((v, i) => i);
+      const drawFlagTable = colorSet.map(() => false);
+      console.log(orderTable);
+      
       this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable });
     }
   }
