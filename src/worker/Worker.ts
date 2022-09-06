@@ -8,6 +8,7 @@ import StartConvertCommand from "./StartConvertCommand";
 import TerminateConverterCommand from "./TerminateConverterCommand";
 import ConvertCardCommand from "./ConvertCardCommand";
 import Color from "../Color";
+import EndConvertCommand from "./EndConvertCommand";
 
 export default {}
 
@@ -22,6 +23,7 @@ type WorkerData = {
   width: number;
   height: number;
   palleteLength: number;
+  nextConvertCommand: ConvertCardCommand | undefined;
   convCurrent: ConvertProgress | undefined;
   convRule: LuaCodeOption;
   convData: Uint32Array;
@@ -34,6 +36,7 @@ function defaultWorkerData(): WorkerData {
     width: 0,
     height: 0,
     palleteLength: 0,
+    nextConvertCommand: undefined,
     convCurrent: undefined,
     convRule: getDefault(),
     convData: new Uint32Array()
@@ -62,9 +65,17 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
 
   function commandFromSubWorker(data: WorkerCommand): boolean {
     if (ConvertSucceedCommand.is(data)) {
-      if (convertCard()) {
-        const cmd = new ConvertResultCommand(data.rectangleList, data.metaData);
-        ctx.postMessage(cmd, cmd.getTransfer());
+      const hasNext = convertCard();
+      
+      // 現時点ではこれで問題ないが、おそらくLuaコードの生成はWorkerで行うことになるので、
+      // 準備しておく
+      const cmd = ConvertResultCommand.from(data);
+      postMessage(cmd, cmd.getTransfer());
+
+      if (!hasNext) {
+        // Resultコマンドで終了の旨を送信する
+        const cmd = (new EndConvertCommand());
+        postMessage(cmd, cmd.getTransfer());
       }
     } else {
       return false;
@@ -96,10 +107,13 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
       workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
       workerData.palleteLength = data.colorPallete.length;
+
+      // 最初のコンバートコマンドを作成して、送信１回目を実施する。
+      workerData.nextConvertCommand = makeNextConvertData();
       if (!convertCard()) {
         // Resultコマンドで終了の旨を送信する
-        //const cmd = (new EndConvertCommand());
-        //postMessage(cmd, cmd.getTransfer());
+        const cmd = (new EndConvertCommand());
+        postMessage(cmd, cmd.getTransfer());
       }
     } else if (TerminateConverterCommand.is(data)) {
       if (ctx.Worker) {
@@ -110,40 +124,23 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       }
     }
   }
-  // Nested Workerに対応かどうかによって.subWorkerの指すWorkerが変わる！
-  //
-  // 1. Apps -> Worker (start-convert)
-  // 2. Worker -> SubWorker (convert-card*)
-  // 3. SubWorker -> Worker (convert-succeed*)
-  // 4. Worker -> Apps (convert-result)
-  // 5. 2に戻る(実際は先にconvert-cardを発行し、続けてconvert-resultを処理・発行する)
-  // 6. Worker -> Apps (convert-end)
-  // !. Apps -> Worker (convert-terminate!)
-  // 
-  // *がついているコマンドは、単純に.subWorkerにコマンドを渡せばよい。
-  // Appsはコマンド種別を見て、ただお隣に横流しするだけで終わる。
-  // terminateコマンドは、Nested Worker対応ならば直接SubWorkerを止めるが、
-  // 非対応ならAppsにterminateコマンドを送り付ける必要がある。
 });
 
 function convertCard(): boolean {
-  const d = makeNextConvertData();
-
-  if (d) {
-    const cmd = new ConvertCardCommand(
-      d,
-      workerData.convRule.luaCardWidth,
-      workerData.convRule.luaCardHeight,
-      workerData.palleteLength,
-      {});
-    console.log(cmd);
-    if (ctx.Worker) {
-      workerData.subWorker?.postMessage(cmd, cmd.getTransfer());
-    } else {
-      postMessage(cmd, cmd.getTransfer());
-    }
+  const cmd = workerData.nextConvertCommand;
+  if (!cmd) {
+    return false;
   }
-  return !(!(d));
+
+  if (ctx.Worker) {
+    workerData.subWorker?.postMessage(cmd, cmd.getTransfer());
+  } else {
+    postMessage(cmd, cmd.getTransfer());
+  }
+
+  workerData.nextConvertCommand = makeNextConvertData();
+
+  return true;
 }
 
 function makeNextConvertData() {
@@ -163,7 +160,7 @@ function makeNextConvertData() {
   }
 
   if (workerData.convCurrent.x + workerData.convRule.luaCardWidth >= workerData.width) {
-    return false;
+    return undefined;
   }
 
   const d = new Uint32Array(workerData.convRule.luaCardWidth * workerData.convRule.luaCardHeight);
@@ -174,5 +171,11 @@ function makeNextConvertData() {
         (workerData.convCurrent.y + y) * workerData.width];
     }
   }
-  return d;
+
+  return new ConvertCardCommand(
+    d,
+    workerData.convRule.luaCardWidth,
+    workerData.convRule.luaCardHeight,
+    workerData.palleteLength,
+    {});
 }
