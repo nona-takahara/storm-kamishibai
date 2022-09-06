@@ -12,11 +12,6 @@ import EndConvertCommand from "./EndConvertCommand";
 
 export default {}
 
-type ConvertProgress = {
-  x: number;
-  y: number;
-};
-
 type WorkerData = {
   subWorker: Worker | undefined;
   rdata: Uint32Array;
