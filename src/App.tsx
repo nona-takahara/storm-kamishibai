@@ -25,6 +25,7 @@ import { fileToU8Image } from './PictureFileReader';
 import Color from './Color';
 import FileLoadedCommand from './worker/FileLoadedCommand';
 import WorkerCommand from './worker/WorkerCommand';
+import ConvertResultCommand from './worker/ConvertResultCommand';
 
 type AppState = {
   imageUrl: string;
@@ -108,6 +109,8 @@ export default class App extends React.Component<any, AppState> {
       console.log(orderTable);
       
       this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable });
+    } else if (ConvertResultCommand.is(data)) {
+      this.setState({ convertProgress: data.metaData.finished / data.metaData.length });
     }
   }
 
@@ -119,8 +122,6 @@ export default class App extends React.Component<any, AppState> {
 
   componentWillUnmount() {
     window.removeEventListener("beforeunload", this.handleBeforeUnloadEvent);
-    this.state.worker?.terminate();
-    this.state.subWorker?.terminate();
   }
 
   handleBeforeUnloadEvent(evt: BeforeUnloadEvent) {
@@ -128,6 +129,8 @@ export default class App extends React.Component<any, AppState> {
       evt.preventDefault();
     }
     evt.returnValue = "";
+    this.state.worker?.terminate();
+    this.state.subWorker?.terminate();
   }
 
   // ----- Other Change Event
