@@ -1,5 +1,5 @@
 import WorkerCommand from "./WorkerCommand";
-import { ConvertCardInfo } from "../LuaCodeOption";
+import { ConvertInfo } from "../LuaCodeOption";
 
 const commandName = 'convert-card';
 
@@ -9,7 +9,7 @@ export default class ConvertCardCommand extends WorkerCommand {
     public width: number,
     public height: number,
     public palleteLength: number,
-    public metaData: ConvertCardInfo,
+    public metaData: ConvertInfo,
     public command = commandName
   ) { super(); }
 

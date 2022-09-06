@@ -1,12 +1,12 @@
 import WorkerCommand from "./WorkerCommand";
-import { ConvertCardInfo } from "../LuaCodeOption";
+import { ConvertInfo } from "../LuaCodeOption";
 
 const commandName = 'convert-succeed';
 
 export default class ConvertSucceedCommand extends WorkerCommand {
   constructor(
     public rectangleList: Uint32Array[],
-    public metaData: ConvertCardInfo,
+    public metaData: ConvertInfo,
     public command = commandName
   ) { super(); }
 

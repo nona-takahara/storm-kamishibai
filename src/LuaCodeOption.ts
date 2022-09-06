@@ -30,8 +30,14 @@ export function getDefault(): LuaCodeOption {
   };
 }
 
-export type ConvertCardInfo = {
-
+export type ConvertInfo = {
+  offsetListIndex: number;
 }
+
+export type ConvertResultInfo = {
+  finished: number;
+  length: number;
+}
+
 
 export default LuaCodeOption;

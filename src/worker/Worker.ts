@@ -23,8 +23,10 @@ type WorkerData = {
   width: number;
   height: number;
   palleteLength: number;
+  commandStartOffsetListX: number[];
+  commandStartOffsetListY: number[];
+  commandStartOffsetList: boolean[];
   nextConvertCommand: ConvertCardCommand | undefined;
-  convCurrent: ConvertProgress | undefined;
   convRule: LuaCodeOption;
   convData: Uint32Array;
 }
@@ -36,8 +38,10 @@ function defaultWorkerData(): WorkerData {
     width: 0,
     height: 0,
     palleteLength: 0,
+    commandStartOffsetListX: [],
+    commandStartOffsetListY: [],
+    commandStartOffsetList: [],
     nextConvertCommand: undefined,
-    convCurrent: undefined,
     convRule: getDefault(),
     convData: new Uint32Array()
   };
@@ -67,9 +71,15 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     if (ConvertSucceedCommand.is(data)) {
       const hasNext = convertCard();
       
+      workerData.commandStartOffsetList[data.metaData.offsetListIndex] = true;
+
       // 現時点ではこれで問題ないが、おそらくLuaコードの生成はWorkerで行うことになるので、
       // 準備しておく
-      const cmd = ConvertResultCommand.from(data);
+      const cmd = ConvertResultCommand.from(data, { 
+        finished: workerData.commandStartOffsetList.filter((v) => v).length,
+        length: workerData.commandStartOffsetList.length
+      });
+
       postMessage(cmd, cmd.getTransfer());
 
       if (!hasNext) {
@@ -102,11 +112,29 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       workerData.height = data.height; // 画像高さ
 
     } else if (StartConvertCommand.is(data)) {
-      workerData.convCurrent = undefined;
       workerData.convRule = data.settings;
       // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
       workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
       workerData.palleteLength = data.colorPallete.length;
+
+      // 必要な変換コマンドのスタート地点を全部ピックアップ
+      workerData.commandStartOffsetListX = [];
+      for (let i = workerData.convRule.pictureOffsetX;
+        i <= (workerData.width - workerData.convRule.luaCardWidth);
+        i += workerData.convRule.luaCardWidth +  + workerData.convRule.pictureSkipH) {
+          workerData.commandStartOffsetListX.push(i);
+      }
+
+      workerData.commandStartOffsetListY = [];
+      for (let i = workerData.convRule.pictureOffsetY;
+        i <= (workerData.height - workerData.convRule.luaCardHeight);
+        i += workerData.convRule.luaCardHeight +  + workerData.convRule.pictureSkipV) {
+          workerData.commandStartOffsetListY.push(i);
+      }
+
+      workerData.commandStartOffsetList = new Array<boolean>(
+        workerData.commandStartOffsetListX.length * workerData.commandStartOffsetListY.length
+      ).map(() => false);
 
       // 最初のコンバートコマンドを作成して、送信１回目を実施する。
       workerData.nextConvertCommand = makeNextConvertData();
@@ -144,22 +172,19 @@ function convertCard(): boolean {
 }
 
 function makeNextConvertData() {
-  if (workerData.convCurrent === undefined) {
-    workerData.convCurrent = {
-      x: workerData.convRule.pictureOffsetX,
-      y: workerData.convRule.pictureOffsetY,
-    }
-  } else {
-    workerData.convCurrent.y +=
-      workerData.convRule.luaCardHeight + workerData.convRule.pictureSkipV;
-
-    if (workerData.convCurrent.y + workerData.convRule.luaCardHeight >= workerData.height) {
-      workerData.convCurrent.x += workerData.convRule.luaCardWidth + workerData.convRule.pictureSkipH;
-      workerData.convCurrent.y = workerData.convRule.pictureOffsetY;
+  let cx = 0, cy = 0, offsetListIndex = -1;
+  for (let x = 0; x < workerData.commandStartOffsetListX.length; x++) {
+    for (let y = 0; y < workerData.commandStartOffsetListY.length; y++) {
+      if (!workerData.commandStartOffsetList[x + workerData.commandStartOffsetListX.length * y]) {
+        offsetListIndex = x + workerData.commandStartOffsetListX.length * y;
+        cx = workerData.commandStartOffsetListX[x];
+        cy = workerData.commandStartOffsetListY[y];
+        break;
+      }
     }
   }
 
-  if (workerData.convCurrent.x + workerData.convRule.luaCardWidth >= workerData.width) {
+  if (offsetListIndex == -1) {
     return undefined;
   }
 
@@ -167,8 +192,7 @@ function makeNextConvertData() {
   for (let x = 0; x < workerData.convRule.luaCardWidth; x++) {
     for (let y = 0; y < workerData.convRule.luaCardHeight; y++) {
       d[x + y * workerData.convRule.luaCardWidth] =
-        workerData.convData[workerData.convCurrent.x + x +
-        (workerData.convCurrent.y + y) * workerData.width];
+        workerData.convData[cx + x + (cy + y) * workerData.width];
     }
   }
 
@@ -177,5 +201,5 @@ function makeNextConvertData() {
     workerData.convRule.luaCardWidth,
     workerData.convRule.luaCardHeight,
     workerData.palleteLength,
-    {});
+    { offsetListIndex: offsetListIndex });
 }
