@@ -26,6 +26,7 @@ import Color from './Color';
 import FileLoadedCommand from './worker/FileLoadedCommand';
 import WorkerCommand from './worker/WorkerCommand';
 import ConvertResultCommand from './worker/ConvertResultCommand';
+import EndConvertCommand from './worker/EndConvertCommand';
 
 type AppState = {
   imageUrl: string;
@@ -111,6 +112,8 @@ export default class App extends React.Component<any, AppState> {
       this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable });
     } else if (ConvertResultCommand.is(data)) {
       this.setState({ convertProgress: data.metaData.finished / data.metaData.length });
+    } else if (EndConvertCommand.is(data)) {
+      this.setState({ isWorking: false, convertProgress: 1 });
     }
   }
 
@@ -180,6 +183,8 @@ export default class App extends React.Component<any, AppState> {
     }
     const cmd = new StartConvertCommand(this.state.luaCodeOption, u);
     this.getWorker().postMessage(cmd, cmd.getTransfer());
+
+    this.setState({ isWorking: true });
   }
 
   handleStopConvertClick() {
