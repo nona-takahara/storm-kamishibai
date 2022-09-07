@@ -16,17 +16,13 @@ import HelpModal from './ui/HelpModal';
 import AboutModal from './ui/AboutModal';
 import LandingBox from './ui/LandingBox';
 import FinalLuaCode from './gencode/FinalLuaCode';
-import ConvertCardCommand from './worker/ConvertCardCommand';
-import ConvertSucceedCommand from './worker/ConvertSucceedCommand';
-import TerminateConverterCommand from './worker/TerminateConverterCommand';
-import StartConvertCommand from './worker/StartConvertCommand';
-import OpenFileCommand from './worker/OpenFileCommand';
+import WorkerCommand, {
+  ConvertResultCommand, ConvertSucceedCommand, FileLoadedCommand, OpenFileCommand,
+  StartConvertCommand, TerminateConverterCommand, ConvertCardCommand, EndConvertCommand
+} from "./worker/WorkerCommand";
 import { fileToU8Image } from './PictureFileReader';
 import Color from './Color';
-import FileLoadedCommand from './worker/FileLoadedCommand';
-import WorkerCommand from './worker/WorkerCommand';
-import ConvertResultCommand from './worker/ConvertResultCommand';
-import EndConvertCommand from './worker/EndConvertCommand';
+
 
 type AppState = {
   imageUrl: string;

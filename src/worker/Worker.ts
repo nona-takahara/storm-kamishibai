@@ -1,14 +1,9 @@
-import WorkerCommand from "./WorkerCommand";
+import WorkerCommand, {
+  ConvertResultCommand, ConvertSucceedCommand, FileLoadedCommand, OpenFileCommand,
+  StartConvertCommand, TerminateConverterCommand, ConvertCardCommand, EndConvertCommand
+} from "./WorkerCommand";
 import LuaCodeOption, { getDefault } from "../LuaCodeOption";
-import ConvertResultCommand from "./ConvertResultCommand";
-import ConvertSucceedCommand from "./ConvertSucceedCommand";
-import FileLoadedCommand from "./FileLoadedCommand";
-import OpenFileCommand from "./OpenFileCommand";
-import StartConvertCommand from "./StartConvertCommand";
-import TerminateConverterCommand from "./TerminateConverterCommand";
-import ConvertCardCommand from "./ConvertCardCommand";
 import Color from "../Color";
-import EndConvertCommand from "./EndConvertCommand";
 
 export default undefined;
 

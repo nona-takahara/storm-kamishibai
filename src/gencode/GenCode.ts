@@ -1,7 +1,7 @@
-import WorkerCommand from '../worker/WorkerCommand';
+import WorkerCommand, {
+  ConvertSucceedCommand, ConvertCardCommand
+} from "../worker/WorkerCommand";
 import Vector2D from '../Vector2D';
-import ConvertCardCommand from '../worker/ConvertCardCommand';
-import ConvertSucceedCommand from '../worker/ConvertSucceedCommand';
 
 export default undefined;
 
