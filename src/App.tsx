@@ -42,7 +42,7 @@ type AppState = {
   subWorker?: Worker;
   isWorking: boolean;
 
-  luaCodes?: string[];
+  luaCodes?: LuaCodeSnippet[];
   generatedCode: FinalLuaCode;
 
   luaCodeOption: LuaCodeOption;
@@ -112,11 +112,19 @@ export default class App extends React.Component<any, AppState> {
     } else if (ConvertResultCommand.is(data)) {
       this.setState((state) => {
         const l = state.luaCodes || [];
-        l[data.metaData.offsetListIndex] = data.luaList.join('');
+        l[data.metaData.offsetListIndex] = new LuaCodeSnippet(
+          data.luaList.map(
+            (v, i) => `C(${state.colorSet[i].convertedR},${state.colorSet[i].convertedG},${state.colorSet[i].convertedB})`+v
+          ), this.state.luaCodeOption
+        );
         return { ...state, luaCodes: l, convertProgress: data.metaData.finished / data.metaData.length };
       });
     } else if (EndConvertCommand.is(data)) {
-      this.setState({ isWorking: false, convertProgress: 1 });
+      this.setState((state) => {
+        const final = FinalizeLuaCode(state.luaCodes || [], state.luaCodeOption);
+
+        return { ...state, generatedCode: final, isWorking: false, convertProgress: 1 }
+      });
     }
   }
 
