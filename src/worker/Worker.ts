@@ -65,18 +65,35 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   function commandFromSubWorker(data: WorkerCommand): boolean {
     if (ConvertSucceedCommand.is(data)) {
       const hasNext = convertCard();
-      
-      workerData.commandStartOffsetList[data.metaData.offsetListIndex] = true;
 
-      // 現時点ではこれで問題ないが、おそらくLuaコードの生成はWorkerで行うことになるので、
-      // 準備しておく
-      const cmd = ConvertResultCommand.from(data, { 
-        offsetListIndex: data.metaData.offsetListIndex,
-        finished: workerData.commandStartOffsetList.filter((v) => v).length,
-        length: workerData.commandStartOffsetList.length
-      });
+      if (!workerData.commandStartOffsetList[data.metaData.offsetListIndex]) {
+        workerData.commandStartOffsetList[data.metaData.offsetListIndex] = true;
 
-      postMessage(cmd, cmd.getTransfer());
+        const luaList = new Array<string>(data.rectangleList.length);
+        const vcmp = workerData.convRule.luaVCompress, hcmp = workerData.convRule.luaHCompress;
+        for (let j = 0; j < data.rectangleList.length; j++) {
+          let s = '';
+          const dd = data.rectangleList[j];
+          for (let i = 0; i < dd.length; i += 4) {
+            if (dd[i + 2] == 1 && vcmp) {
+              s += `V(${dd[i]},${dd[i + 1]},${dd[i + 3]})`
+            } else if (dd[i + 3] == 1 && hcmp) {
+              s += `H(${dd[i]},${dd[i + 1]},${dd[i + 2]})`
+            } else {
+              s += `R(${dd[i]},${dd[i + 1]},${dd[i + 2]},${dd[i + 3]})`
+            }
+          }
+          luaList[j] = s;
+        }
+
+        const cmd = new ConvertResultCommand(luaList, {
+          offsetListIndex: data.metaData.offsetListIndex,
+          finished: workerData.commandStartOffsetList.filter((v) => v).length,
+          length: workerData.commandStartOffsetList.length
+        });
+
+        postMessage(cmd, cmd.getTransfer());
+      }
 
       if (!hasNext) {
         // Resultコマンドで終了の旨を送信する
@@ -118,14 +135,14 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       for (let i = workerData.convRule.pictureOffsetX;
         i <= (workerData.width - workerData.convRule.luaCardWidth);
         i += workerData.convRule.luaCardWidth + workerData.convRule.pictureSkipH) {
-          workerData.commandStartOffsetListX.push(i);
+        workerData.commandStartOffsetListX.push(i);
       }
 
       workerData.commandStartOffsetListY = [];
       for (let i = workerData.convRule.pictureOffsetY;
         i <= (workerData.height - workerData.convRule.luaCardHeight);
         i += workerData.convRule.luaCardHeight + workerData.convRule.pictureSkipV) {
-          workerData.commandStartOffsetListY.push(i);
+        workerData.commandStartOffsetListY.push(i);
       }
 
       workerData.commandStartOffsetList = new Array<boolean>(

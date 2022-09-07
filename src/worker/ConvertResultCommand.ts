@@ -6,14 +6,11 @@ const commandName = 'convert-result';
 
 export default class ConvertResultCommand extends WorkerCommand {
   constructor(
-    public rectangleList: Uint32Array[],
+    public luaList: string[],
     public metaData: ConvertResultInfo,
     public command = commandName
   ) { super(); }
 
-  static from(obj: ConvertSucceedCommand, meta: ConvertResultInfo) {
-    return new ConvertResultCommand(obj.rectangleList, meta);
-  }
-  getTransfer() { return this.rectangleList.map((v) => v.buffer); }
+  getTransfer() { return []; }
   static is(data: WorkerCommand): data is ConvertResultCommand { return data.command === commandName; }
 }
