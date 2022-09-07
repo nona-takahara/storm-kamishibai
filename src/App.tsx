@@ -114,7 +114,14 @@ export default class App extends React.Component<any, AppState> {
         const l = state.luaCodes || [];
         l[data.metaData.offsetListIndex] = new LuaCodeSnippet(
           data.luaList.map(
-            (v, i) => `C(${state.colorSet[i].convertedR},${state.colorSet[i].convertedG},${state.colorSet[i].convertedB})`+v
+            (v, i) => {
+              const c = state.colorSet[state.orderTable[i]];
+              if (v !== '') {
+                return `C(${c.convertedR},${c.convertedG},${c.convertedB})` + v;
+              } else {
+                return '';
+              }
+            }
           ), this.state.luaCodeOption
         );
         return { ...state, luaCodes: l, convertProgress: data.metaData.finished / data.metaData.length };
@@ -211,12 +218,13 @@ export default class App extends React.Component<any, AppState> {
 
   handleChangeSettings(opt: LuaCodeOption) {
     this.setState((state) => {
+      let ss: LuaCodeOption = state.luaCodeOption;
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
-          (state.luaCodeOption as any)[key] = (opt as any)[key];
-        }
+          (ss as any)[key] = (opt as any)[key];
+        } 
       }
-      return state;
+      return { ...state, luaCodeOption: ss };
     });
   }
 

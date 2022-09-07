@@ -188,8 +188,8 @@ function makeNextConvertData() {
   let cx = 0, cy = 0, offsetListIndex = -1;
   for (let x = 0; x < workerData.commandStartOffsetListX.length; x++) {
     for (let y = 0; y < workerData.commandStartOffsetListY.length; y++) {
-      if (!workerData.commandStartOffsetList[x + workerData.commandStartOffsetListX.length * y]) {
-        offsetListIndex = x + workerData.commandStartOffsetListX.length * y;
+      if (!workerData.commandStartOffsetList[y + workerData.commandStartOffsetListY.length * x]) {
+        offsetListIndex = y + workerData.commandStartOffsetListY.length * x;
         cx = workerData.commandStartOffsetListX[x];
         cy = workerData.commandStartOffsetListY[y];
         break;

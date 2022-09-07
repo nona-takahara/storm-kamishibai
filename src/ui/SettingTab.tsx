@@ -3,7 +3,7 @@ import { Card, InputGroup, Row, Col, Button, FormControl, Stack } from "react-bo
 import LuaCodeOption from "../LuaCodeOption";
 
 export type SettingTabProps = {
-  changeSettings: Function;
+  changeSettings: (v: LuaCodeOption | any)=> any;
   luaCodeOption: LuaCodeOption;
 }
 
@@ -29,27 +29,27 @@ function W`, luaCodeTemplateB: '' };
   }
 
   handleChangeWidth(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ width: Number(evt.target.value) });
+    this.props.changeSettings({ luaCardWidth: Number(evt.target.value) });
   }
 
   handleChangeHeight(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ height: Number(evt.target.value) });
+    this.props.changeSettings({ luaCardHeight: Number(evt.target.value) });
   }
 
   handleStartWithChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ startWith: Number(evt.target.value) });
+    this.props.changeSettings({ luaCardIndexStartWith: Number(evt.target.value) });
   }
 
   handleChannelChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ readChannel: Number(evt.target.value) });
+    this.props.changeSettings({ luaReadChannel: Number(evt.target.value) });
   }
 
   handleOffsetXChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ offsetX: Number(evt.target.value) });
+    this.props.changeSettings({ luaOffsetX: Number(evt.target.value) });
   }
 
   handleOffsetYChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ offsetY: Number(evt.target.value) });
+    this.props.changeSettings({ luaOffsetY: Number(evt.target.value) });
   }
 
   render() {
@@ -65,7 +65,7 @@ function W`, luaCodeTemplateB: '' };
               <FormControl
                 type="number"
                 defaultValue={this.props.luaCodeOption.luaCardWidth}
-                onChange={this.handleChangeHeight} />
+                onChange={this.handleChangeWidth} />
               <InputGroup.Text>&#xd7;</InputGroup.Text>
               <InputGroup.Text>高さ</InputGroup.Text>
               <FormControl
