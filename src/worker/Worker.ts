@@ -1,16 +1,11 @@
-import WorkerCommand from "./WorkerCommand";
+import WorkerCommand, {
+  ConvertResultCommand, ConvertSucceedCommand, FileLoadedCommand, OpenFileCommand,
+  StartConvertCommand, TerminateConverterCommand, ConvertCardCommand, EndConvertCommand
+} from "./WorkerCommand";
 import LuaCodeOption, { getDefault } from "../LuaCodeOption";
-import ConvertResultCommand from "./ConvertResultCommand";
-import ConvertSucceedCommand from "./ConvertSucceedCommand";
-import FileLoadedCommand from "./FileLoadedCommand";
-import OpenFileCommand from "./OpenFileCommand";
-import StartConvertCommand from "./StartConvertCommand";
-import TerminateConverterCommand from "./TerminateConverterCommand";
-import ConvertCardCommand from "./ConvertCardCommand";
 import Color from "../Color";
-import EndConvertCommand from "./EndConvertCommand";
 
-export default {}
+export default undefined;
 
 type WorkerData = {
   subWorker: Worker | undefined;
@@ -75,9 +70,9 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
           let s = '';
           const dd = data.rectangleList[j];
           for (let i = 0; i < dd.length; i += 4) {
-            if (dd[i + 2] == 1 && vcmp) {
+            if (dd[i + 2] === 1 && vcmp) {
               s += `V(${dd[i]},${dd[i + 1]},${dd[i + 3]})`
-            } else if (dd[i + 3] == 1 && hcmp) {
+            } else if (dd[i + 3] === 1 && hcmp) {
               s += `H(${dd[i]},${dd[i + 1]},${dd[i + 2]})`
             } else {
               s += `R(${dd[i]},${dd[i + 1]},${dd[i + 2]},${dd[i + 3]})`
@@ -197,7 +192,7 @@ function makeNextConvertData() {
     }
   }
 
-  if (offsetListIndex == -1) {
+  if (offsetListIndex === -1) {
     return undefined;
   }
 

@@ -1,9 +1,9 @@
-import WorkerCommand from '../worker/WorkerCommand';
+import WorkerCommand, {
+  ConvertSucceedCommand, ConvertCardCommand
+} from "../worker/WorkerCommand";
 import Vector2D from '../Vector2D';
-import ConvertCardCommand from '../worker/ConvertCardCommand';
-import ConvertSucceedCommand from '../worker/ConvertSucceedCommand';
 
-export default {}
+export default undefined;
 
 // eslint-disable-next-line
 const ctx: Worker = self as any;
@@ -37,11 +37,10 @@ function convertLayer(picture: Uint32Array, w: number, h: number, targetColor: n
 
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const f: boolean = (canDraw(x, y))
+      const ff: boolean = (canDraw(x, y))
         && ((x === 0 || cannotDraw(x - 1, y)) || (y === 0 || cannotDraw(x, y - 1)));
-      if (f) {
+      if (ff) {
         let tx: number, ty: number, ox!: number | undefined;
-        let f = true;
         for (ty = y; ty <= h; ty++) {
           if (ty !== h) {
             for (tx = x; tx < w && canDraw(tx, ty); tx++);
@@ -65,7 +64,6 @@ function convertLayer(picture: Uint32Array, w: number, h: number, targetColor: n
           }
 
           if (tx < x) {
-            f = false;
             break;
           }
         }
