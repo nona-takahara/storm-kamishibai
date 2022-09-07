@@ -107,7 +107,6 @@ export default class App extends React.Component<any, AppState> {
       const colorSet = data.colorPallete.map((v) => new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw));
       const orderTable = colorSet.map((v, i) => i);
       const drawFlagTable = colorSet.map(() => false);
-      console.log(orderTable);
       
       this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable });
     } else if (ConvertResultCommand.is(data)) {
