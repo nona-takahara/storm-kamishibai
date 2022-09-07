@@ -1,6 +1,5 @@
 import WorkerCommand from "./WorkerCommand";
-import { ConvertInfo, ConvertResultInfo } from "../LuaCodeOption";
-import ConvertSucceedCommand from "./ConvertSucceedCommand";
+import { ConvertResultInfo } from "../LuaCodeOption";
 
 const commandName = 'convert-result';
 
