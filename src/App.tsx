@@ -42,6 +42,7 @@ type AppState = {
   subWorker?: Worker;
   isWorking: boolean;
 
+  needReconvert: boolean;
   luaCodes?: LuaCodeSnippet[];
   generatedCode: FinalLuaCode;
 
@@ -66,7 +67,7 @@ export default class App extends React.Component<any, AppState> {
     this.state = {
       convertProgress: 0, colorSet: [], orderTable: [], drawFlagTable: [], isWorking: false,
       generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: '',
-      imageUrl: '', width: 0, height: 0
+      imageUrl: '', width: 0, height: 0, needReconvert: false
     };
   }
 
@@ -75,7 +76,7 @@ export default class App extends React.Component<any, AppState> {
     this.state.worker?.terminate();
     const _worker = new Worker(new URL('./worker/Worker.ts', import.meta.url));
     _worker.onmessage = this.handleWorkerMessage.bind(this);
-    this.setState({worker: _worker});
+    this.setState({ worker: _worker });
     return _worker;
   }
 
@@ -90,14 +91,14 @@ export default class App extends React.Component<any, AppState> {
       if (!_subworker) {
         _subworker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
         _subworker.onmessage = this.handleWorkerMessage.bind(this);
-        this.setState({subWorker: _subworker});
+        this.setState({ subWorker: _subworker });
       }
       const ndata = ConvertCardCommand.from(data);
       _subworker.postMessage(ndata, ndata.getTransfer());
 
     } else if (TerminateConverterCommand.is(data)) {
       this.state.subWorker?.terminate();
-      this.setState({subWorker: undefined});
+      this.setState({ subWorker: undefined });
 
     } else if (ConvertSucceedCommand.is(data)) {
       const ndata = ConvertSucceedCommand.from(data);
@@ -107,8 +108,8 @@ export default class App extends React.Component<any, AppState> {
       const colorSet = data.colorPallete.map((v) => new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw));
       const orderTable = colorSet.map((v, i) => i);
       const drawFlagTable = colorSet.map(() => false);
-      
-      this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable });
+
+      this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable, needReconvert: true });
     } else if (ConvertResultCommand.is(data)) {
       this.setState((state) => {
         const l = state.luaCodes || [];
@@ -130,7 +131,7 @@ export default class App extends React.Component<any, AppState> {
       this.setState((state) => {
         const final = FinalizeLuaCode(state.luaCodes || [], state.luaCodeOption);
 
-        return { ...state, generatedCode: final, isWorking: false, convertProgress: 1 }
+        return { ...state, generatedCode: final, isWorking: false, convertProgress: 1, needReconvert: false }
       });
     }
   }
@@ -195,14 +196,19 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleStartConvertClick() {
-    const u = new Uint32Array(this.state.orderTable.length);
-    for (let i = 0; i < this.state.orderTable.length; i++) {
-      u[i] = this.state.colorSet[this.state.orderTable[i]].raw || 0;
-    }
-    const cmd = new StartConvertCommand(this.state.luaCodeOption, u);
-    this.getWorker().postMessage(cmd, cmd.getTransfer());
-
-    this.setState({ isWorking: true });
+    this.setState((state) => {
+      if (state.needReconvert) {
+        const u = new Uint32Array(this.state.orderTable.length);
+        for (let i = 0; i < this.state.orderTable.length; i++) {
+          u[i] = this.state.colorSet[this.state.orderTable[i]].raw || 0;
+        }
+        const cmd = new StartConvertCommand(this.state.luaCodeOption, u);
+        this.getWorker().postMessage(cmd, cmd.getTransfer());
+        return { ...state, isWorking: true };
+      } else {
+        return state;
+      }
+    });
   }
 
   handleStopConvertClick() {
@@ -216,15 +222,15 @@ export default class App extends React.Component<any, AppState> {
     this.setState({ modalShow: '' });
   }
 
-  handleChangeSettings(opt: LuaCodeOption) {
+  handleChangeSettings(opt: LuaCodeOption, needReconvert: boolean = false) {
     this.setState((state) => {
       let ss: LuaCodeOption = state.luaCodeOption;
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
           (ss as any)[key] = (opt as any)[key];
-        } 
+        }
       }
-      return { ...state, luaCodeOption: ss };
+      return { ...state, luaCodeOption: ss, needReconvert: needReconvert || state.needReconvert };
     });
   }
 
