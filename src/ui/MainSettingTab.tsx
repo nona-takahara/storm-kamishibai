@@ -1,11 +1,14 @@
-import React from "react";
-import { Button, ButtonGroup, Card, Form, ListGroup, Stack } from "react-bootstrap";
+import React, { ChangeEvent } from "react";
+import { Button, ButtonGroup, Card, Form, FormControl, InputGroup, ListGroup, Stack, Tab } from "react-bootstrap";
 import Color from "../Color";
+import LuaCodeOption from "../LuaCodeOption";
 import Lut from "../Lut";
 import ColorBox from "./ColorBox";
 import ColorBoxOverlays from "./ColorBoxOverlays";
 
-export type ColorListProps = {
+export type MainSettingTabProps = {
+  changeSettings: (v: LuaCodeOption | any, needReconvert?: boolean) => any;
+  luaCodeOption: LuaCodeOption;
   colorSet?: Array<Color>;
   colorOrder: number[];
   undrawFlag: boolean[];
@@ -15,19 +18,33 @@ export type ColorListProps = {
   onMoveDownClick: Function;
 }
 
-export default class ColorList extends React.Component<ColorListProps> {
+export default class MainSettingTab extends React.Component<MainSettingTabProps> {
+  constructor(props: MainSettingTabProps) {
+    super(props);
+
+    this.handleChangeWidth = this.handleChangeWidth.bind(this);
+    this.handleChangeHeight = this.handleChangeHeight.bind(this);
+  }
+
+  handleChangeWidth(evt: ChangeEvent<any>) {
+    this.props.changeSettings({ luaCardWidth: Number(evt.target.value) }, true);
+  }
+
+  handleChangeHeight(evt: ChangeEvent<any>) {
+    this.props.changeSettings({ luaCardHeight: Number(evt.target.value) }, true);
+  }
+
+
   handleColorChange(index: number, evt: React.ChangeEvent) {
     this.props.onColorChange(index, (evt.target as any).value);
   }
 
-  handleMoveUpClick(index: number, evt: React.MouseEvent)
-  {
+  handleMoveUpClick(index: number, evt: React.MouseEvent) {
     evt.preventDefault();
     this.props.onMoveUpClick(index);
   }
 
-  handleMoveDownClick(index: number, evt: React.MouseEvent)
-  {
+  handleMoveDownClick(index: number, evt: React.MouseEvent) {
     evt.preventDefault();
     this.props.onMoveDownClick(index);
   }
@@ -68,16 +85,32 @@ export default class ColorList extends React.Component<ColorListProps> {
       }
     }
     return (
-      <Card>
-        <Card.Header>
-          色描画順序設定
-        </Card.Header>
-        <Card.Body className='m-0 p-0'>
-          <ListGroup variant='flush'>
-            {k}
-          </ListGroup>
-        </Card.Body>
-      </Card>);
+      <Stack gap={2}>
+        <InputGroup>
+          <InputGroup.Text>幅</InputGroup.Text>
+          <FormControl
+            type="number"
+            defaultValue={this.props.luaCodeOption.luaCardWidth}
+            onChange={this.handleChangeWidth} />
+          <InputGroup.Text>&#xd7;</InputGroup.Text>
+          <InputGroup.Text>高さ</InputGroup.Text>
+          <FormControl
+            type="number"
+            defaultValue={this.props.luaCodeOption.luaCardHeight}
+            onChange={this.handleChangeHeight} />
+        </InputGroup>
+        <Card>
+          <Card.Header>
+            色の重ね順序
+          </Card.Header>
+          <Card.Body className="p-0">
+            <ListGroup variant='flush'>
+              {k}
+            </ListGroup>
+          </Card.Body>
+        </Card>
+      </Stack>
+    );
   }
 }
 

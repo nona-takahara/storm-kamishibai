@@ -1,30 +1,51 @@
 import React from 'react';
-import { Container, Navbar, Row, Col, Stack, Nav } from 'react-bootstrap';
+import { Container, Navbar, Row, Col, Stack, Nav, Tabs, Tab, Card } from 'react-bootstrap';
 
-import SettingTab, { SettingTabProps } from "./SettingTab";
-import ColorList, { ColorListProps } from "./ColorList";
+import BasicSettingTab, { BasicSettingTabProps } from "./BasicSettingTab";
+import MainSettingTab, { MainSettingTabProps } from "./MainSettingTab";
 
 type SettingsProps = {
   isVisible: boolean;
-  tab: SettingTabProps;
-  colorList: ColorListProps;
+  main: MainSettingTabProps;
 }
 
 export default function ConvertBox(props: SettingsProps) {
   return props.isVisible && (
-  <Stack gap={2}>
-    <SettingTab
-      changeSettings={props.tab.changeSettings}
-      luaCodeOption={props.tab.luaCodeOption}
-    />
-    <ColorList
-      colorSet={props.colorList.colorSet}
-      colorOrder={props.colorList.colorOrder}
-      undrawFlag={props.colorList.undrawFlag}
-      onDrawFlagChange={props.colorList.onDrawFlagChange}
-      onMoveUpClick={props.colorList.onMoveUpClick}
-      onMoveDownClick={props.colorList.onMoveDownClick}
-      onColorChange={props.colorList.onColorChange}
-  />
-</Stack>) || <></>;
+    <Tab.Container>
+      <Card>
+        <Card.Header>
+          <Nav variant="tabs" >
+            <Nav.Item>
+              <Nav.Link eventKey="reconvsetting">変換オプション</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="mainsetting">描画オプション</Nav.Link>
+            </Nav.Item>
+          </Nav>
+        </Card.Header>
+      <Card.Body>
+      <Tab.Content>
+      <Tab.Pane eventKey="reconvsetting">
+        <MainSettingTab
+          changeSettings={props.main.changeSettings}
+          luaCodeOption={props.main.luaCodeOption}
+          colorSet={props.main.colorSet}
+          colorOrder={props.main.colorOrder}
+          undrawFlag={props.main.undrawFlag}
+          onDrawFlagChange={props.main.onDrawFlagChange}
+          onMoveUpClick={props.main.onMoveUpClick}
+          onMoveDownClick={props.main.onMoveDownClick}
+          onColorChange={props.main.onColorChange}
+        />
+      </Tab.Pane>
+      <Tab.Pane eventKey="mainsetting">
+        <BasicSettingTab
+          changeSettings={props.main.changeSettings}
+          luaCodeOption={props.main.luaCodeOption}
+        />
+      </Tab.Pane>
+      </Tab.Content>
+      </Card.Body>
+      </Card>
+    </Tab.Container>) || <></>;
 }

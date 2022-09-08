@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Navbar, Row, Col, Stack, Nav } from 'react-bootstrap';
 
 import FileSelector from './ui/FileSelector';
-import ColorList from './ui/ColorList';
+import MainSettingTab from './ui/MainSettingTab';
 import LuaCode from './ui/LuaCode';
 import ConvertBox from './ui/ConvertBox';
 
@@ -276,11 +276,9 @@ export default class App extends React.Component<any, AppState> {
                 isVisible={this.state.imageUrl === ''} />
               <Settings
                 isVisible={this.state.imageUrl !== ''}
-                tab={{
+                main={{
                   changeSettings: this.handleChangeSettings,
-                  luaCodeOption: this.state.luaCodeOption
-                }}
-                colorList={{
+                  luaCodeOption: this.state.luaCodeOption,
                   colorSet: this.state.colorSet,
                   colorOrder: this.state.orderTable,
                   undrawFlag: this.state.drawFlagTable,
