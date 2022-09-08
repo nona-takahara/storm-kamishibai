@@ -5,6 +5,7 @@ import LuaCodeOption from "../LuaCodeOption";
 import Lut from "../Lut";
 import ColorBox from "./ColorBox";
 import ColorBoxOverlays from "./ColorBoxOverlays";
+import ColorListItem from "./ColorListItem";
 
 export type MainSettingTabProps = {
   changeSettings: (v: LuaCodeOption | any, needReconvert?: boolean) => any;
@@ -60,28 +61,17 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
       for (let i = 0; i < this.props.colorSet.length; i++) {
         const v = this.props.colorSet[i];
         k[this.props.colorOrder[i]] = (
-          <ListGroup.Item key={i} variant={this.props.undrawFlag[i] ? 'secondary' : ''}>
-            <Stack direction='horizontal' gap={2}>
-              <Stack direction='horizontal' gap={2}>
-                <ColorBoxOverlays r={v.originalR} g={v.originalG} b={v.originalB} />
-                <div>→</div>
-                <ColorBox r={Lut[v.convertedR]} g={Lut[v.convertedG]} b={Lut[v.convertedB]} />
-              </Stack>
-              <Form.Control
-                type='text'
-                defaultValue={rgb2hex(v.convertedR, v.convertedG, v.convertedB)}
-                onChange={(e) => this.handleColorChange(i, e)}
-              />
-              <div className='ms-auto' />
-              <Form.Check className='ms-auto' type='switch' onChange={(e) => this.handleDrawFlagChange(i, e)} checked={!this.props.undrawFlag[i]} />
-              <div className='vr' />
-              <ButtonGroup>
-                <Button variant='secondary' size='sm' onClick={(e) => this.handleMoveUpClick(i, e)} disabled={this.props.colorOrder[i] === 0}>↑</Button>
-                <Button variant='secondary' size='sm' onClick={(e) => this.handleMoveDownClick(i, e)} disabled={this.props.colorOrder[i] === (this.props.colorSet.length - 1)}>↓</Button>
-              </ButtonGroup>
-            </Stack>
-          </ListGroup.Item>
-        );
+          <ListGroup.Item key={this.props.colorOrder[i]} variant={this.props.undrawFlag[i] ? 'secondary' : ''}>
+            <ColorListItem
+              order={this.props.colorOrder[i]}
+              orderListLength={this.props.colorOrder.length}
+              undrawFlag={this.props.undrawFlag[i]}
+              color={this.props.colorSet[i]}
+              onColorChange={(e) => this.handleColorChange(i, e)}
+              onDrawFlagChange={(e) => this.handleDrawFlagChange(i, e)}
+              onMoveUpClick={(e) => this.handleMoveUpClick(i, e)}
+              onMoveDownClick={(e) => this.handleMoveDownClick(i, e)}
+            /></ListGroup.Item>);
       }
     }
     return (
@@ -114,8 +104,3 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
   }
 }
 
-function rgb2hex(...rgb: Array<number>) {
-  return "#" + rgb.map(function (value) {
-    return ("0" + value.toString(16)).slice(-2);
-  }).join("");
-}
