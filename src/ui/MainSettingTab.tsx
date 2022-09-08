@@ -61,7 +61,7 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
       for (let i = 0; i < this.props.colorSet.length; i++) {
         const v = this.props.colorSet[i];
         k[this.props.colorOrder[i]] = (
-          <ListGroup.Item key={this.props.colorOrder[i]} variant={this.props.undrawFlag[i] ? 'secondary' : ''}>
+          <ListGroup.Item key={i} variant={this.props.undrawFlag[i] ? 'secondary' : ''}>
             <ColorListItem
               order={this.props.colorOrder[i]}
               orderListLength={this.props.colorOrder.length}
