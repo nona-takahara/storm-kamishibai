@@ -11,7 +11,7 @@ type SettingsProps = {
 
 export default function ConvertBox(props: SettingsProps) {
   return props.isVisible && (
-    <Tab.Container>
+    <Tab.Container defaultActiveKey="reconvsetting">
       <Card>
         <Card.Header>
           <Nav variant="tabs" >
