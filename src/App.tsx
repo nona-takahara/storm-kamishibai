@@ -64,6 +64,7 @@ export default class App extends React.Component<any, AppState> {
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
     this.handleChangeSettings = this.handleChangeSettings.bind(this);
+    this.handleApplySettingsClick = this.handleApplySettingsClick.bind(this);
     this.state = {
       convertProgress: 0, colorSet: [], orderTable: [], transparentStartOrder: 0, isWorking: false,
       generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: '',
@@ -119,6 +120,7 @@ export default class App extends React.Component<any, AppState> {
       this.setState((state) => {
         return { ...state, isWorking: false, convertProgress: 1, needReconvert: false }
       });
+      this.handleApplySettingsClick();
     }
   }
 
@@ -222,6 +224,17 @@ export default class App extends React.Component<any, AppState> {
     const cmd = new TerminateConverterCommand();
     this.getWorker().postMessage(cmd, cmd.getTransfer());
     this.setState({ isWorking: false });
+  }
+
+  handleApplySettingsClick() {
+    this.setState((state) => {
+      const u = new Array<Color>(state.orderTable.length);
+      for (let i = 0; i < state.orderTable.length; i++) {
+        u[state.orderTable[i]] = state.colorSet[i];
+      }
+      const final = FinalizeLuaCode(state.luaCodes || [], u,  state.luaCodeOption);
+      return { ...state, generatedCode: final };
+    });
   }
 
   // 対応済み

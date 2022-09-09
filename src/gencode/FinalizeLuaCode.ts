@@ -1,8 +1,9 @@
+import Color from "../Color";
 import LuaCodeOption from "../LuaCodeOption";
 import LuaCodeSnippet from "../LuaCodeSnippet";
 import FinalLuaCode from "./FinalLuaCode";
 
-export default function FinalizeLuaCode(sn: Array<LuaCodeSnippet>, opt: LuaCodeOption): FinalLuaCode {
+export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], opt: LuaCodeOption): FinalLuaCode {
   let ph = {
     offsetX: (opt.luaOffsetX === 0) ? '' : `+${opt.luaOffsetX}`,
     offsetY: (opt.luaOffsetY === 0) ? '' : `+${opt.luaOffsetY}`,
@@ -18,12 +19,16 @@ function onDraw()S=screen C=S.setColor`;
   let haveOverRun = false;
   let haveColorDiv = false;
 
-  let r: string [] = [];
+  let r: string[] = [];
   let blockLP = '';
   for (let i = 0; i < sn.length; i++) {
     const v = sn[i];
-    const k = v.layers.reverse();
-    
+    const k = v.map((vv, ix) => {
+      if (vv !=='') {
+        return `C(${orderdColor[ix].convertedR},${orderdColor[ix].convertedG},${orderdColor[ix].convertedB})${vv}`;
+      } else { return '';}
+    }).reverse();
+
     let frameLP = frame(i + opt.luaCardIndexStartWith, k.join(''));
     let frameSize = bytelen(frame(i + opt.luaCardIndexStartWith, ''));
 
