@@ -37,26 +37,31 @@ function convertLayer(picture: Uint32Array, w: number, h: number, targetColor: n
 
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
+      // 矩形の左上頂点または左の辺または上の辺ならば
       const ff: boolean = (canDraw(x, y))
         && ((x === 0 || cannotDraw(x - 1, y)) || (y === 0 || cannotDraw(x, y - 1)));
       if (ff) {
         let tx: number, ty: number, ox!: number | undefined;
+        // 矩形を調査する（右に伸ばす）
         for (ty = y; ty <= h; ty++) {
+          // 画像下辺かどうか
           if (ty !== h) {
+            // 基準点から右にリーチする限界を調査
             for (tx = x; tx < w && canDraw(tx, ty); tx++);
             tx--;
           } else {
-            tx = 0;
+            tx = -1;
           }
 
-          // この処理形態のせいで、うまく処理できなかったのが2つ続く……
+          // 初回調査用の設定
           if (ox === undefined) {
             ox = tx;
           }
 
+          // もし、前回よりx座標が手前に現れるならば
           if (ox > tx) {
-            // 「不合格が出なければ記録する」ために、
-            // 「不合格ならtrue」を返すようにする
+            // 前回到達地点について調査：どの矩形からもはみ出る場合は
+            // 矩形情報を追加
             if (!rectangleMatrix[indexer(ox, ty - 1)].some((e) => x > e.x && y > e.y)) {
               rectangleMatrix[indexer(ox, ty - 1)].push(new Vector2D(x, y));
             }
