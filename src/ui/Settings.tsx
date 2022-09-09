@@ -31,7 +31,7 @@ export default function ConvertBox(props: SettingsProps) {
           luaCodeOption={props.main.luaCodeOption}
           colorSet={props.main.colorSet}
           colorOrder={props.main.colorOrder}
-          undrawFlag={props.main.undrawFlag}
+          transparentStartOrder={props.main.transparentStartOrder}
           onDrawFlagChange={props.main.onDrawFlagChange}
           onMoveUpClick={props.main.onMoveUpClick}
           onMoveDownClick={props.main.onMoveDownClick}

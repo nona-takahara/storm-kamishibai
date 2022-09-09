@@ -35,7 +35,7 @@ type AppState = {
 
   colorSet: Color[];
   orderTable: number[];
-  drawFlagTable: boolean[];
+  transparentStartOrder: number;
 
   convertProgress: number;
   worker?: Worker;
@@ -57,15 +57,15 @@ export default class App extends React.Component<any, AppState> {
     this.handleFileChange = this.handleFileChange.bind(this);
     this.handleOnDrawChange = this.handleOnDrawChange.bind(this);
     this.handleOnMoveUpClick = this.handleOnMoveUpClick.bind(this);
-    this.handleOnMoveDownClick = this.handleOnMoveDownClick.bind(this);
-    this.handleOnColorChange = this.handleOnColorChange.bind(this);
+    this.handleOnMoveDownClick = this.handleOnMoveDownClick.bind(this);    
+    this.handleOnColorChange = this.handleOnColorChange.bind(this);    
     this.handleStartConvertClick = this.handleStartConvertClick.bind(this);
     this.handleStopConvertClick = this.handleStopConvertClick.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
     this.handleChangeSettings = this.handleChangeSettings.bind(this);
     this.state = {
-      convertProgress: 0, colorSet: [], orderTable: [], drawFlagTable: [], isWorking: false,
+      convertProgress: 0, colorSet: [], orderTable: [], transparentStartOrder: 0, isWorking: false,
       generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: '',
       imageUrl: '', width: 0, height: 0, needReconvert: false
     };
@@ -107,9 +107,8 @@ export default class App extends React.Component<any, AppState> {
     } else if (FileLoadedCommand.is(data)) {
       const colorSet = data.colorPallete.map((v) => new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw));
       const orderTable = colorSet.map((v, i) => i);
-      const drawFlagTable = colorSet.map(() => false);
 
-      this.setState({ colorSet: colorSet, orderTable: orderTable, drawFlagTable: drawFlagTable, needReconvert: true });
+      this.setState({ colorSet: colorSet, orderTable: orderTable, transparentStartOrder: orderTable.length, needReconvert: true });
     } else if (ConvertResultCommand.is(data)) {
       this.setState((state) => {
         const l = state.luaCodes || [];
@@ -166,29 +165,51 @@ export default class App extends React.Component<any, AppState> {
 
   // 未チェック
   handleOnDrawChange(colorIndex: number, drawFlag: boolean) {
-    let k = this.state.drawFlagTable.slice();
-    k[colorIndex] = drawFlag;
-    this.setState({ drawFlagTable: k });
+    this.setState((state) => {
+      let k = state.orderTable.slice();
+      let o = k[colorIndex];
+      let to = state.transparentStartOrder;
+
+      if (o < to && drawFlag) {
+        k = k.map((v) => (v > o && v < to) ? v - 1 : v);
+        k[colorIndex] = --to;
+      } else if (o >= to && !drawFlag) {
+        k = k.map((v) => (v >= to && v < o) ? v + 1 : v);
+        k[colorIndex] = to++;
+      }
+
+      console.log(to, k);
+      return { ...state,  orderTable: k, transparentStartOrder: to };
+    });
+    //let k = this.state.drawFlagTable.slice();
+    //k[colorIndex] = drawFlag;
+    //this.setState({ drawFlagTable: k });
   }
 
   handleOnMoveUpClick(colorIndex: number) {
-    let k = this.state.orderTable.slice();
-    let o = k[colorIndex];
+    this.setState((state) => {
+      let k = state.orderTable.slice();
+      let o = k[colorIndex];
 
-    k[k.indexOf(o - 1)] = o;
-    k[colorIndex] = o - 1;
+      k[k.indexOf(o - 1)] = o;
+      k[colorIndex] = o - 1;
 
-    this.setState({ orderTable: k });
+      console.log(k);
+      return { ...state,  orderTable: k };
+    });
   }
 
   handleOnMoveDownClick(colorIndex: number) {
-    let k = this.state.orderTable.slice();
-    let o = k[colorIndex];
+    this.setState((state) => {
+      let k = state.orderTable.slice();
+      let o = k[colorIndex];
 
-    k[k.indexOf(o + 1)] = o;
-    k[colorIndex] = o + 1;
+      k[k.indexOf(o + 1)] = o;
+      k[colorIndex] = o + 1;
 
-    this.setState({ orderTable: k });
+      console.log(k);
+      return { ...state,  orderTable: k };
+    });
   }
 
   handleOnColorChange(colorIndex: number, colorInput: string) {
@@ -281,7 +302,7 @@ export default class App extends React.Component<any, AppState> {
                   luaCodeOption: this.state.luaCodeOption,
                   colorSet: this.state.colorSet,
                   colorOrder: this.state.orderTable,
-                  undrawFlag: this.state.drawFlagTable,
+                  transparentStartOrder: this.state.transparentStartOrder,
                   onDrawFlagChange: this.handleOnDrawChange,
                   onMoveUpClick: this.handleOnMoveUpClick,
                   onMoveDownClick: this.handleOnMoveDownClick,

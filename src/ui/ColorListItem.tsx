@@ -32,8 +32,16 @@ export default function ColorListItem(props: ColorListItemProps) {
       <Form.Check className='ms-auto' type='switch' onChange={props.onDrawFlagChange} checked={!props.undrawFlag} />
       <div className='vr' />
       <ButtonGroup>
-        <Button variant='secondary' size='sm' onClick={props.onMoveUpClick} disabled={props.order === 0}>↑</Button>
-        <Button variant='secondary' size='sm' onClick={props.onMoveDownClick} disabled={props.order === (props.orderListLength - 1)}>↓</Button>
+        <Button
+          variant='secondary'
+          size='sm'
+          onClick={props.onMoveUpClick}
+          disabled={props.order === 0 || props.order >= (props.orderListLength)}>↑</Button>
+        <Button
+          variant='secondary'
+          size='sm'
+          onClick={props.onMoveDownClick}
+          disabled={props.order >= (props.orderListLength - 1)}>↓</Button>
       </ButtonGroup>
     </Stack>
   );

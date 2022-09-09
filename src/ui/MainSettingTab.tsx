@@ -12,7 +12,7 @@ export type MainSettingTabProps = {
   luaCodeOption: LuaCodeOption;
   colorSet?: Array<Color>;
   colorOrder: number[];
-  undrawFlag: boolean[];
+  transparentStartOrder: number;
   onColorChange: Function;
   onDrawFlagChange: Function;
   onMoveUpClick: Function;
@@ -60,12 +60,13 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
       k = new Array(this.props.colorSet.length);
       for (let i = 0; i < this.props.colorSet.length; i++) {
         const v = this.props.colorSet[i];
+        const undraw = this.props.colorOrder[i] >= this.props.transparentStartOrder;
         k[this.props.colorOrder[i]] = (
-          <ListGroup.Item key={i} variant={this.props.undrawFlag[i] ? 'secondary' : ''}>
+          <ListGroup.Item key={i} variant={undraw ? 'secondary' : ''}>
             <ColorListItem
               order={this.props.colorOrder[i]}
-              orderListLength={this.props.colorOrder.length}
-              undrawFlag={this.props.undrawFlag[i]}
+              orderListLength={this.props.transparentStartOrder}
+              undrawFlag={undraw}
               color={this.props.colorSet[i]}
               onColorChange={(e) => this.handleColorChange(i, e)}
               onDrawFlagChange={(e) => this.handleDrawFlagChange(i, e)}
