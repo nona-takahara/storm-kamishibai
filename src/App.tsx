@@ -115,7 +115,7 @@ export default class App extends React.Component<any, AppState> {
         l[data.metaData.offsetListIndex] = new LuaCodeSnippet(
           data.luaList.map(
             (v, i) => {
-              const c = state.colorSet[state.orderTable[i]];
+              const c = state.colorSet[state.orderTable.indexOf(i)];
               if (v !== '') {
                 return `C(${c.convertedR},${c.convertedG},${c.convertedB})` + v;
               } else {
@@ -177,7 +177,6 @@ export default class App extends React.Component<any, AppState> {
         k[colorIndex] = to++;
       }
 
-      console.log(to, k);
       return { ...state,  orderTable: k, transparentStartOrder: to, needReconvert: true };
     });
   }
@@ -190,7 +189,6 @@ export default class App extends React.Component<any, AppState> {
       k[k.indexOf(o - 1)] = o;
       k[colorIndex] = o - 1;
 
-      console.log(k);
       return { ...state,  orderTable: k, needReconvert: true };
     });
   }
@@ -203,7 +201,6 @@ export default class App extends React.Component<any, AppState> {
       k[k.indexOf(o + 1)] = o;
       k[colorIndex] = o + 1;
 
-      console.log(k);
       return { ...state,  orderTable: k, needReconvert: true };
     });
   }
@@ -217,8 +214,9 @@ export default class App extends React.Component<any, AppState> {
       if (state.needReconvert) {
         const u = new Uint32Array(state.orderTable.length);
         for (let i = 0; i < state.orderTable.length; i++) {
-          u[i] = state.colorSet[state.orderTable[i]].raw || 0;
+          u[state.orderTable[i]] = state.colorSet[i].raw || 0;
         }
+        
         const cmd = new StartConvertCommand(state.luaCodeOption, u, state.transparentStartOrder);
         this.getWorker().postMessage(cmd, cmd.getTransfer());
         return { ...state, isWorking: true };

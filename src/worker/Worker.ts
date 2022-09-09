@@ -17,6 +17,7 @@ type WorkerData = {
   rdata: Uint32Array;
   width: number;
   height: number;
+  transparentStartWith: number;
   palleteLength: number;
   commandStartOffsetListX: number[];
   commandStartOffsetListY: number[];
@@ -32,6 +33,7 @@ function defaultWorkerData(): WorkerData {
     rdata: new Uint32Array(),
     width: 0,
     height: 0,
+    transparentStartWith: 0,
     palleteLength: 0,
     commandStartOffsetListX: [],
     commandStartOffsetListY: [],
@@ -69,7 +71,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       if (!workerData.commandStartOffsetList[data.metaData.offsetListIndex]) {
         workerData.commandStartOffsetList[data.metaData.offsetListIndex] = true;
 
-        const luaList = new Array<string>(data.rectangleList.length);
+        const luaList = new Array<string>(workerData.palleteLength).fill('');
         const vcmp = workerData.convRule.luaVCompress, hcmp = workerData.convRule.luaHCompress;
         for (let j = 0; j < data.rectangleList.length; j++) {
           let s = '';
@@ -128,7 +130,8 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       workerData.convRule = data.settings;
       // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
       workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
-      workerData.palleteLength = data.colorPalleteLength;
+      workerData.transparentStartWith = data.colorPalleteLength;
+      workerData.palleteLength = data.colorPallete.length;
 
       // 必要な変換コマンドのスタート地点を全部ピックアップ
       workerData.commandStartOffsetListX = [];
@@ -213,6 +216,6 @@ function makeNextConvertData() {
     d,
     workerData.convRule.luaCardWidth,
     workerData.convRule.luaCardHeight,
-    workerData.palleteLength,
+    workerData.transparentStartWith,
     { offsetListIndex: offsetListIndex });
 }
