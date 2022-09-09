@@ -22,21 +22,23 @@ function onDraw()S=screen C=S.setColor`;
   let r: string[] = [];
   let blockLP = '';
   for (let i = 0; i < sn.length; i++) {
-    const v = sn[i];
-    const k = v.map((vv, ix) => {
-      if (vv !=='') {
-        return `C(${orderdColor[ix].convertedR},${orderdColor[ix].convertedG},${orderdColor[ix].convertedB})${vv}`;
+    const k = sn[i].map((v, j) => {
+      if (v !=='') {
+        return `C(${orderdColor[j].convertedR},${orderdColor[j].convertedG},${orderdColor[j].convertedB})${v}`;
       } else { return '';}
     }).reverse();
 
+    // 基本のフレーム文法作成
     let frameLP = frame(i + opt.luaCardIndexStartWith, k.join(''));
     let frameSize = bytelen(frame(i + opt.luaCardIndexStartWith, ''));
 
+    // 問題がない場合は単純追加
     if (blockLP !== '' && (bytelen(blockLP) + bytelen(frameLP)) > maxLength) {
       r.push(blockLP);
       blockLP = '';
     }
 
+    // そもそも最長を越えてしまう場合は分割実施
     if (bytelen(frameLP) > maxLength) {
       haveOverRun = true;
       frameLP = '';
