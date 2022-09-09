@@ -206,7 +206,12 @@ export default class App extends React.Component<any, AppState> {
   }
 
   handleOnColorChange(colorIndex: number, colorInput: string) {
-    this.state.colorSet[colorIndex].setConvertedRGB(colorInput);
+    this.setState((state) => {
+      let c = state.colorSet.slice();
+      c[colorIndex].setConvertedRGB(colorInput);
+
+      return { ...state, colorSet: c };
+    });
   }
 
   handleStartConvertClick() {

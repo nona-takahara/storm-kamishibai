@@ -1,4 +1,5 @@
 import Lut from "./Lut";
+import colorParse from 'parse-css-color';
 
 export default class Color {
   readonly originalR: number;
@@ -26,10 +27,11 @@ export default class Color {
   }
 
   setConvertedRGB(v: string) {
-    if (v.length == 7) {
-      this.convertedR = parseInt(v.substring(1, 3), 16);
-      this.convertedG = parseInt(v.substring(3, 5), 16);
-      this.convertedB = parseInt(v.substring(5, 7), 16);
+    const parsed = colorParse(v);
+    if (parsed && parsed.type === 'rgb') {
+      this.convertedR = parsed.values[0];
+      this.convertedG = parsed.values[1];
+      this.convertedB = parsed.values[2];
     }
   }
 }

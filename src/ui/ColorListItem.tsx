@@ -25,9 +25,10 @@ export default function ColorListItem(props: ColorListItemProps) {
       </Stack>
       <Form.Control
         type='text'
-        defaultValue={rgb2hex(props.color.convertedR, props.color.convertedG, props.color.convertedB)}
+        defaultValue={`rgb(${props.color.convertedR}, ${props.color.convertedG}, ${props.color.convertedB})`}
         onChange={props.onColorChange}
       />
+
       <div className='ms-auto' />
       <Form.Check className='ms-auto' type='switch' onChange={props.onDrawFlagChange} checked={!props.undrawFlag} />
       <div className='vr' />
@@ -45,9 +46,4 @@ export default function ColorListItem(props: ColorListItemProps) {
       </ButtonGroup>
     </Stack>
   );
-}
-function rgb2hex(...rgb: Array<number>) {
-  return "#" + rgb.map(function (value) {
-    return ("0" + value.toString(16)).slice(-2);
-  }).join("");
 }

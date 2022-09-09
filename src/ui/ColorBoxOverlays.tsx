@@ -11,7 +11,7 @@ type ColorBoxProps = {
 export default function ColorBoxOverlays(props: ColorBoxProps) {
   const overlay = (kprops: any) => (
     <Tooltip {...kprops}>
-      {rgb2hex(props.r, props.g, props.b)}
+      {`rgb(${props.r}, ${props.g}, ${props.b})`}
     </Tooltip>
   );
 
@@ -24,10 +24,4 @@ export default function ColorBoxOverlays(props: ColorBoxProps) {
         backgroundColor: `rgb(${props.r},${props.g},${props.b})`,
         border: '1px solid rgb(0,0,0)'
       }} /></OverlayTrigger>);
-}
-
-function rgb2hex(...rgb: Array<number>) {
-  return "#" + rgb.map(function (value) {
-    return ("0" + value.toString(16)).slice(-2);
-  }).join("");
 }
