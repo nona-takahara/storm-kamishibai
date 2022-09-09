@@ -258,7 +258,7 @@ export default class App extends React.Component<any, AppState> {
     return (
       <>
         <Navbar collapseOnSelect expand="md" bg="light">
-          <Container>
+          <Container className="px-5" fluid="lg">
             <Navbar.Brand>Storm Kamishibai</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
@@ -270,9 +270,9 @@ export default class App extends React.Component<any, AppState> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Container className='mb-4'>
+        <Container className='px-5 mb-4' fluid="lg">
           <Row>
-            <Col md={6} className='mt-4'>
+            <Col md={4} lg={6} className='mt-4'>
               <Stack gap={2}>
                 <FileSelector
                   onFileChange={this.handleFileChange}
@@ -291,7 +291,7 @@ export default class App extends React.Component<any, AppState> {
                   code={this.state.generatedCode} />
               </Stack>
             </Col>
-            <Col md={6} className='mt-4'>
+            <Col md={8} lg={6} className='mt-4'>
               <LandingBox
                 isVisible={this.state.imageUrl === ''} />
               <Settings
