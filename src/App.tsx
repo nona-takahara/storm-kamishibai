@@ -163,7 +163,6 @@ export default class App extends React.Component<any, AppState> {
     });
   }
 
-  // 未チェック
   handleOnDrawChange(colorIndex: number, drawFlag: boolean) {
     this.setState((state) => {
       let k = state.orderTable.slice();
@@ -179,11 +178,8 @@ export default class App extends React.Component<any, AppState> {
       }
 
       console.log(to, k);
-      return { ...state,  orderTable: k, transparentStartOrder: to };
+      return { ...state,  orderTable: k, transparentStartOrder: to, needReconvert: true };
     });
-    //let k = this.state.drawFlagTable.slice();
-    //k[colorIndex] = drawFlag;
-    //this.setState({ drawFlagTable: k });
   }
 
   handleOnMoveUpClick(colorIndex: number) {
@@ -195,7 +191,7 @@ export default class App extends React.Component<any, AppState> {
       k[colorIndex] = o - 1;
 
       console.log(k);
-      return { ...state,  orderTable: k };
+      return { ...state,  orderTable: k, needReconvert: true };
     });
   }
 
@@ -208,7 +204,7 @@ export default class App extends React.Component<any, AppState> {
       k[colorIndex] = o + 1;
 
       console.log(k);
-      return { ...state,  orderTable: k };
+      return { ...state,  orderTable: k, needReconvert: true };
     });
   }
 
