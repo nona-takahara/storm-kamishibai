@@ -258,7 +258,7 @@ export default class App extends React.Component<any, AppState> {
     return (
       <>
         <Navbar collapseOnSelect expand="md" bg="light">
-          <Container className="px-5" fluid="lg">
+          <Container className="px-5" fluid="xl">
             <Navbar.Brand>Storm Kamishibai</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
@@ -270,7 +270,7 @@ export default class App extends React.Component<any, AppState> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Container className='px-5 mb-4' fluid="lg">
+        <Container className='px-5 mb-4' fluid="xl">
           <Row>
             <Col md={4} lg={6} className='mt-4'>
               <Stack gap={2}>
