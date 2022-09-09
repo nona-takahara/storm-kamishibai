@@ -128,7 +128,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
       workerData.convRule = data.settings;
       // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
       workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
-      workerData.palleteLength = data.colorPallete.length;
+      workerData.palleteLength = data.colorPalleteLength;
 
       // 必要な変換コマンドのスタート地点を全部ピックアップ
       workerData.commandStartOffsetListX = [];

@@ -7,6 +7,7 @@ export default class StartConvertCommand extends WorkerCommand  {
   constructor(
     public settings: LuaCodeOption,
     public colorPallete: Uint32Array,
+    public colorPalleteLength: number,
     public command = commandName
   ) { super(); }
 

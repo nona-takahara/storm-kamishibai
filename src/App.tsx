@@ -215,11 +215,11 @@ export default class App extends React.Component<any, AppState> {
   handleStartConvertClick() {
     this.setState((state) => {
       if (state.needReconvert) {
-        const u = new Uint32Array(this.state.orderTable.length);
-        for (let i = 0; i < this.state.orderTable.length; i++) {
-          u[i] = this.state.colorSet[this.state.orderTable[i]].raw || 0;
+        const u = new Uint32Array(state.orderTable.length);
+        for (let i = 0; i < state.orderTable.length; i++) {
+          u[i] = state.colorSet[state.orderTable[i]].raw || 0;
         }
-        const cmd = new StartConvertCommand(this.state.luaCodeOption, u);
+        const cmd = new StartConvertCommand(state.luaCodeOption, u, state.transparentStartOrder);
         this.getWorker().postMessage(cmd, cmd.getTransfer());
         return { ...state, isWorking: true };
       } else {
