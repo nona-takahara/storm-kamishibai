@@ -1,24 +1,18 @@
 type LuaCodeOption = {
-  compressV: boolean;
-  compressH: boolean;
-  startWith: number;
-  width: number;
-  height: number;
-  offsetX: number;
-  offsetY: number;
-  readChannel: number;
+  isRollSign: boolean;
+  luaOffsetX: number;
+  luaOffsetY: number;
+  luaCardIndexStartWith: number;
+  luaReadChannel: number;
 }
 
-export function getDefault(): LuaCodeOption {
+export function getLuaCodeOptionDefault(): LuaCodeOption {
   return {
-    compressV: true,
-    compressH: true,
-    startWith: 1,
-    width: 32,
-    height: 32,
-    offsetX: 0,
-    offsetY: 0,
-    readChannel: 1
+    isRollSign: false,
+    luaOffsetX: 0,
+    luaOffsetY: 0,
+    luaCardIndexStartWith: 1,
+    luaReadChannel: 1
   };
 }
 
