@@ -95,7 +95,7 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
                   </InputGroup>
                 </Col>
               </Row>
-              <Row>
+              <Row className="mt-3">
                 <Form.Label column xs={2}>
                   開始位置
                 </Form.Label>
