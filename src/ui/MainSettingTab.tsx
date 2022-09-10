@@ -67,7 +67,7 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
     }
     return (
       <Stack gap={2}>
-        <Alert variant="info">
+        <Alert variant="info" className="mb-0">
           <Row>
             <Col xs="auto" className="pe-0">
               <BsExclamationCircle />
