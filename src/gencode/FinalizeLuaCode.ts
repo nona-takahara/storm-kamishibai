@@ -4,20 +4,20 @@ import LuaCodeOption from "../LuaCodeOption";
 import LuaCodeSnippet from "../LuaCodeOption";
 import FinalLuaCode from "./FinalLuaCode";
 
-export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], opt: LuaCodeOption): FinalLuaCode {
+export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], copt: ConvertOption, lopt: LuaCodeOption): FinalLuaCode {
   if (true) {
     const ph = {
-      offsetX: (opt.luaOffsetX === 0) ? '' : `+${opt.luaOffsetX}`,
-      offsetY: (opt.luaOffsetY === 0) ? '' : `+${opt.luaOffsetY}`,
-      funcV: (opt.luaVCompress) ? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
-      funcH: (opt.luaHCompress) ? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
+      offsetX: (lopt.luaOffsetX === 0) ? '' : `+${lopt.luaOffsetX}`,
+      offsetY: (lopt.luaOffsetY === 0) ? '' : `+${lopt.luaOffsetY}`,
+      funcV: (copt.luaVCompress) ? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
+      funcH: (copt.luaHCompress) ? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
     }
     const outerFront = `function R(x,y,w,h)S.drawRectF(x${ph.offsetX},y${ph.offsetY},w,h)end${ph.funcV}${ph.funcH}
 I=0
-function onTick()I=input.getNumber(${opt.luaReadChannel})end
+function onTick()I=input.getNumber(${lopt.luaReadChannel})end
 function onDraw()S=screen C=S.setColor`;
     const outerBottom = '\nend';
-    return standardFinalize(sn, orderdColor, opt, outerFront, outerBottom, defaultFrame);
+    return standardFinalize(sn, orderdColor, lopt, outerFront, outerBottom, defaultFrame);
   } else {
     const outerFront = `function R(x,y,w,h)S.drawRectF(x,y-Y+M,w,h)end
     function V(x,y,h)R(x,y,1,h)end
@@ -29,11 +29,11 @@ function onDraw()S=screen C=S.setColor`;
     function onTick()I=input.getNumber(1) Y=I%100 I=I//100 end
     function onDraw()S=screen C=S.setColor`;
     const outerBottom = '\nend';
-    return standardFinalize(sn, orderdColor, opt, outerFront, outerBottom, rollFinalize(sn.length));
+    return standardFinalize(sn, orderdColor, lopt, outerFront, outerBottom, rollFinalize(sn.length));
   }
 }
 
-function standardFinalize(sn: string[][], orderdColor: Color[], opt: ConvertOption, outerFront: string, outerBottom: string, frame: (index: number, offset: number, snippet: string) => string): FinalLuaCode {
+function standardFinalize(sn: string[][], orderdColor: Color[], opt: LuaCodeOption, outerFront: string, outerBottom: string, frame: (index: number, offset: number, snippet: string) => string): FinalLuaCode {
   let maxLength = 4090 - (bytelen(outerFront) + bytelen(outerBottom));
   let haveOverRun = false;
   let haveColorDiv = false;

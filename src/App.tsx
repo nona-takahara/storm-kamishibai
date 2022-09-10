@@ -66,6 +66,7 @@ export default class App extends React.Component<any, AppState> {
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
     this.handleChangeConvertSettings = this.handleChangeConvertSettings.bind(this);
+    this.handleChangeLuaCodeSettings = this.handleChangeLuaCodeSettings.bind(this);
     this.handleApplySettingsClick = this.handleApplySettingsClick.bind(this);
     this.state = {
       convertProgress: 0, colorSet: [], orderTable: [], transparentStartOrder: 0, isWorking: false,
@@ -235,7 +236,7 @@ export default class App extends React.Component<any, AppState> {
       for (let i = 0; i < state.orderTable.length; i++) {
         u[state.orderTable[i]] = state.colorSet[i];
       }
-      const final = FinalizeLuaCode(state.luaCodes || [], u,  state.luaCodeOption);
+      const final = FinalizeLuaCode(state.luaCodes || [], u, state.convertOption, state.luaCodeOption);
       return { ...state, generatedCode: final };
     });
   }
@@ -250,6 +251,9 @@ export default class App extends React.Component<any, AppState> {
       let ss: ConvertOption = state.convertOption;
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
+          if (!Object.prototype.hasOwnProperty.call(ss, key)) {
+            throw '設定エラー';
+          }
           (ss as any)[key] = (opt as any)[key];
         }
       }
@@ -262,6 +266,9 @@ export default class App extends React.Component<any, AppState> {
       let ss: LuaCodeOption = state.luaCodeOption;
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
+          if (!Object.prototype.hasOwnProperty.call(ss, key)) {
+            throw '設定エラー';
+          }
           (ss as any)[key] = (opt as any)[key];
         }
       }
@@ -314,7 +321,8 @@ export default class App extends React.Component<any, AppState> {
                 main={{
                   changeConvertSettings: this.handleChangeConvertSettings,
                   changeLuaCodeSettings: this.handleChangeLuaCodeSettings,
-                  luaCodeOption: this.state.convertOption,
+                  luaCodeOption: this.state.luaCodeOption,
+                  convertOption: this.state.convertOption,
                   colorSet: this.state.colorSet,
                   colorOrder: this.state.orderTable,
                   transparentStartOrder: this.state.transparentStartOrder,

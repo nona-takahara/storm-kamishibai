@@ -12,7 +12,8 @@ import LuaCodeOption from "../LuaCodeOption";
 export type MainSettingTabProps = {
   changeConvertSettings: (v: ConvertOption | any, needReconvert?: boolean) => any;
   changeLuaCodeSettings: (v: LuaCodeOption | any) => any;
-  luaCodeOption: ConvertOption;
+  luaCodeOption: LuaCodeOption;
+  convertOption: ConvertOption;
   colorSet?: Array<Color>;
   colorOrder: number[];
   transparentStartOrder: number;
@@ -83,14 +84,14 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
                     <LabeledInput
                       label="幅"
                       type="number"
-                      defaultValue={this.props.luaCodeOption.luaCardWidth}
+                      defaultValue={this.props.convertOption.luaCardWidth}
                       onChange={(e) => {
                         this.props.changeConvertSettings({ luaCardWidth: Number(e.target.value) }, true);
                       }} />
                     <LabeledInput
                       label="高さ"
                       type="number"
-                      defaultValue={this.props.luaCodeOption.luaCardHeight}
+                      defaultValue={this.props.convertOption.luaCardHeight}
                       onChange={(e) => {
                         this.props.changeConvertSettings({ luaCardHeight: Number(e.target.value) }, true);
                       }} />
@@ -106,14 +107,14 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
                     <LabeledInput
                       label="X"
                       type="number"
-                      defaultValue={this.props.luaCodeOption.pictureOffsetX}
+                      defaultValue={this.props.convertOption.pictureOffsetX}
                       onChange={(e) => {
                         this.props.changeConvertSettings({ pictureOffsetX: Number(e.target.value) }, true);
                       }} />
                     <LabeledInput
                       label="Y"
                       type="number"
-                      defaultValue={this.props.luaCodeOption.pictureOffsetY}
+                      defaultValue={this.props.convertOption.pictureOffsetY}
                       onChange={(e) => {
                         this.props.changeConvertSettings({ pictureOffsetY: Number(e.target.value) }, true);
                       }} />
@@ -129,14 +130,14 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
                     <LabeledInput
                       label="水平"
                       type="number"
-                      defaultValue={this.props.luaCodeOption.pictureSkipH}
+                      defaultValue={this.props.convertOption.pictureSkipH}
                       onChange={(e) => {
                         this.props.changeConvertSettings({ pictureSkipH: Number(e.target.value) }, true);
                       }} />
                     <LabeledInput
                       label="垂直"
                       type="number"
-                      defaultValue={this.props.luaCodeOption.pictureSkipV}
+                      defaultValue={this.props.convertOption.pictureSkipV}
                       onChange={(e) => {
                         this.props.changeConvertSettings({ pictureSkipV: Number(e.target.value) }, true);
                       }} />

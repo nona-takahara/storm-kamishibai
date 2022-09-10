@@ -30,6 +30,7 @@ export default function ConvertBox(props: SettingsProps) {
           changeConvertSettings={props.main.changeConvertSettings}
           changeLuaCodeSettings={props.main.changeLuaCodeSettings}
           luaCodeOption={props.main.luaCodeOption}
+          convertOption={props.main.convertOption}
           colorSet={props.main.colorSet}
           colorOrder={props.main.colorOrder}
           transparentStartOrder={props.main.transparentStartOrder}
@@ -42,7 +43,8 @@ export default function ConvertBox(props: SettingsProps) {
       <Tab.Pane eventKey="mainsetting">
         <BasicSettingTab
           changeLuaCodeSettings={props.main.changeLuaCodeSettings}
-          convertOption={props.main.luaCodeOption}
+          luaCodeOption={props.main.luaCodeOption}
+          convertOption={props.main.convertOption}
         />
       </Tab.Pane>
       </Tab.Content>
