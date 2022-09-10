@@ -72,7 +72,7 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
             <Col xs="auto" className="pe-0">
               <BsExclamationCircle />
             </Col>
-            <Col xs="auto">
+            <Col>
               この解析オプションを変更すると再度解析が必要になります。
             </Col>
           </Row>

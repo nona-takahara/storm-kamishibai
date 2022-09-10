@@ -50,7 +50,7 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
                   <Col xs="auto" className="pe-0">
                     <BsExclamationCircle />
                   </Col>
-                  <Col xs="auto">
+                  <Col>
                     切り抜き高さと幕間の隙間の和が32以外になる際は、SelectorマイコンのLuaコードを改造する必要があります。
                   </Col>
                 </Row>
