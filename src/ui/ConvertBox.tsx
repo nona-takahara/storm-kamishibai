@@ -29,7 +29,7 @@ export default function ConvertBox(props: ConvertBoxProps) {
             </Col>
           </Row>
           <progress value={progress} max={1} />
-          <div>{props.needReconvert ? ('解析が必要です') : '解析 ' + (Math.floor((progress * 1000) / 10).toString()) + '% 完了'} </div>
+          <div>{(props.needReconvert && !props.isWorking) ? ('解析が必要です') : '解析 ' + (Math.floor((progress * 1000) / 10).toString()) + '% 完了'} </div>
         </Stack>
       </Card.Body>
     </Card>
