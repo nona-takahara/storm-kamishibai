@@ -3,8 +3,8 @@ import { Button, ButtonGroup, Card, Col, FloatingLabel, Form, FormControl, Input
 import Color from "../Color";
 import LuaCodeOption from "../LuaCodeOption";
 import Lut from "../Lut";
-import ColorBox from "./ColorBox";
-import ColorBoxOverlays from "./ColorBoxOverlays";
+import ColorBox from "./util/ColorBox";
+import ColorBoxOverlays from "./util/ColorBoxOverlays";
 import ColorListItem from "./ColorListItem";
 import LabeledInput from "./util/LabeledInput";
 
