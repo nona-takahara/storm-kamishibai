@@ -59,7 +59,7 @@ constructor(props: LuaCodeProps) {
                 <Button variant="outline-secondary" onClick={this.handleOnClickUp} disabled={i >= (this.props.code.codes.length - 1)}><BsFillCaretRightFill /></Button>
               </InputGroup>
             </Col>
-            <Col xs="auto">
+            <Col>
               {bytelen(this.props.code.codes[i] || "")} 文字
             </Col>
             {

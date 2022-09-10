@@ -34,7 +34,7 @@ export default class FileSelector extends React.Component<FileSelectorProps, Fil
       <Card>
         <Card.Header>
           <Row className="align-items-center">
-            <Col xs="auto">
+            <Col>
               画像選択
             </Col>
             <Col xs="auto" className="justify-content-end">
