@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, Col, InputGroup, Row, Button, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
 import FinalLuaCode from "../gencode/FinalLuaCode";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 type LuaCodeProps = {
   isVisible: boolean;
@@ -17,6 +19,7 @@ constructor(props: LuaCodeProps) {
     this.state = { index: 0};
     this.handleOnClickUp = this.handleOnClickUp.bind(this);
     this.handleOnClickDown = this.handleOnClickDown.bind(this);
+    this.handleDownloadClick = this.handleDownloadClick.bind(this);
   }
 
   handleOnClickUp() {
@@ -25,6 +28,17 @@ constructor(props: LuaCodeProps) {
 
   handleOnClickDown() {
     this.setState({index: Math.max(this.state.index - 1, 0)});
+  }
+
+  handleDownloadClick() {
+    let zip = new JSZip();
+    for (let i = 0; i < this.props.code.codes.length; i++) {
+      const c = this.props.code.codes[i];
+      zip.file(`storm-kamishibai/data${i + 1}.lua`, c);
+    }
+    zip.generateAsync({type: "blob"}).then((content) => {
+      saveAs(content, "generated-lua.zip");
+    });
   }
 
   render() {
@@ -38,9 +52,9 @@ constructor(props: LuaCodeProps) {
             </Col>
             <Col xs="auto">
               <InputGroup>
-                <Button variant="outline-secondary" onClick={this.handleOnClickDown}>&lt;</Button>
+                <Button variant="outline-secondary" onClick={this.handleOnClickDown} disabled={i <= 0}>&lt;</Button>
                 <InputGroup.Text>{i + 1} / {this.props.code.codes.length}</InputGroup.Text>
-                <Button variant="outline-secondary" onClick={this.handleOnClickUp}>&gt;</Button>
+                <Button variant="outline-secondary" onClick={this.handleOnClickUp} disabled={i >= (this.props.code.codes.length - 1)}>&gt;</Button>
               </InputGroup>
             </Col>
             <Col xs="auto">
@@ -55,6 +69,9 @@ constructor(props: LuaCodeProps) {
                 </Col>
               ) : ( false )
             }
+            <Col xs="auto">
+              <Button variant="outline-primary" onClick={this.handleDownloadClick}>DL</Button>
+            </Col>
           </Row>
         </Card.Header>
         <Card.Body
