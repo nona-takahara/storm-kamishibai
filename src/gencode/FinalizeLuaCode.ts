@@ -5,15 +5,25 @@ import FinalLuaCode from "./FinalLuaCode";
 
 export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], copt: ConvertOption, lopt: LuaCodeOption): FinalLuaCode {
   if (!lopt.isRollSign) {
-    const ph = {
-      scaleH_x: (lopt.luaScaleH <= 1) ? 'x' : `(x*${lopt.luaScaleH})`,
-      scaleV_y: (lopt.luaScaleV <= 1) ? 'y' : `(y*${lopt.luaScaleV})`,
-      scaleH_w: (lopt.luaScaleH <= 1) ? 'w' : `(w*${lopt.luaScaleH})`,
-      scaleV_h: (lopt.luaScaleV <= 1) ? 'h' : `(h*${lopt.luaScaleV})`,
+    let ph: any = {
+      x: (lopt.luaRotate === 270 || lopt.luaRotate === 180) ? `(${copt.luaCardWidth}-x)`: 'x',
+      y: (lopt.luaRotate === 90 || lopt.luaRotate === 180) ? `(${copt.luaCardHeight}-y)`: 'y',
+      opw: (lopt.luaRotate === 270 || lopt.luaRotate === 180) ? '-': '',
+      oph: (lopt.luaRotate === 90 || lopt.luaRotate === 180) ? '-': ''
+    };
+    ph = {
+      scaleH_x: (lopt.luaScaleH <= 1) ? ph.x : `(${ph.x}*${lopt.luaScaleH})`,
+      scaleV_y: (lopt.luaScaleV <= 1) ? ph.y : `(${ph.y}*${lopt.luaScaleV})`,
+      scaleH_w: (lopt.luaScaleH <= 1) ? ph.opw + 'w' : `${ph.opw}(w*${lopt.luaScaleH})`,
+      scaleV_h: (lopt.luaScaleV <= 1) ? ph.oph + 'h' : `${ph.oph}(h*${lopt.luaScaleV})`,
       offsetX: (lopt.luaOffsetX === 0) ? '' : `+${lopt.luaOffsetX}`,
       offsetY: (lopt.luaOffsetY === 0) ? '' : `+${lopt.luaOffsetY}`,
       funcV: (copt.luaVCompress) ? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
       funcH: (copt.luaHCompress) ? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
+    }
+    if (lopt.luaRotate === 90 || lopt.luaRotate === 270) {
+      [ph.scaleH_x, ph.scaleV_y] = [ph.scaleV_y, ph.scaleH_x];
+      [ph.scaleH_w, ph.scaleV_h] = [ph.scaleV_h, ph.scaleH_w];
     }
     const outerFront = `function R(x,y,w,h)S.drawRectF(${ph.scaleH_x}${ph.offsetX},${ph.scaleV_y}${ph.offsetY},${ph.scaleH_w},${ph.scaleV_h})end${ph.funcV}${ph.funcH}
 I=0
@@ -22,7 +32,7 @@ function onDraw()S=screen C=S.setColor`;
     const outerBottom = '\nend';
     return standardFinalize(sn, orderdColor, lopt, outerFront, outerBottom, defaultFrame);
   } else {
-    const ph = {
+    let ph = {
       offsetX: (lopt.luaOffsetX === 0) ? '' : `+${lopt.luaOffsetX}`,
       funcV: (copt.luaVCompress) ? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
       funcH: (copt.luaHCompress) ? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''

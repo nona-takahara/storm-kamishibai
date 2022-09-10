@@ -5,6 +5,7 @@ type LuaCodeOption = {
   luaOffsetY: number;
   luaScaleH: number;
   luaScaleV: number;
+  luaRotate: number;
   luaCardIndexStartWith: number;
   luaReadChannel: number;
 }
@@ -17,6 +18,7 @@ export function getLuaCodeOptionDefault(): LuaCodeOption {
     luaOffsetY: 0,
     luaScaleH: 1,
     luaScaleV: 1,
+    luaRotate: 0,
     luaCardIndexStartWith: 1,
     luaReadChannel: 1
   };

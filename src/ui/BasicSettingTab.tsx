@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
-import { Card, InputGroup, Row, Col, Button, FormControl, Stack, Form, Alert } from "react-bootstrap";
-import { BsExclamationCircle } from "react-icons/bs";
+import { Card, InputGroup, Row, Col, Button, FormControl, Stack, Form, Alert, ButtonGroup, ToggleButton } from "react-bootstrap";
+import { BsArrowDownSquareFill, BsArrowLeftSquareFill, BsArrowRightSquareFill, BsArrowUpSquareFill, BsExclamationCircle } from "react-icons/bs";
 import ConvertOption from "../ConvertOption";
 import LuaCodeOption from "../LuaCodeOption";
 
@@ -101,6 +101,30 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
             disabled={this.props.luaCodeOption.isRollSign}
             onChange={(evt) => { this.props.changeLuaCodeSettings({ luaScaleV: Number(evt.target.value) }); }} />
         </InputGroup>
+        <ButtonGroup>
+        {[
+          { name: <BsArrowLeftSquareFill />, value: 270 },
+          { name: <BsArrowUpSquareFill />, value: 0 },
+          { name: <BsArrowRightSquareFill />, value: 90 },
+          { name: <BsArrowDownSquareFill /> , value: 180 }
+        ].map((radio, idx) => (
+          <ToggleButton
+            key={idx}
+            id={`radio-${idx}`}
+            type="radio"
+            variant='outline-secondary'
+            name="radio"
+            className='fs-4'
+            value={radio.value}
+            checked={this.props.luaCodeOption.luaRotate === radio.value}
+            onChange={(evt) => { 
+              console.log(evt.target.value, evt.target.checked);
+              this.props.changeLuaCodeSettings({ luaRotate: Number(evt.target.value)})}}
+          >
+            {radio.name}
+          </ToggleButton>
+        ))}
+      </ButtonGroup>
       </Stack>);
   }
 }
