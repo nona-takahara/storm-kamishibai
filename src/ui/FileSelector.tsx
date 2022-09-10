@@ -30,6 +30,9 @@ export default class FileSelector extends React.Component<FileSelectorProps, Fil
   render(): React.ReactNode {
     return (
       <Card>
+        <Card.Header>
+          画像選択
+        </Card.Header>
         <Card.Body>
           <Stack gap={2}>
             <Form.Group controlId='formFile'>
