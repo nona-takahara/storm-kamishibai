@@ -47,6 +47,7 @@ export default function (props: ModalProps) {
             <li>左下1ドットが欠けることがある問題の修正</li>
             <li>切り抜き範囲・スキップ設定を追加</li>
             <li>くーく さんの<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a> に対応</li>
+            <li>変換結果zipファイルダウンロード機能の追加</li>
           </ul>
         </section>
         <section>
