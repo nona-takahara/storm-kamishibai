@@ -1,8 +1,8 @@
 import { Button, ButtonGroup, Form, ListGroup, Stack } from "react-bootstrap";
 import Color from "../Color";
 import Lut from "../Lut";
-import ColorBox from "./ColorBox";
-import ColorBoxOverlays from "./ColorBoxOverlays";
+import ColorBox from "./util/ColorBox";
+import ColorBoxOverlays from "./util/ColorBoxOverlays";
 
 type ColorListItemProps = {
   order: number;
