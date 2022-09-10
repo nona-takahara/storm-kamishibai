@@ -15,7 +15,7 @@ export default function ConvertBox(props: SettingsProps) {
         <Card.Header>
           <Nav variant="tabs" >
             <Nav.Item>
-              <Nav.Link eventKey="reconvsetting">変換オプション</Nav.Link>
+              <Nav.Link eventKey="reconvsetting">解析オプション</Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="mainsetting">描画オプション</Nav.Link>

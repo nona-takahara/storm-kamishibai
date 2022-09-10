@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, Form, InputGroup, ListGroup, Row, Stack } from "react-bootstrap";
+import { Alert, Card, Col, Form, InputGroup, ListGroup, Row, Stack } from "react-bootstrap";
 import Color from "../Color";
 import ConvertOption from "../ConvertOption";
 import ColorListItem from "./ColorListItem";
@@ -66,6 +66,9 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
     }
     return (
       <Stack gap={2}>
+        <Alert variant="info">
+          この解析オプションを変更すると再度解析が必要になります。
+        </Alert>
         <Card>
           <Card.Header>
             画像切り抜き設定

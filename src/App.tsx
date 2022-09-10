@@ -303,7 +303,8 @@ export default class App extends React.Component<any, AppState> {
                   isWorking={this.state.isWorking}
                   onStartConvertClick={this.handleStartConvertClick}
                   onStopConvertClick={this.handleStopConvertClick}
-                  disableStartButton={this.state.imageUrl === ''}
+                  onApplyClick={this.handleApplySettingsClick}
+                  needReconvert={this.state.needReconvert}
                   convertProgress={this.state.convertProgress} />
                 <LuaCode
                   isVisible={this.state.imageUrl !== ''}
