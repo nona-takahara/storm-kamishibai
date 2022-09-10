@@ -26,9 +26,10 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
           <Form.Check type="checkbox">
             <Form.Check.Input 
               type="checkbox"
+              id="rollsign"
               defaultChecked={this.props.luaCodeOption.isRollSign}
               onChange={(evt) => {this.props.changeLuaCodeSettings({ isRollSign: evt.target.checked }); }} />
-            <Form.Check.Label>巻取り字幕モード</Form.Check.Label>
+            <Form.Check.Label htmlFor="rollsign">巻取り字幕モード</Form.Check.Label>
           </Form.Check>
           <Card.Text>
             <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a>
