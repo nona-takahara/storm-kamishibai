@@ -118,6 +118,7 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
                   variant='outline-secondary'
                   name="radio"
                   className='fs-5'
+                  disabled={this.props.luaCodeOption.isRollSign}
                   value={radio.value}
                   checked={this.props.luaCodeOption.luaRotate === radio.value}
                   onChange={(evt) => { this.props.changeLuaCodeSettings({ luaRotate: Number(evt.target.value) }) }}
