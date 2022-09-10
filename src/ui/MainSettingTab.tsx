@@ -1,11 +1,12 @@
 import React, { ChangeEvent } from "react";
-import { Button, ButtonGroup, Card, Form, FormControl, InputGroup, ListGroup, Stack, Tab } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Col, FloatingLabel, Form, FormControl, InputGroup, ListGroup, Row, Stack, Tab } from "react-bootstrap";
 import Color from "../Color";
 import LuaCodeOption from "../LuaCodeOption";
 import Lut from "../Lut";
 import ColorBox from "./ColorBox";
 import ColorBoxOverlays from "./ColorBoxOverlays";
 import ColorListItem from "./ColorListItem";
+import LabeledInput from "./util/LabeledInput";
 
 export type MainSettingTabProps = {
   changeSettings: (v: LuaCodeOption | any, needReconvert?: boolean) => any;
@@ -22,19 +23,7 @@ export type MainSettingTabProps = {
 export default class MainSettingTab extends React.Component<MainSettingTabProps> {
   constructor(props: MainSettingTabProps) {
     super(props);
-
-    this.handleChangeWidth = this.handleChangeWidth.bind(this);
-    this.handleChangeHeight = this.handleChangeHeight.bind(this);
   }
-
-  handleChangeWidth(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ luaCardWidth: Number(evt.target.value) }, true);
-  }
-
-  handleChangeHeight(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ luaCardHeight: Number(evt.target.value) }, true);
-  }
-
 
   handleColorChange(index: number, evt: React.ChangeEvent) {
     this.props.onColorChange(index, (evt.target as any).value);
@@ -77,19 +66,84 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
     }
     return (
       <Stack gap={2}>
-        <InputGroup>
-          <InputGroup.Text>幅</InputGroup.Text>
-          <FormControl
-            type="number"
-            defaultValue={this.props.luaCodeOption.luaCardWidth}
-            onChange={this.handleChangeWidth} />
-          <InputGroup.Text>&#xd7;</InputGroup.Text>
-          <InputGroup.Text>高さ</InputGroup.Text>
-          <FormControl
-            type="number"
-            defaultValue={this.props.luaCodeOption.luaCardHeight}
-            onChange={this.handleChangeHeight} />
-        </InputGroup>
+        <Card>
+          <Card.Header>
+            画像切り抜き設定
+          </Card.Header>
+          <Card.Body>
+            <Stack gap={1}>
+              <Row>
+                <Form.Label column xs={2}>
+                  サイズ
+                </Form.Label>
+                <Col>
+                  <InputGroup>
+                    <LabeledInput
+                      label="幅"
+                      type="number"
+                      defaultValue={this.props.luaCodeOption.luaCardWidth}
+                      onChange={(e) => {
+                        this.props.changeSettings({ luaCardWidth: Number(e.target.value) }, true);
+                      }} />
+                    <LabeledInput
+                      label="高さ"
+                      type="number"
+                      defaultValue={this.props.luaCodeOption.luaCardHeight}
+                      onChange={(e) => {
+                        this.props.changeSettings({ luaCardHeight: Number(e.target.value) }, true);
+                      }} />
+                  </InputGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Form.Label column xs={2}>
+                  開始位置
+                </Form.Label>
+                <Col>
+                  <InputGroup>
+                    <LabeledInput
+                      label="X"
+                      type="number"
+                      defaultValue={this.props.luaCodeOption.pictureOffsetX}
+                      onChange={(e) => {
+                        this.props.changeSettings({ pictureOffsetX: Number(e.target.value) }, true);
+                      }} />
+                    <LabeledInput
+                      label="Y"
+                      type="number"
+                      defaultValue={this.props.luaCodeOption.pictureOffsetY}
+                      onChange={(e) => {
+                        this.props.changeSettings({ pictureOffsetY: Number(e.target.value) }, true);
+                      }} />
+                  </InputGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Form.Label column xs={2}>
+                  スキップ
+                </Form.Label>
+                <Col>
+                  <InputGroup>
+                    <LabeledInput
+                      label="水平"
+                      type="number"
+                      defaultValue={this.props.luaCodeOption.pictureSkipH}
+                      onChange={(e) => {
+                        this.props.changeSettings({ pictureSkipH: Number(e.target.value) }, true);
+                      }} />
+                    <LabeledInput
+                      label="垂直"
+                      type="number"
+                      defaultValue={this.props.luaCodeOption.pictureSkipV}
+                      onChange={(e) => {
+                        this.props.changeSettings({ pictureSkipV: Number(e.target.value) }, true);
+                      }} />
+                  </InputGroup>
+                </Col>
+              </Row>
+            </Stack>
+          </Card.Body>
+        </Card>
         <Card>
           <Card.Header>
             色の重ね順序
