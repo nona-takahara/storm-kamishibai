@@ -81,6 +81,15 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
               onChange={(evt) => { this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) }); }} />
           </Col>
         </Form.Group>
+        <Form.Group as={Row}>
+          <Form.Label column xs={4}>1ブロックの最大文字数<br />(最大4096)</Form.Label>
+          <Col>
+            <Form.Control
+              type="number"
+              defaultValue={this.props.luaCodeOption.luaMaxLength}
+              onChange={(evt) => { this.props.changeLuaCodeSettings({ luaMaxLength: Number(evt.target.value) }); }} />
+          </Col>
+        </Form.Group>
         <Row>
           <Form.Label column xs={2}>
             描画<br />オフセット

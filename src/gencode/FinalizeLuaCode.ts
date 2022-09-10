@@ -50,7 +50,7 @@ function onDraw()S=screen C=S.setColor`;
 }
 
 function standardFinalize(sn: string[][], orderdColor: Color[], opt: LuaCodeOption, outerFront: string, outerBottom: string, frame: (index: number, offset: number, snippet: string) => string): FinalLuaCode {
-  let maxLength = 4090 - (bytelen(outerFront) + bytelen(outerBottom));
+  let maxLength = opt.luaMaxLength - (bytelen(outerFront) + bytelen(outerBottom));
   let haveOverRun = false;
   let haveColorDiv = false;
 
