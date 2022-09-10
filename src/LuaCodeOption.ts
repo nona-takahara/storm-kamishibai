@@ -3,6 +3,8 @@ type LuaCodeOption = {
   luaRollSignGap: number;
   luaOffsetX: number;
   luaOffsetY: number;
+  luaScaleH: number;
+  luaScaleV: number;
   luaCardIndexStartWith: number;
   luaReadChannel: number;
 }
@@ -13,6 +15,8 @@ export function getLuaCodeOptionDefault(): LuaCodeOption {
     luaRollSignGap: 0,
     luaOffsetX: 0,
     luaOffsetY: 0,
+    luaScaleH: 1,
+    luaScaleV: 1,
     luaCardIndexStartWith: 1,
     luaReadChannel: 1
   };

@@ -6,12 +6,16 @@ import FinalLuaCode from "./FinalLuaCode";
 export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], copt: ConvertOption, lopt: LuaCodeOption): FinalLuaCode {
   if (!lopt.isRollSign) {
     const ph = {
+      scaleH_x: (lopt.luaScaleH <= 1) ? 'x' : `(x*${lopt.luaScaleH})`,
+      scaleV_y: (lopt.luaScaleV <= 1) ? 'y' : `(y*${lopt.luaScaleV})`,
+      scaleH_w: (lopt.luaScaleH <= 1) ? 'w' : `(w*${lopt.luaScaleH})`,
+      scaleV_h: (lopt.luaScaleV <= 1) ? 'h' : `(h*${lopt.luaScaleV})`,
       offsetX: (lopt.luaOffsetX === 0) ? '' : `+${lopt.luaOffsetX}`,
       offsetY: (lopt.luaOffsetY === 0) ? '' : `+${lopt.luaOffsetY}`,
       funcV: (copt.luaVCompress) ? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
       funcH: (copt.luaHCompress) ? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
     }
-    const outerFront = `function R(x,y,w,h)S.drawRectF(x${ph.offsetX},y${ph.offsetY},w,h)end${ph.funcV}${ph.funcH}
+    const outerFront = `function R(x,y,w,h)S.drawRectF(${ph.scaleH_x}${ph.offsetX},${ph.scaleV_y}${ph.offsetY},${ph.scaleH_w},${ph.scaleV_h})end${ph.funcV}${ph.funcH}
 I=0
 function onTick()I=input.getNumber(${lopt.luaReadChannel})end
 function onDraw()S=screen C=S.setColor`;

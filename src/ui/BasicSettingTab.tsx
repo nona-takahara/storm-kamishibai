@@ -87,6 +87,20 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
             disabled={this.props.luaCodeOption.isRollSign}
             onChange={(evt) => { this.props.changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) }); }} />
         </InputGroup>
+        <InputGroup>
+          <InputGroup.Text>水平倍率</InputGroup.Text>
+          <FormControl
+            type="number"
+            defaultValue={this.props.luaCodeOption.luaScaleH}
+            disabled={this.props.luaCodeOption.isRollSign}
+            onChange={(evt) => { this.props.changeLuaCodeSettings({ luaScaleH: Number(evt.target.value) }); }} />
+          <InputGroup.Text>垂直倍率</InputGroup.Text>
+          <FormControl
+            type="number"
+            defaultValue={this.props.luaCodeOption.luaScaleV}
+            disabled={this.props.luaCodeOption.isRollSign}
+            onChange={(evt) => { this.props.changeLuaCodeSettings({ luaScaleV: Number(evt.target.value) }); }} />
+        </InputGroup>
       </Stack>);
   }
 }
