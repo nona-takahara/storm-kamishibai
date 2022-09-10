@@ -1,5 +1,5 @@
 import WorkerCommand from "./WorkerCommand";
-import LuaCodeOption, { getDefault } from "../LuaCodeOption";
+import ConvertOption, { getConvertOptionDefault } from "../ConvertOption";
 import ConvertResultCommand from "./ConvertResultCommand";
 import ConvertSucceedCommand from "./ConvertSucceedCommand";
 import FileLoadedCommand from "./FileLoadedCommand";
@@ -23,7 +23,7 @@ type WorkerData = {
   commandStartOffsetListY: number[];
   commandStartOffsetList: boolean[];
   nextConvertCommand: ConvertCardCommand | undefined;
-  convRule: LuaCodeOption;
+  convRule: ConvertOption;
   convData: Uint32Array;
 }
 
@@ -39,7 +39,7 @@ function defaultWorkerData(): WorkerData {
     commandStartOffsetListY: [],
     commandStartOffsetList: [],
     nextConvertCommand: undefined,
-    convRule: getDefault(),
+    convRule: getConvertOptionDefault(),
     convData: new Uint32Array()
   };
 }

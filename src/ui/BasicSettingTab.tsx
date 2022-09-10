@@ -1,15 +1,15 @@
 import React, { ChangeEvent } from "react";
 import { Card, InputGroup, Row, Col, Button, FormControl, Stack } from "react-bootstrap";
+import ConvertOption from "../ConvertOption";
 import LuaCodeOption from "../LuaCodeOption";
 
 export type BasicSettingTabProps = {
-  changeSettings: (v: LuaCodeOption | any, needReconvert?: boolean) => any;
+  changeLuaCodeSettings: (v: LuaCodeOption | any, needReconvert?: boolean) => any;
+  convertOption: ConvertOption;
   luaCodeOption: LuaCodeOption;
 }
 
 type BasicSettingTabState = {
-  luaCodeTemplateA: string;
-  luaCodeTemplateB: string;
 }
 
 export default class BasicSettingTab extends React.Component<BasicSettingTabProps, BasicSettingTabState> {
@@ -21,27 +21,23 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
     this.handleOffsetXChanged = this.handleOffsetXChanged.bind(this);
     this.handleOffsetYChanged = this.handleOffsetYChanged.bind(this);
 
-    this.state = {
-      luaCodeTemplateA: `function R(x,y,w,h)S.drawRectF(x,y,w,h)end
-function V(x,y,h)R(x,y,1,h)end
-function W`, luaCodeTemplateB: ''
-    };
+    this.state = {};
   }
 
   handleStartWithChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ luaCardIndexStartWith: Number(evt.target.value) });
+    this.props.changeLuaCodeSettings({ luaCardIndexStartWith: Number(evt.target.value) });
   }
 
   handleChannelChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ luaReadChannel: Number(evt.target.value) });
+    this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) });
   }
 
   handleOffsetXChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ luaOffsetX: Number(evt.target.value) });
+    this.props.changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) });
   }
 
   handleOffsetYChanged(evt: ChangeEvent<any>) {
-    this.props.changeSettings({ luaOffsetY: Number(evt.target.value) });
+    this.props.changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) });
   }
 
   render() {

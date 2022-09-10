@@ -1,44 +1,17 @@
 type LuaCodeOption = {
-  luaVCompress: boolean;
-  luaHCompress: boolean;
-  luaCardIndexStartWith: number;
-  luaCardWidth: number;
-  luaCardHeight: number;
   luaOffsetX: number;
   luaOffsetY: number;
-  pictureOffsetX: number;
-  pictureOffsetY: number;
-  pictureSkipH: number;
-  pictureSkipV: number;
+  luaCardIndexStartWith: number;
   luaReadChannel: number;
 }
 
-export function getDefault(): LuaCodeOption {
+export function getLuaCodeOptionDefault(): LuaCodeOption {
   return {
-    luaVCompress: true,
-    luaHCompress: true,
-    luaCardIndexStartWith: 1,
-    luaCardWidth: 32,
-    luaCardHeight: 32,
     luaOffsetX: 0,
     luaOffsetY: 0,
-    pictureOffsetX: 0,
-    pictureOffsetY: 0,
-    pictureSkipH: 0,
-    pictureSkipV: 0,
+    luaCardIndexStartWith: 1,
     luaReadChannel: 1
   };
 }
-
-export type ConvertInfo = {
-  offsetListIndex: number;
-}
-
-export type ConvertResultInfo = {
-  offsetListIndex: number;
-  finished: number;
-  length: number;
-}
-
 
 export default LuaCodeOption;

@@ -1,11 +1,11 @@
 import WorkerCommand from "./WorkerCommand";
-import LuaCodeOption from "../LuaCodeOption";
+import ConvertOption from "../ConvertOption";
 
 const commandName = 'start-convert';
 
 export default class StartConvertCommand extends WorkerCommand  {
   constructor(
-    public settings: LuaCodeOption,
+    public settings: ConvertOption,
     public colorPallete: Uint32Array,
     public colorPalleteLength: number,
     public command = commandName

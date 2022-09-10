@@ -1,5 +1,5 @@
 import WorkerCommand from "./WorkerCommand";
-import { ConvertInfo } from "../LuaCodeOption";
+import { ConvertInfo } from "../ConvertOption";
 
 const commandName = 'convert-card';
 

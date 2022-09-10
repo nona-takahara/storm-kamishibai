@@ -7,10 +7,10 @@ import LuaCode from './ui/LuaCode';
 import ConvertBox from './ui/ConvertBox';
 
 import PictureData from './PictureData';
-import LuaCodeSnippet from './LuaCodeSnippet';
+import LuaCodeSnippet, { getLuaCodeOptionDefault } from './LuaCodeOption';
 import './App.scss';
 import Settings from './ui/Settings';
-import LuaCodeOption, { getDefault } from './LuaCodeOption';
+import ConvertOption, { getConvertOptionDefault } from './ConvertOption';
 import FinalizeLuaCode from './gencode/FinalizeLuaCode';
 import HelpModal from './ui/HelpModal';
 import AboutModal from './ui/AboutModal';
@@ -27,6 +27,7 @@ import FileLoadedCommand from './worker/FileLoadedCommand';
 import WorkerCommand from './worker/WorkerCommand';
 import ConvertResultCommand from './worker/ConvertResultCommand';
 import EndConvertCommand from './worker/EndConvertCommand';
+import LuaCodeOption from './LuaCodeOption';
 
 type AppState = {
   imageUrl: string;
@@ -46,6 +47,7 @@ type AppState = {
   luaCodes?: string[][];
   generatedCode: FinalLuaCode;
 
+  convertOption: ConvertOption;
   luaCodeOption: LuaCodeOption;
 
   modalShow: '' | 'help' | 'about';
@@ -63,11 +65,12 @@ export default class App extends React.Component<any, AppState> {
     this.handleStopConvertClick = this.handleStopConvertClick.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
-    this.handleChangeSettings = this.handleChangeSettings.bind(this);
+    this.handleChangeConvertSettings = this.handleChangeConvertSettings.bind(this);
     this.handleApplySettingsClick = this.handleApplySettingsClick.bind(this);
     this.state = {
       convertProgress: 0, colorSet: [], orderTable: [], transparentStartOrder: 0, isWorking: false,
-      generatedCode: new FinalLuaCode([]), luaCodeOption: getDefault(), modalShow: '',
+      generatedCode: new FinalLuaCode([]), convertOption: getConvertOptionDefault(),
+      luaCodeOption: getLuaCodeOptionDefault(), modalShow: '',
       imageUrl: '', width: 0, height: 0, needReconvert: false
     };
   }
@@ -211,7 +214,7 @@ export default class App extends React.Component<any, AppState> {
           u[state.orderTable[i]] = state.colorSet[i].raw || 0;
         }
         
-        const cmd = new StartConvertCommand(state.luaCodeOption, u, state.transparentStartOrder);
+        const cmd = new StartConvertCommand(state.convertOption, u, state.transparentStartOrder);
         this.getWorker().postMessage(cmd, cmd.getTransfer());
         return { ...state, isWorking: true };
       } else {
@@ -242,7 +245,19 @@ export default class App extends React.Component<any, AppState> {
     this.setState({ modalShow: '' });
   }
 
-  handleChangeSettings(opt: LuaCodeOption, needReconvert: boolean = false) {
+  handleChangeConvertSettings(opt: ConvertOption, needReconvert: boolean = false) {
+    this.setState((state) => {
+      let ss: ConvertOption = state.convertOption;
+      for (const key in opt) {
+        if (Object.prototype.hasOwnProperty.call(opt, key)) {
+          (ss as any)[key] = (opt as any)[key];
+        }
+      }
+      return { ...state, convertOption: ss, needReconvert: needReconvert || state.needReconvert };
+    });
+  }
+
+  handleChangeLuaCodeSettings(opt: LuaCodeOption) {
     this.setState((state) => {
       let ss: LuaCodeOption = state.luaCodeOption;
       for (const key in opt) {
@@ -250,7 +265,7 @@ export default class App extends React.Component<any, AppState> {
           (ss as any)[key] = (opt as any)[key];
         }
       }
-      return { ...state, luaCodeOption: ss, needReconvert: needReconvert || state.needReconvert };
+      return { ...state, luaCodeOption: ss };
     });
   }
 
@@ -297,8 +312,9 @@ export default class App extends React.Component<any, AppState> {
               <Settings
                 isVisible={this.state.imageUrl !== ''}
                 main={{
-                  changeSettings: this.handleChangeSettings,
-                  luaCodeOption: this.state.luaCodeOption,
+                  changeConvertSettings: this.handleChangeConvertSettings,
+                  changeLuaCodeSettings: this.handleChangeLuaCodeSettings,
+                  luaCodeOption: this.state.convertOption,
                   colorSet: this.state.colorSet,
                   colorOrder: this.state.orderTable,
                   transparentStartOrder: this.state.transparentStartOrder,
