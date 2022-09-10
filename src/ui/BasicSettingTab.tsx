@@ -48,7 +48,7 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
                     onChange={(evt) => { this.props.changeLuaCodeSettings({ luaRollSignGap: Number(evt.target.value) }); }} />
                 </Col>
               </Form.Group>
-              {(this.props.convertOption.luaCardHeight + this.props.luaCodeOption.luaRollSignGap) !== 32 ? (<Alert variant="warning" className="mb-0">
+              {(this.props.luaCodeOption.isRollSign && ((this.props.convertOption.luaCardHeight + this.props.luaCodeOption.luaRollSignGap) !== 32)) ? (<Alert variant="warning" className="mb-0">
                 <Row>
                   <Col xs="auto" className="pe-0">
                     <BsExclamationCircle />
