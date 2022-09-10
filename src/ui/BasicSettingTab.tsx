@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from "react";
 import { Card, InputGroup, Row, Col, Button, FormControl, Stack, Form, Alert } from "react-bootstrap";
+import { BsExclamationCircle } from "react-icons/bs";
 import ConvertOption from "../ConvertOption";
 import LuaCodeOption from "../LuaCodeOption";
 
@@ -45,7 +46,14 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
                   onChange={(evt) => { this.props.changeLuaCodeSettings({ luaRollSignGap: Number(evt.target.value) }); }} />
               </InputGroup>
               {(this.props.convertOption.luaCardHeight + this.props.luaCodeOption.luaRollSignGap) !== 32 ? (<Alert variant="warning" className="mb-0">
-                切り抜き高さと幕間の隙間の和が32以外になる際は、SelectorマイコンのLuaコードを改造する必要があります。
+                <Row>
+                  <Col xs="auto" className="pe-0">
+                    <BsExclamationCircle />
+                  </Col>
+                  <Col xs="auto">
+                    切り抜き高さと幕間の隙間の和が32以外になる際は、SelectorマイコンのLuaコードを改造する必要があります。
+                  </Col>
+                </Row>
               </Alert>) : <></>}
             </Stack>
           </Card.Body>

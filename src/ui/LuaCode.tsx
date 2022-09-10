@@ -1,5 +1,7 @@
 import React from "react";
-import { Card, Col, InputGroup, Row, Button, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Card, Col, InputGroup, Row, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { BsFillCaretLeftFill, BsFillCaretRightFill, BsDownload, BsFillExclamationTriangleFill } from "react-icons/bs";
+
 import FinalLuaCode from "../gencode/FinalLuaCode";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -52,9 +54,9 @@ constructor(props: LuaCodeProps) {
             </Col>
             <Col xs="auto">
               <InputGroup>
-                <Button variant="outline-secondary" onClick={this.handleOnClickDown} disabled={i <= 0}>&lt;</Button>
+                <Button variant="outline-secondary" onClick={this.handleOnClickDown} disabled={i <= 0}><BsFillCaretLeftFill /></Button>
                 <InputGroup.Text>{i + 1} / {this.props.code.codes.length}</InputGroup.Text>
-                <Button variant="outline-secondary" onClick={this.handleOnClickUp} disabled={i >= (this.props.code.codes.length - 1)}>&gt;</Button>
+                <Button variant="outline-secondary" onClick={this.handleOnClickUp} disabled={i >= (this.props.code.codes.length - 1)}><BsFillCaretRightFill /></Button>
               </InputGroup>
             </Col>
             <Col xs="auto">
@@ -64,13 +66,13 @@ constructor(props: LuaCodeProps) {
               (this.props.code.overrun) ? (
                 <Col xs="auto">
                   <OverlayTrigger overlay={<Tooltip><>生成されたコードが長いため、<br />Luaコードを分割しました。{(this.props.code.samecolordiv) ? (<><br />色設定も分散しています。</>) : (false)}</></Tooltip>}>
-                    <Badge bg="warning" text="dark">!</Badge>
+                    <div><BsFillExclamationTriangleFill className="fs-4 text-warning" /></div>
                   </OverlayTrigger>
                 </Col>
               ) : ( false )
             }
             <Col xs="auto">
-              <Button variant="outline-primary" onClick={this.handleDownloadClick}>DL</Button>
+              <Button variant="outline-primary" onClick={this.handleDownloadClick}><BsDownload /></Button>
             </Col>
           </Row>
         </Card.Header>

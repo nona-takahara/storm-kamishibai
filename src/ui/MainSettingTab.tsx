@@ -5,6 +5,7 @@ import ConvertOption from "../ConvertOption";
 import ColorListItem from "./ColorListItem";
 import LabeledInput from "./util/LabeledInput";
 import LuaCodeOption from "../LuaCodeOption";
+import { BsExclamationCircle } from "react-icons/bs";
 
 export type MainSettingTabProps = {
   changeConvertSettings: (v: ConvertOption | any, needReconvert?: boolean) => any;
@@ -67,7 +68,14 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
     return (
       <Stack gap={2}>
         <Alert variant="info">
-          この解析オプションを変更すると再度解析が必要になります。
+          <Row>
+            <Col xs="auto" className="pe-0">
+              <BsExclamationCircle />
+            </Col>
+            <Col xs="auto">
+              この解析オプションを変更すると再度解析が必要になります。
+            </Col>
+          </Row>
         </Alert>
         <Card>
           <Card.Header>
