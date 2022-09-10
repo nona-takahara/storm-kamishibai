@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { Card, InputGroup, Row, Col, Button, FormControl, Stack } from "react-bootstrap";
+import { Card, InputGroup, Row, Col, Button, FormControl, Stack, Form } from "react-bootstrap";
 import ConvertOption from "../ConvertOption";
 import LuaCodeOption from "../LuaCodeOption";
 
@@ -15,59 +15,56 @@ type BasicSettingTabState = {
 export default class BasicSettingTab extends React.Component<BasicSettingTabProps, BasicSettingTabState> {
   constructor(props: BasicSettingTabProps) {
     super(props);
-
-    this.handleChannelChanged = this.handleChannelChanged.bind(this);
-    this.handleStartWithChanged = this.handleStartWithChanged.bind(this);
-    this.handleOffsetXChanged = this.handleOffsetXChanged.bind(this);
-    this.handleOffsetYChanged = this.handleOffsetYChanged.bind(this);
-
     this.state = {};
-  }
-
-  handleStartWithChanged(evt: ChangeEvent<any>) {
-    this.props.changeLuaCodeSettings({ luaCardIndexStartWith: Number(evt.target.value) });
-  }
-
-  handleChannelChanged(evt: ChangeEvent<any>) {
-    this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) });
-  }
-
-  handleOffsetXChanged(evt: ChangeEvent<any>) {
-    this.props.changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) });
-  }
-
-  handleOffsetYChanged(evt: ChangeEvent<any>) {
-    this.props.changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) });
   }
 
   render() {
     return (
       <Stack gap={2}>
+        <Card>
+          <Card.Body>
+          <Form.Check type="checkbox">
+            <Form.Check.Input 
+              type="checkbox"
+              defaultChecked={this.props.luaCodeOption.isRollSign}
+              onChange={(evt) => {this.props.changeLuaCodeSettings({ isRollSign: evt.target.checked }); }} />
+            <Form.Check.Label>巻取り字幕モード</Form.Check.Label>
+          </Form.Check>
+          <Card.Text>
+            <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a>
+            用の変換結果を出力します。<br />現時点では、以下の設定は無効化されます。
+          </Card.Text>
+          </Card.Body>
+        </Card>
         <InputGroup>
           <InputGroup.Text>先頭の画像インデックス</InputGroup.Text>
           <FormControl
             type="number"
             defaultValue={this.props.luaCodeOption.luaCardIndexStartWith}
-            onChange={this.handleStartWithChanged} />
+            disabled={this.props.luaCodeOption.isRollSign}
+            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaCardIndexStartWith: Number(evt.target.value) }); }} />
         </InputGroup>
         <InputGroup>
           <InputGroup.Text>読み込む数値チャンネル</InputGroup.Text>
           <FormControl
             type="number"
             defaultValue={this.props.luaCodeOption.luaReadChannel}
-            onChange={this.handleChannelChanged} />
+            disabled={this.props.luaCodeOption.isRollSign}
+            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) }); }} />
         </InputGroup>
         <InputGroup>
           <InputGroup.Text>左側<br />オフセット</InputGroup.Text>
           <FormControl
             type="number"
             defaultValue={this.props.luaCodeOption.luaOffsetX}
-            onChange={this.handleOffsetXChanged} />
+            disabled={this.props.luaCodeOption.isRollSign}
+            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) }); }} />
           <InputGroup.Text>上側<br />オフセット</InputGroup.Text>
           <FormControl
             type="number"
             defaultValue={this.props.luaCodeOption.luaOffsetY}
-            onChange={this.handleOffsetYChanged} />
+            disabled={this.props.luaCodeOption.isRollSign}
+            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) });}} />
         </InputGroup>
       </Stack>);
   }

@@ -4,7 +4,7 @@ import LuaCodeOption from "../LuaCodeOption";
 import FinalLuaCode from "./FinalLuaCode";
 
 export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], copt: ConvertOption, lopt: LuaCodeOption): FinalLuaCode {
-  if (true) {
+  if (!lopt.isRollSign) {
     const ph = {
       offsetX: (lopt.luaOffsetX === 0) ? '' : `+${lopt.luaOffsetX}`,
       offsetY: (lopt.luaOffsetY === 0) ? '' : `+${lopt.luaOffsetY}`,
@@ -19,14 +19,14 @@ function onDraw()S=screen C=S.setColor`;
     return standardFinalize(sn, orderdColor, lopt, outerFront, outerBottom, defaultFrame);
   } else {
     const outerFront = `function R(x,y,w,h)S.drawRectF(x,y-Y+M,w,h)end
-    function V(x,y,h)R(x,y,1,h)end
-    function H(x,y,w)R(x,y,w,1)end
-    function j(a,b) r=0 if I==a then M=0 r=1 elseif I==b then M=32 r=1 end return r==1 end
-    function J(n) return j(n,n-1)end
-    function J1(mx) return j(1,mx)end
-    I=0
-    function onTick()I=input.getNumber(1) Y=I%100 I=I//100 end
-    function onDraw()S=screen C=S.setColor`;
+function V(x,y,h)R(x,y,1,h)end
+function H(x,y,w)R(x,y,w,1)end
+function j(a,b) r=0 if I==a then M=0 r=1 elseif I==b then M=32 r=1 end return r==1 end
+function J(n) return j(n,n-1)end
+function J1(mx) return j(1,mx)end
+I=0
+function onTick()I=input.getNumber(1) Y=I%100 I=I//100 end
+function onDraw()S=screen C=S.setColor`;
     const outerBottom = '\nend';
     return standardFinalize(sn, orderdColor, lopt, outerFront, outerBottom, rollFinalize(sn.length));
   }
