@@ -71,7 +71,7 @@ constructor(props: LuaCodeProps) {
                 </Col>
               ) : ( false )
             }
-            <Col xs="auto">
+            <Col xs="auto" className="justify-content-end">
               <Button variant="outline-primary" onClick={this.handleDownloadClick}><BsDownload /></Button>
             </Col>
           </Row>
