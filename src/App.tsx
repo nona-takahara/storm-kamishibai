@@ -31,8 +31,8 @@ import LuaCodeOption from './LuaCodeOption';
 
 type AppState = {
   imageUrl: string;
-  width: number;
-  height: number;
+  imageWidth: number;
+  imageHeight: number;
 
   colorSet: Color[];
   orderTable: number[];
@@ -72,7 +72,7 @@ export default class App extends React.Component<any, AppState> {
       convertProgress: 0, colorSet: [], orderTable: [], transparentStartOrder: 0, isWorking: false,
       generatedCode: new FinalLuaCode([]), convertOption: getConvertOptionDefault(),
       luaCodeOption: getLuaCodeOptionDefault(), modalShow: '',
-      imageUrl: '', width: 0, height: 0, needReconvert: false
+      imageUrl: '', imageWidth: 0, imageHeight: 0, needReconvert: false
     };
   }
 
@@ -150,7 +150,7 @@ export default class App extends React.Component<any, AppState> {
   // ----- Other Change Event
   handleFileChange(file: File) {
     fileToU8Image(file, true).then((res) => {
-      this.setState({ imageUrl: res.dataUrl, width: res.width, height: res.height });
+      this.setState({ imageUrl: res.dataUrl, imageWidth: res.width, imageHeight: res.height });
       const cmd = new OpenFileCommand(res.u8Image, res.width, res.height, true);
       this.getWorker().postMessage(cmd, cmd.getTransfer());
     });
@@ -252,7 +252,7 @@ export default class App extends React.Component<any, AppState> {
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
           if (!Object.prototype.hasOwnProperty.call(ss, key)) {
-            throw '設定エラー';
+            throw '設定エラー: ConvertOptionに' + key + 'というキーはありません';
           }
           (ss as any)[key] = (opt as any)[key];
         }
@@ -267,7 +267,7 @@ export default class App extends React.Component<any, AppState> {
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
           if (!Object.prototype.hasOwnProperty.call(ss, key)) {
-            throw '設定エラー';
+            throw '設定エラー: LuaCodeOptionに' + key + 'というキーはありません';
           }
           (ss as any)[key] = (opt as any)[key];
         }
@@ -299,8 +299,8 @@ export default class App extends React.Component<any, AppState> {
                 <FileSelector
                   onFileChange={this.handleFileChange}
                   imageUrl={this.state.imageUrl}
-                  width={this.state.width}
-                  height={this.state.height} />
+                  width={this.state.imageWidth}
+                  height={this.state.imageHeight} />
                 <ConvertBox
                   isVisible={this.state.imageUrl !== ''}
                   isWorking={this.state.isWorking}
