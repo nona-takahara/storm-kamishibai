@@ -1,4 +1,4 @@
-import { Modal } from "react-bootstrap";
+import { Alert, Modal } from "react-bootstrap";
 import ModalProps from "../ModalProps";
 
 export default function (props: ModalProps) {
@@ -8,6 +8,9 @@ export default function (props: ModalProps) {
         <Modal.Title>Storm Kamishibaiの使い方</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <Alert variant="warning">
+          この内容はv0.4.0以前用に作成したものです。現在とは画面の一部が異なる可能性があります。
+        </Alert>
         <div>
           <section>
             <h4>1. モニターに表示する画像を用意しよう</h4>

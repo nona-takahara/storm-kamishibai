@@ -286,7 +286,7 @@ export default class App extends React.Component<any, AppState> {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
               <Nav>
-                <Nav.Link href='https://forms.gle/TRxMsVQLBrCc3yJF7'>問い合わせフォーム</Nav.Link>
+                <Nav.Link href='https://forms.gle/TRxMsVQLBrCc3yJF7' target="_blank">問い合わせフォーム</Nav.Link>
                 <Nav.Link onClick={() => { this.setState({ modalShow: 'help' }); }}>使い方</Nav.Link>
                 <Nav.Link onClick={() => { this.setState({ modalShow: 'about' }); }}>このアプリについて</Nav.Link>
               </Nav>
