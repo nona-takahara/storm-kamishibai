@@ -10,7 +10,7 @@ export default function (props: ModalProps) {
       <Modal.Body>
         <section>
           <p>
-            Storm Kamishibai v0.5.1<br />
+            Storm Kamishibai v0.5.2<br />
             (C) 2022 Nona Takahara
           </p>
           <ul>
@@ -39,6 +39,15 @@ export default function (props: ModalProps) {
         </section>
         <hr />
         <h4>アップデートログ</h4>
+        <section>
+          <h5>v0.5.2</h5>
+          <ul>
+            <li>描画の拡大機能を追加</li>
+            <li>描画の回転機能を追加</li>
+            <li>画像プレビューの拡大縮小機能を追加</li>
+            <li>UIにアイコンを導入、その他調整を実施</li>
+          </ul>
+        </section>
         <section>
           <h5>v0.5.1</h5>
           <ul>
