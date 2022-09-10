@@ -30,6 +30,7 @@ type AppState = {
   imageUrl: string;
   imageWidth: number;
   imageHeight: number;
+  imageLoading: boolean;
 
   colorSet: Color[];
   orderTable: number[];
@@ -68,7 +69,7 @@ export default class App extends React.Component<any, AppState> {
     this.state = {
       convertProgress: 0, colorSet: [], orderTable: [], transparentStartOrder: 0, isWorking: false,
       generatedCode: new FinalLuaCode([]), convertOption: getConvertOptionDefault(),
-      luaCodeOption: getLuaCodeOptionDefault(), modalShow: '',
+      luaCodeOption: getLuaCodeOptionDefault(), modalShow: '', imageLoading: false,
       imageUrl: '', imageWidth: 0, imageHeight: 0, needReconvert: false
     };
   }
@@ -110,7 +111,9 @@ export default class App extends React.Component<any, AppState> {
       const colorSet = data.colorPallete.map((v) => new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw));
       const orderTable = colorSet.map((v, i) => i);
 
-      this.setState({ colorSet: colorSet, orderTable: orderTable, transparentStartOrder: orderTable.length, needReconvert: true });
+      this.setState({
+        colorSet: colorSet, orderTable: orderTable, imageLoading: false,
+        transparentStartOrder: orderTable.length, needReconvert: true });
     } else if (ConvertResultCommand.is(data)) {
       this.setState((state) => {
         const l = state.luaCodes || [];
@@ -146,6 +149,7 @@ export default class App extends React.Component<any, AppState> {
 
   // ----- Other Change Event
   handleFileChange(file: File) {
+    this.setState({ imageLoading: true });
     fileToU8Image(file, true).then((res) => {
       this.setState({ imageUrl: res.dataUrl, imageWidth: res.width, imageHeight: res.height });
       const cmd = new OpenFileCommand(res.u8Image, res.width, res.height, true);
@@ -297,7 +301,8 @@ export default class App extends React.Component<any, AppState> {
                   onFileChange={this.handleFileChange}
                   imageUrl={this.state.imageUrl}
                   width={this.state.imageWidth}
-                  height={this.state.imageHeight} />
+                  height={this.state.imageHeight}
+                  loading={this.state.imageLoading} />
                 <ConvertBox
                   isVisible={this.state.imageUrl !== ''}
                   isWorking={this.state.isWorking}
