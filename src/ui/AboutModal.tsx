@@ -10,7 +10,7 @@ export default function (props: ModalProps) {
       <Modal.Body>
         <section>
           <p>
-            Storm Kamishibai v0.5.0<br />
+            Storm Kamishibai v0.5.1<br />
             (C) 2022 Nona Takahara
           </p>
           <ul>
@@ -40,6 +40,15 @@ export default function (props: ModalProps) {
         <hr />
         <h4>アップデートログ</h4>
         <section>
+          <h5>v0.5.1</h5>
+          <ul>
+            <li>解析に関するステータスメッセージの表示を修正</li>
+            <li>画像の幅・高さに関する情報の表示位置を修正</li>
+            <li>幕の描画に関しての機能を追加</li>
+            <li>その他表記上の問題を修正</li>
+          </ul>
+        </section>
+        <section>
           <h5>v0.5.0</h5>
           <ul>
             <li>変換全体の処理の改善</li>
@@ -47,6 +56,7 @@ export default function (props: ModalProps) {
             <li>左下1ドットが欠けることがある問題の修正</li>
             <li>切り抜き範囲・スキップ設定を追加</li>
             <li>くーく さんの<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a> に対応</li>
+            <li>変換結果zipファイルダウンロード機能の追加</li>
           </ul>
         </section>
         <section>

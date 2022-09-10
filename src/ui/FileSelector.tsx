@@ -38,20 +38,22 @@ export default class FileSelector extends React.Component<FileSelectorProps, Fil
             <Form.Group controlId='formFile'>
               <Form.Control type='file' accept='image/*' onChange={this.handleFileChange} />
             </Form.Group>
-            
-            <div style={{ overflow: 'auto' }}>
             <OverlayTrigger overlay={<Tooltip>幅{this.props.width}&#xd7;高さ{this.props.height}</Tooltip>}>
+              <div style={{ overflow: 'auto' }}>
                 {this.props.loading ? (
                   <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
                   </Spinner>)
-                  :
-                  (
-                  <img src={this.props.imageUrl}
-                    style={{ height: this.props.height * this.state.scale, width: this.props.width * this.state.scale, imageRendering: 'pixelated' }} />)}
+                  : (
+                  <img
+                      src={this.props.imageUrl}
+                      style={{
+                        height: this.props.height * this.state.scale, width: this.props.width * this.state.scale,
+                        imageRendering: 'pixelated'
+                      }} />)
+                }
+              </div>
             </OverlayTrigger>
-            
-            </div>
           </Stack>
         </Card.Body>
       </Card>

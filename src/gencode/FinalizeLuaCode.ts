@@ -18,10 +18,13 @@ function onDraw()S=screen C=S.setColor`;
     const outerBottom = '\nend';
     return standardFinalize(sn, orderdColor, lopt, outerFront, outerBottom, defaultFrame);
   } else {
-    const outerFront = `function R(x,y,w,h)S.drawRectF(x,y-Y+M,w,h)end
-function V(x,y,h)R(x,y,1,h)end
-function H(x,y,w)R(x,y,w,1)end
-function j(a,b) r=0 if I==a then M=0 r=1 elseif I==b then M=32 r=1 end return r==1 end
+    const ph = {
+      offsetX: (lopt.luaOffsetX === 0) ? '' : `+${lopt.luaOffsetX}`,
+      funcV: (copt.luaVCompress) ? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
+      funcH: (copt.luaHCompress) ? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
+    }
+    const outerFront = `function R(x,y,w,h)S.drawRectF(x${ph.offsetX},y-Y+M,w,h)end${ph.funcV}${ph.funcH}
+function j(a,b) r=0 if I==a then M=0 r=1 elseif I==b then M=${copt.luaCardHeight + lopt.luaRollSignGap} r=1 end return r==1 end
 function J(n) return j(n,n-1)end
 function J1(mx) return j(1,mx)end
 I=0

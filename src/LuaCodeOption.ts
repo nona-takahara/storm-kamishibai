@@ -1,5 +1,6 @@
 type LuaCodeOption = {
   isRollSign: boolean;
+  luaRollSignGap: number;
   luaOffsetX: number;
   luaOffsetY: number;
   luaCardIndexStartWith: number;
@@ -9,6 +10,7 @@ type LuaCodeOption = {
 export function getLuaCodeOptionDefault(): LuaCodeOption {
   return {
     isRollSign: false,
+    luaRollSignGap: 0,
     luaOffsetX: 0,
     luaOffsetY: 0,
     luaCardIndexStartWith: 1,

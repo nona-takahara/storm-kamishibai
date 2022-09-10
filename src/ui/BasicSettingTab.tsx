@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { Card, InputGroup, Row, Col, Button, FormControl, Stack, Form } from "react-bootstrap";
+import { Card, InputGroup, Row, Col, Button, FormControl, Stack, Form, Alert } from "react-bootstrap";
 import ConvertOption from "../ConvertOption";
 import LuaCodeOption from "../LuaCodeOption";
 
@@ -23,18 +23,31 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
       <Stack gap={2}>
         <Card>
           <Card.Body>
-          <Form.Check type="checkbox">
-            <Form.Check.Input 
-              type="checkbox"
-              id="rollsign"
-              defaultChecked={this.props.luaCodeOption.isRollSign}
-              onChange={(evt) => {this.props.changeLuaCodeSettings({ isRollSign: evt.target.checked }); }} />
-            <Form.Check.Label htmlFor="rollsign">巻取り字幕モード</Form.Check.Label>
-          </Form.Check>
-          <Card.Text>
-            <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a>
-            用の変換結果を出力します。<br />現時点では、以下の設定は無効化されます。
-          </Card.Text>
+            <Stack gap={2}>
+              <Form.Check type="checkbox">
+                <Form.Check.Input
+                  type="checkbox"
+                  id="rollsign"
+                  defaultChecked={this.props.luaCodeOption.isRollSign}
+                  onChange={(evt) => { this.props.changeLuaCodeSettings({ isRollSign: evt.target.checked }); }} />
+                <Form.Check.Label htmlFor="rollsign">巻取り字幕モード</Form.Check.Label>
+              </Form.Check>
+              <Card.Text>
+                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a>
+                用の変換結果を出力します。<br />以下の一部設定は無効となります。
+              </Card.Text>
+              <InputGroup>
+                <InputGroup.Text>幕間の隙間</InputGroup.Text>
+                <FormControl
+                  type="number"
+                  defaultValue={this.props.luaCodeOption.luaRollSignGap}
+                  disabled={!this.props.luaCodeOption.isRollSign}
+                  onChange={(evt) => { this.props.changeLuaCodeSettings({ luaRollSignGap: Number(evt.target.value) }); }} />
+              </InputGroup>
+              {(this.props.convertOption.luaCardHeight + this.props.luaCodeOption.luaRollSignGap) !== 32 ? (<Alert variant="warning" className="mb-0">
+                切り抜き高さと幕間の隙間の和が32以外になる際は、SelectorマイコンのLuaコードを改造する必要があります。
+              </Alert>) : <></>}
+            </Stack>
           </Card.Body>
         </Card>
         <InputGroup>
@@ -43,7 +56,7 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
             type="number"
             defaultValue={this.props.luaCodeOption.luaCardIndexStartWith}
             disabled={this.props.luaCodeOption.isRollSign}
-            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaCardIndexStartWith: Number(evt.target.value) }); }} />
+            onChange={(evt) => { this.props.changeLuaCodeSettings({ luaCardIndexStartWith: Number(evt.target.value) }); }} />
         </InputGroup>
         <InputGroup>
           <InputGroup.Text>読み込む数値チャンネル</InputGroup.Text>
@@ -51,21 +64,20 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
             type="number"
             defaultValue={this.props.luaCodeOption.luaReadChannel}
             disabled={this.props.luaCodeOption.isRollSign}
-            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) }); }} />
+            onChange={(evt) => { this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) }); }} />
         </InputGroup>
         <InputGroup>
           <InputGroup.Text>左側<br />オフセット</InputGroup.Text>
           <FormControl
             type="number"
             defaultValue={this.props.luaCodeOption.luaOffsetX}
-            disabled={this.props.luaCodeOption.isRollSign}
-            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) }); }} />
+            onChange={(evt) => { this.props.changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) }); }} />
           <InputGroup.Text>上側<br />オフセット</InputGroup.Text>
           <FormControl
             type="number"
             defaultValue={this.props.luaCodeOption.luaOffsetY}
             disabled={this.props.luaCodeOption.isRollSign}
-            onChange={(evt) => {this.props.changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) });}} />
+            onChange={(evt) => { this.props.changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) }); }} />
         </InputGroup>
       </Stack>);
   }
