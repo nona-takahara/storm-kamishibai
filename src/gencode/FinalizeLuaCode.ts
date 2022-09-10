@@ -1,7 +1,6 @@
 import Color from "../Color";
 import ConvertOption from "../ConvertOption";
 import LuaCodeOption from "../LuaCodeOption";
-import LuaCodeSnippet from "../LuaCodeOption";
 import FinalLuaCode from "./FinalLuaCode";
 
 export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], copt: ConvertOption, lopt: LuaCodeOption): FinalLuaCode {

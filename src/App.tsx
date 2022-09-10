@@ -2,12 +2,10 @@ import React from 'react';
 import { Container, Navbar, Row, Col, Stack, Nav } from 'react-bootstrap';
 
 import FileSelector from './ui/FileSelector';
-import MainSettingTab from './ui/MainSettingTab';
 import LuaCode from './ui/LuaCode';
 import ConvertBox from './ui/ConvertBox';
 
-import PictureData from './PictureData';
-import LuaCodeSnippet, { getLuaCodeOptionDefault } from './LuaCodeOption';
+import LuaCodeOption, { getLuaCodeOptionDefault } from './LuaCodeOption';
 import './App.scss';
 import Settings from './ui/Settings';
 import ConvertOption, { getConvertOptionDefault } from './ConvertOption';
@@ -27,7 +25,6 @@ import FileLoadedCommand from './worker/FileLoadedCommand';
 import WorkerCommand from './worker/WorkerCommand';
 import ConvertResultCommand from './worker/ConvertResultCommand';
 import EndConvertCommand from './worker/EndConvertCommand';
-import LuaCodeOption from './LuaCodeOption';
 
 type AppState = {
   imageUrl: string;

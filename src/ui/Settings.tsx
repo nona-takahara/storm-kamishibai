@@ -1,5 +1,4 @@
-import React from 'react';
-import { Container, Navbar, Row, Col, Stack, Nav, Tabs, Tab, Card } from 'react-bootstrap';
+import { Nav, Tab, Card } from 'react-bootstrap';
 
 import BasicSettingTab, { BasicSettingTabProps } from "./BasicSettingTab";
 import MainSettingTab, { MainSettingTabProps } from "./MainSettingTab";

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Form, ListGroup, Stack } from "react-bootstrap";
+import { Button, ButtonGroup, Form, Stack } from "react-bootstrap";
 import Color from "../Color";
 import Lut from "../Lut";
 import ColorBox from "./util/ColorBox";
