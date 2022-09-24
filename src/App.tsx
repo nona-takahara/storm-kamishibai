@@ -252,10 +252,11 @@ export default class App extends React.Component<any, AppState> {
       let ss: ConvertOption = state.convertOption;
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
-          if (!Object.prototype.hasOwnProperty.call(ss, key)) {
-            throw '設定エラー: ConvertOptionに' + key + 'というキーはありません';
+          if (Object.prototype.hasOwnProperty.call(ss, key)) {
+            (ss as any)[key] = (opt as any)[key];
+          } else {
+            console.error(`ConvertOptionに${key}というキーはありません`);
           }
-          (ss as any)[key] = (opt as any)[key];
         }
       }
       return { ...state, convertOption: ss, needReconvert: needReconvert || state.needReconvert };
@@ -267,10 +268,12 @@ export default class App extends React.Component<any, AppState> {
       let ss: LuaCodeOption = state.luaCodeOption;
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
-          if (!Object.prototype.hasOwnProperty.call(ss, key)) {
-            throw '設定エラー: LuaCodeOptionに' + key + 'というキーはありません';
+          if (Object.prototype.hasOwnProperty.call(ss, key)) {
+            (ss as any)[key] = (opt as any)[key];
+          } else {
+            console.log(`LuaCodeOptionに${key}というキーはありません`);
           }
-          (ss as any)[key] = (opt as any)[key];
+          
         }
       }
       return { ...state, luaCodeOption: ss };

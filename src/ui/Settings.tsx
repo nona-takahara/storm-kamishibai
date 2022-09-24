@@ -1,6 +1,6 @@
 import { Nav, Tab, Card } from 'react-bootstrap';
 
-import BasicSettingTab, { BasicSettingTabProps } from "./BasicSettingTab";
+import BasicSettingTab from "./BasicSettingTab";
 import MainSettingTab, { MainSettingTabProps } from "./MainSettingTab";
 
 type SettingsProps = {
@@ -9,7 +9,7 @@ type SettingsProps = {
 }
 
 export default function ConvertBox(props: SettingsProps) {
-  return props.isVisible && (
+  return (props.isVisible && (
     <Tab.Container defaultActiveKey="reconvsetting">
       <Card>
         <Card.Header>
@@ -49,5 +49,5 @@ export default function ConvertBox(props: SettingsProps) {
       </Tab.Content>
       </Card.Body>
       </Card>
-    </Tab.Container>) || <></>;
+    </Tab.Container>)) || <></>;
 }

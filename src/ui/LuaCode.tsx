@@ -45,7 +45,7 @@ constructor(props: LuaCodeProps) {
 
   render() {
     let i = Math.min(Math.max(this.state.index, 0), this.props.code.codes.length - 1);
-    return this.props.isVisible && (
+    return (this.props.isVisible && (
       <Card>
         <Card.Header>
           <Row className="align-items-center">
@@ -82,7 +82,7 @@ constructor(props: LuaCodeProps) {
           className="font-monospace p-1"
           value={this.props.code.codes[this.state.index] || ""}
           readOnly={true}/>
-      </Card>) || <></>;
+      </Card>)) || <></>;
   }
 }
 

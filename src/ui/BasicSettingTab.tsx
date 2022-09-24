@@ -35,7 +35,7 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
                 <Form.Check.Label htmlFor="rollsign">巻取り字幕モード</Form.Check.Label>
               </Form.Check>
               <Card.Text>
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a>
+                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank" rel="noopener noreferrer">Analog Destination Indicator(Rollsign)</a>
                 用の変換結果を出力します。<br />以下の一部設定は無効となります。
               </Card.Text>
               <Form.Group as={Row}>
