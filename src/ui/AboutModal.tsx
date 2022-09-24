@@ -10,7 +10,7 @@ export default function (props: ModalProps) {
       <Modal.Body>
         <section>
           <p>
-            Storm Kamishibai v0.5.2<br />
+            Storm Kamishibai v0.5.3<br />
             (C) 2022 Nona Takahara
           </p>
           <ul>
@@ -39,6 +39,14 @@ export default function (props: ModalProps) {
         </section>
         <hr />
         <h4>アップデートログ</h4>
+        <section>
+          <h5>v0.5.3</h5>
+          <ul>
+            <li>v0.5.0以降、生成結果が少なくなる再解析時にゴミデータが残る問題を修正</li>
+            <li>Luaコードの最大文字数を変更する機能を追加</li>
+            <li>古いWebブラウザへの対応を省略し、コード等を効率化</li>
+          </ul>
+        </section>
         <section>
           <h5>v0.5.2</h5>
           <ul>
