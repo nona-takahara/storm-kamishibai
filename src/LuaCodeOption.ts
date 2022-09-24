@@ -8,6 +8,7 @@ type LuaCodeOption = {
   luaRotate: number;
   luaCardIndexStartWith: number;
   luaReadChannel: number;
+  luaMaxLength: number;
 }
 
 export function getLuaCodeOptionDefault(): LuaCodeOption {
@@ -20,7 +21,8 @@ export function getLuaCodeOptionDefault(): LuaCodeOption {
     luaScaleV: 1,
     luaRotate: 0,
     luaCardIndexStartWith: 1,
-    luaReadChannel: 1
+    luaReadChannel: 1,
+    luaMaxLength: 4090
   };
 }
 

@@ -218,7 +218,7 @@ export default class App extends React.Component<any, AppState> {
         
         const cmd = new StartConvertCommand(state.convertOption, u, state.transparentStartOrder);
         this.getWorker().postMessage(cmd, cmd.getTransfer());
-        return { ...state, isWorking: true };
+        return { ...state, isWorking: true, luaCodes: [] };
       } else {
         return state;
       }

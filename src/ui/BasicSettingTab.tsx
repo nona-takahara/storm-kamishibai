@@ -48,7 +48,7 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
                     onChange={(evt) => { this.props.changeLuaCodeSettings({ luaRollSignGap: Number(evt.target.value) }); }} />
                 </Col>
               </Form.Group>
-              {(this.props.convertOption.luaCardHeight + this.props.luaCodeOption.luaRollSignGap) !== 32 ? (<Alert variant="warning" className="mb-0">
+              {(this.props.luaCodeOption.isRollSign && ((this.props.convertOption.luaCardHeight + this.props.luaCodeOption.luaRollSignGap) !== 32)) ? (<Alert variant="warning" className="mb-0">
                 <Row>
                   <Col xs="auto" className="pe-0">
                     <BsExclamationCircle />
@@ -79,6 +79,15 @@ export default class BasicSettingTab extends React.Component<BasicSettingTabProp
               defaultValue={this.props.luaCodeOption.luaReadChannel}
               disabled={this.props.luaCodeOption.isRollSign}
               onChange={(evt) => { this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) }); }} />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row}>
+          <Form.Label column xs={4}>1ブロックの最大文字数<br />(最大4096)</Form.Label>
+          <Col>
+            <Form.Control
+              type="number"
+              defaultValue={this.props.luaCodeOption.luaMaxLength}
+              onChange={(evt) => { this.props.changeLuaCodeSettings({ luaMaxLength: Number(evt.target.value) }); }} />
           </Col>
         </Form.Group>
         <Row>
