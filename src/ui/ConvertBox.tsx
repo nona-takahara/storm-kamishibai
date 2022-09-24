@@ -13,7 +13,7 @@ type ConvertBoxProps = {
 export default function ConvertBox(props: ConvertBoxProps) {
   const progress = (props.isWorking || !props.needReconvert) ? props.convertProgress : 0;
   const canReapply = (!props.needReconvert) && progress === 1;
-  return props.isVisible && (
+  return (props.isVisible && (
     <Card>
       <Card.Body>
         <Stack gap={2}>
@@ -33,5 +33,5 @@ export default function ConvertBox(props: ConvertBoxProps) {
         </Stack>
       </Card.Body>
     </Card>
-  ) || <></>;
+  )) || <></>;
 }

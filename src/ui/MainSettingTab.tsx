@@ -22,10 +22,6 @@ export type MainSettingTabProps = {
 }
 
 export default class MainSettingTab extends React.Component<MainSettingTabProps> {
-  constructor(props: MainSettingTabProps) {
-    super(props);
-  }
-
   handleColorChange(index: number, evt: React.ChangeEvent) {
     this.props.onColorChange(index, (evt.target as any).value);
   }
@@ -49,7 +45,7 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
     if (this.props.colorSet !== undefined) {
       k = new Array(this.props.colorSet.length);
       for (let i = 0; i < this.props.colorSet.length; i++) {
-        const v = this.props.colorSet[i];
+        //const v = this.props.colorSet[i];
         const undraw = this.props.colorOrder[i] >= this.props.transparentStartOrder;
         k[this.props.colorOrder[i]] = (
           <ListGroup.Item key={i} variant={undraw ? 'secondary' : ''}>

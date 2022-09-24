@@ -72,6 +72,7 @@ export default class FileSelector extends React.Component<FileSelectorProps, Fil
                   : (
                   <img
                       src={this.props.imageUrl}
+                      alt=""
                       style={{
                         height: this.props.height * Math.pow(2, this.state.scale),
                         width: this.props.width * Math.pow(2, this.state.scale),

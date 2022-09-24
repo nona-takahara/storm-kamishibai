@@ -1,7 +1,7 @@
 import { Alert, Modal } from "react-bootstrap";
 import ModalProps from "../ModalProps";
 
-export default function (props: ModalProps) {
+export default function HelpModal(props: ModalProps) {
   return (
     <Modal show={props.show} onHide={() => { props.onClose() }} aria-labelledby="contained-modal-title-vcenter" size="lg">
       <Modal.Header closeButton>

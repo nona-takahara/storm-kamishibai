@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import ModalProps from "../ModalProps";
 
-export default function (props: ModalProps) {
+export default function AboutModal(props: ModalProps) {
   return (
     <Modal show={props.show} onHide={() => { props.onClose() }} aria-labelledby="contained-modal-title-vcenter" size="lg">
       <Modal.Header closeButton>
@@ -14,10 +14,10 @@ export default function (props: ModalProps) {
             (C) 2022 Nona Takahara
           </p>
           <ul>
-            <li><a href="https://github.com/nona-takahara/storm-kamishibai" target="_blank">GitHub Repository</a></li>
-            <li><a href="https://forms.gle/TRxMsVQLBrCc3yJF7" target="_blank">問い合わせフォーム(Google Forms)</a></li>
-            <li>GitHub <a href="https://github.com/nona-takahara" target="_blank">nona-takahara</a></li>
-            <li>Twitter <a href="https://twitter.com/nona_takahara" target="_blank">@nona_takahara</a></li>
+            <li><a href="https://github.com/nona-takahara/storm-kamishibai" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+            <li><a href="https://forms.gle/TRxMsVQLBrCc3yJF7" target="_blank" rel="noopener noreferrer">問い合わせフォーム(Google Forms)</a></li>
+            <li>GitHub <a href="https://github.com/nona-takahara" target="_blank" rel="noopener noreferrer">nona-takahara</a></li>
+            <li>Twitter <a href="https://twitter.com/nona_takahara" target="_blank" rel="noopener noreferrer">@nona_takahara</a></li>
           </ul>
           <p>
             このアプリの変換処理は、ローカルで完結します。
@@ -30,7 +30,7 @@ export default function (props: ModalProps) {
           </p>
           <p>
             色変換テーブルは、Ossan3氏によるものを使用しています(
-            <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2569574227" target="_blank">LUA Display Color Picker</a>
+            <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2569574227" target="_blank" rel="noopener noreferrer">LUA Display Color Picker</a>
             )。
           </p>
           <p>
@@ -72,7 +72,7 @@ export default function (props: ModalProps) {
             <li>UIの大幅変更</li>
             <li>左下1ドットが欠けることがある問題の修正</li>
             <li>切り抜き範囲・スキップ設定を追加</li>
-            <li>くーく さんの<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank">Analog Destination Indicator(Rollsign)</a> に対応</li>
+            <li>くーく さんの<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank" rel="noopener noreferrer">Analog Destination Indicator(Rollsign)</a> に対応</li>
             <li>変換結果zipファイルダウンロード機能の追加</li>
           </ul>
         </section>
