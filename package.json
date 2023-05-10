@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@blueprintjs/core": "^4.18.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
@@ -12,6 +13,7 @@
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "@types/styled-components": "^5.1.26",
+    "bootstrap": "^5.2.3",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
     "parse-css-color": "^0.2.1",
