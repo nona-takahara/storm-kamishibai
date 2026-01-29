@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import React from 'react';
 import { Container, Navbar, Row, Col, Stack, Nav } from 'react-bootstrap';
 
@@ -5,10 +6,12 @@ import FileSelector from './ui/FileSelector';
 import LuaCode from './ui/LuaCode';
 import ConvertBox from './ui/ConvertBox';
 
-import LuaCodeOption, { getLuaCodeOptionDefault } from './LuaCodeOption';
+import type LuaCodeOption from './LuaCodeOption';
+import  { getLuaCodeOptionDefault } from './LuaCodeOption';
 import './App.scss';
 import Settings from './ui/Settings';
-import ConvertOption, { getConvertOptionDefault } from './ConvertOption';
+import type ConvertOption from './ConvertOption';
+import { getConvertOptionDefault } from './ConvertOption';
 import FinalizeLuaCode from './gencode/FinalizeLuaCode';
 import HelpModal from './ui/HelpModal';
 import AboutModal from './ui/AboutModal';
@@ -51,7 +54,9 @@ type AppState = {
   modalShow: '' | 'help' | 'about';
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default class App extends React.Component<any, AppState> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(props: any) {
     super(props);
     this.handleFileChange = this.handleFileChange.bind(this);
@@ -109,7 +114,7 @@ export default class App extends React.Component<any, AppState> {
 
     } else if (FileLoadedCommand.is(data)) {
       const colorSet = data.colorPallete.map((v) => new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw));
-      const orderTable = colorSet.map((v, i) => i);
+      const orderTable = colorSet.map((_, i) => i);
 
       this.setState({
         colorSet: colorSet, orderTable: orderTable, imageLoading: false,
@@ -253,6 +258,7 @@ export default class App extends React.Component<any, AppState> {
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
           if (Object.prototype.hasOwnProperty.call(ss, key)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (ss as any)[key] = (opt as any)[key];
           } else {
             console.error(`ConvertOptionに${key}というキーはありません`);
@@ -269,6 +275,7 @@ export default class App extends React.Component<any, AppState> {
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
           if (Object.prototype.hasOwnProperty.call(ss, key)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (ss as any)[key] = (opt as any)[key];
           } else {
             console.log(`LuaCodeOptionに${key}というキーはありません`);

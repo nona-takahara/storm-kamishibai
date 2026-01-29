@@ -1,5 +1,5 @@
 import { Modal } from "react-bootstrap";
-import ModalProps from "../ModalProps";
+import type ModalProps from "../ModalProps";
 
 export default function AboutModal(props: ModalProps) {
   return (

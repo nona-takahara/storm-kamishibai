@@ -1,7 +1,8 @@
 import { Nav, Tab, Card } from 'react-bootstrap';
 
 import BasicSettingTab from "./BasicSettingTab";
-import MainSettingTab, { MainSettingTabProps } from "./MainSettingTab";
+import MainSettingTab from "./MainSettingTab";
+import type { MainSettingTabProps } from "./MainSettingTab";
 
 type SettingsProps = {
   isVisible: boolean;

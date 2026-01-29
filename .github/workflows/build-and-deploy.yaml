@@ -17,21 +17,27 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [24]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 16.x
-      - name: Install NPM packages
-        run: npm ci
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependancies
+        run: pnpm install --frozen-lockfile
       - name: Build website
-        run: npm run build
+        run: pnpm build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: build
+          path: dist
   
   deploy:
     needs: build

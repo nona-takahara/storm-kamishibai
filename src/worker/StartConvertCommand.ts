@@ -1,5 +1,5 @@
 import WorkerCommand from "./WorkerCommand";
-import ConvertOption from "../ConvertOption";
+import type ConvertOption from "../ConvertOption";
 
 const commandName = 'start-convert';
 

@@ -18,7 +18,7 @@ export default class Color {
     this.originalA = a;
     this.raw = raw;
 
-    let k = Lut.map((v) => v);
+    const k = Lut.map((v) => v);
     k[256] = 256;
     
     this.convertedR = Math.max(0, k.findIndex((v) => r < v) - 1);

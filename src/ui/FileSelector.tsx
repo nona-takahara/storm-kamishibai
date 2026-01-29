@@ -3,6 +3,7 @@ import { Button, Card, Col, Form, InputGroup, OverlayTrigger, Row, Spinner, Stac
 import { BsDashCircle, BsPlusCircle } from 'react-icons/bs';
 
 export type FileSelectorProps = {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   onFileChange: Function;
   imageUrl: string;
   width: number;

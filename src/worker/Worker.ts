@@ -1,5 +1,6 @@
 import WorkerCommand from "./WorkerCommand";
-import ConvertOption, { getConvertOptionDefault } from "../ConvertOption";
+import { getConvertOptionDefault } from "../ConvertOption";
+import type ConvertOption from "../ConvertOption";
 import ConvertResultCommand from "./ConvertResultCommand";
 import ConvertSucceedCommand from "./ConvertSucceedCommand";
 import FileLoadedCommand from "./FileLoadedCommand";
@@ -44,8 +45,7 @@ function defaultWorkerData(): WorkerData {
   };
 }
 
-// eslint-disable-next-line
-const ctx: any = self as any;
+const ctx = self as DedicatedWorkerGlobalScope;
 let workerData: WorkerData;
 
 ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
@@ -53,7 +53,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
   if (!workerData) {
     workerData = defaultWorkerData();
   }
-  if (ctx.Worker) {
+  if (Worker) {
     if (!workerData.subWorker) {
       workerData.subWorker = new Worker(new URL('../gencode/GenCode.ts', import.meta.url));
       workerData.subWorker.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
@@ -129,7 +129,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     } else if (StartConvertCommand.is(data)) {
       workerData.convRule = data.settings;
       // 生データと決定稿のパレット順序から、今回の処理するデータ形式を確定
-      workerData.convData = workerData.rdata.map((v: any) => data.colorPallete.indexOf(v));
+      workerData.convData = workerData.rdata.map((v) => data.colorPallete.indexOf(v));
       workerData.transparentStartWith = data.colorPalleteLength;
       workerData.palleteLength = data.colorPallete.length;
 
@@ -160,7 +160,7 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
         postMessage(cmd, cmd.getTransfer());
       }
     } else if (TerminateConverterCommand.is(data)) {
-      if (ctx.Worker) {
+      if (Worker) {
         workerData.subWorker?.terminate();
         workerData.subWorker = undefined;
       } else {
@@ -176,7 +176,7 @@ function convertCard(): boolean {
     return false;
   }
 
-  if (ctx.Worker) {
+  if (Worker) {
     workerData.subWorker?.postMessage(cmd, cmd.getTransfer());
   } else {
     postMessage(cmd, cmd.getTransfer());

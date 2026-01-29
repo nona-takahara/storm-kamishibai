@@ -33,7 +33,7 @@ constructor(props: LuaCodeProps) {
   }
 
   handleDownloadClick() {
-    let zip = new JSZip();
+    const zip = new JSZip();
     for (let i = 0; i < this.props.code.codes.length; i++) {
       const c = this.props.code.codes[i];
       zip.file(`storm-kamishibai/data${i + 1}.lua`, c);
@@ -44,7 +44,7 @@ constructor(props: LuaCodeProps) {
   }
 
   render() {
-    let i = Math.min(Math.max(this.state.index, 0), this.props.code.codes.length - 1);
+    const i = Math.min(Math.max(this.state.index, 0), this.props.code.codes.length - 1);
     return (this.props.isVisible && (
       <Card>
         <Card.Header>
