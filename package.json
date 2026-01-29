@@ -1,7 +1,7 @@
 {
   "name": "storm-kamishibai",
   "private": true,
-  "version": "0.5.3",
+  "version": "0.5.4",
   "type": "module",
   "homepage": "./",
   "scripts": {
