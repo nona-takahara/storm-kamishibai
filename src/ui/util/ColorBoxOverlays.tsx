@@ -1,5 +1,5 @@
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Placement } from "react-bootstrap/esm/types";
+import type { Placement } from "react-bootstrap/esm/types";
 
 type ColorBoxProps = {
   r: number;
@@ -9,6 +9,7 @@ type ColorBoxProps = {
 }
 
 export default function ColorBoxOverlays(props: ColorBoxProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const overlay = (kprops: any) => (
     <Tooltip {...kprops}>
       {`rgb(${props.r}, ${props.g}, ${props.b})`}

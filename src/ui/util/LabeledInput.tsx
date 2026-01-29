@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FloatingLabel, Form } from "react-bootstrap";
 
 export type LabeledInputProps = {

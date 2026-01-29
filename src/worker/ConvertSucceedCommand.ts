@@ -1,5 +1,5 @@
 import WorkerCommand from "./WorkerCommand";
-import { ConvertInfo } from "../ConvertOption";
+import type { ConvertInfo } from "../ConvertOption";
 
 const commandName = 'convert-succeed';
 

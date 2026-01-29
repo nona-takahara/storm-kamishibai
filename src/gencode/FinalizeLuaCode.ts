@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Color from "../Color";
-import ConvertOption from "../ConvertOption";
-import LuaCodeOption from "../LuaCodeOption";
+import type ConvertOption from "../ConvertOption";
+import type LuaCodeOption from "../LuaCodeOption";
 import FinalLuaCode from "./FinalLuaCode";
 
 export default function FinalizeLuaCode(sn: string[][], orderdColor: Color[], copt: ConvertOption, lopt: LuaCodeOption): FinalLuaCode {
@@ -32,7 +33,7 @@ function onDraw()S=screen C=S.setColor`;
     const outerBottom = '\nend';
     return standardFinalize(sn, orderdColor, lopt, outerFront, outerBottom, defaultFrame);
   } else {
-    let ph = {
+    const ph = {
       offsetX: (lopt.luaOffsetX === 0) ? '' : `+${lopt.luaOffsetX}`,
       funcV: (copt.luaVCompress) ? '\nfunction V(x,y,h)R(x,y,1,h)end' : '',
       funcH: (copt.luaHCompress) ? '\nfunction H(x,y,w)R(x,y,w,1)end' : ''
@@ -50,11 +51,11 @@ function onDraw()S=screen C=S.setColor`;
 }
 
 function standardFinalize(sn: string[][], orderdColor: Color[], opt: LuaCodeOption, outerFront: string, outerBottom: string, frame: (index: number, offset: number, snippet: string) => string): FinalLuaCode {
-  let maxLength = opt.luaMaxLength - (bytelen(outerFront) + bytelen(outerBottom));
+  const maxLength = opt.luaMaxLength - (bytelen(outerFront) + bytelen(outerBottom));
   let haveOverRun = false;
   let haveColorDiv = false;
 
-  let r: string[] = [];
+  const r: string[] = [];
   let blockLP = '';
   for (let i = 0; i < sn.length; i++) {
     const k = sn[i].map((v, j) => {
@@ -65,7 +66,7 @@ function standardFinalize(sn: string[][], orderdColor: Color[], opt: LuaCodeOpti
 
     // 基本のフレーム文法作成
     let frameLP = frame(i, opt.luaCardIndexStartWith, k.join(''));
-    let frameSize = bytelen(frame(i, opt.luaCardIndexStartWith, ''));
+    const frameSize = bytelen(frame(i, opt.luaCardIndexStartWith, ''));
 
     // 問題がない場合は単純追加
     if (blockLP !== '' && (bytelen(blockLP) + bytelen(frameLP)) > maxLength) {
@@ -87,12 +88,12 @@ function standardFinalize(sn: string[][], orderdColor: Color[], opt: LuaCodeOpti
           if ((bytelen(colorLP) + frameSize) > maxLength) {
             haveColorDiv = true;
 
-            let v_color = colorLP.slice(0, colorLP.indexOf(')') + 1);
+            const v_color = colorLP.slice(0, colorLP.indexOf(')') + 1);
             colorLP = colorLP.slice(colorLP.indexOf(')') + 1);
             const localMaxLength = maxLength - frameSize - bytelen(v_color);
 
             while (bytelen(colorLP) > localMaxLength) {
-              let cutpoint = colorLP.lastIndexOf(')', localMaxLength - 1) + 1;
+              const cutpoint = colorLP.lastIndexOf(')', localMaxLength - 1) + 1;
               r.push(frame(i, opt.luaCardIndexStartWith, v_color + colorLP.slice(0, cutpoint)));
               colorLP = colorLP.slice(cutpoint);
             }
@@ -121,6 +122,8 @@ function defaultFrame(index: number, offset: number, snippet: string) {
 }
 
 function rollFinalize(last: number) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return ((index: number, offset: number, snippet: string) => {
     if (snippet.length === 0) {
       return '';

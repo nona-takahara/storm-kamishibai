@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Alert, Card, Col, Form, InputGroup, ListGroup, Row, Stack } from "react-bootstrap";
 import Color from "../Color";
-import ConvertOption from "../ConvertOption";
+import type ConvertOption from "../ConvertOption";
 import ColorListItem from "./ColorListItem";
 import LabeledInput from "./util/LabeledInput";
-import LuaCodeOption from "../LuaCodeOption";
+import type LuaCodeOption from "../LuaCodeOption";
 import { BsExclamationCircle } from "react-icons/bs";
 
 export type MainSettingTabProps = {

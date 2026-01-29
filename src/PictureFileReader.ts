@@ -20,7 +20,7 @@ export async function fileToU8Image(file: File, lutFlag: boolean): Promise<OpenF
 
 function fileReadAsDataURL(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    let freader = new FileReader();
+    const freader = new FileReader();
     freader.onload = ((evt) => {
       if (evt.target!.result !== null) {
         resolve(evt.target!.result as string);
@@ -34,7 +34,7 @@ function fileReadAsDataURL(file: File): Promise<string> {
 
 function imageLoad(imageDataUri: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
-    let img = new Image();
+    const img = new Image();
     img.src = imageDataUri;
 
     img.onload = () => { resolve(img); };
@@ -44,17 +44,17 @@ function imageLoad(imageDataUri: string): Promise<HTMLImageElement> {
 
 function u8ImageDataLoad(convert: boolean, imgElement: HTMLImageElement): Promise<Uint8ClampedArray> {
   return new Promise((resolve, reject) => {
-    let canvas = document.createElement('canvas');
-    let w = imgElement.naturalWidth, h = imgElement.naturalHeight;
+    const canvas = document.createElement('canvas');
+    const w = imgElement.naturalWidth, h = imgElement.naturalHeight;
     canvas.width = w;
     canvas.height = h;
 
-    let context = canvas.getContext('2d');
+    const context = canvas.getContext('2d');
     if (context !== null) {
       context.drawImage(imgElement, 0, 0);
       let res = context.getImageData(0, 0, w, h).data
       if (convert) {
-        let k = Lut.map((v) => v);
+        const k = Lut.map((v) => v);
         k[256] = 256;
         //res = Uint8ClampedArray.from(Array.from(res).map((f, i) => (i%4 === 3) ? f : Lut[Math.max(0, k.findIndex((v) => (Math.floor(f/255*8)/8*255) < v) - 1)]));
         res = Uint8ClampedArray.from(Array.from(res).map((f, i) => (i%4 === 3) ? f : Lut[Math.max(0, k.findIndex((v) => f < v) - 1)]));

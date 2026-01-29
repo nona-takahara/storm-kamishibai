@@ -1,16 +1,18 @@
 import React from "react";
 import { Card, InputGroup, Row, Col, FormControl, Stack, Form, Alert, ButtonGroup, ToggleButton } from "react-bootstrap";
 import { BsArrowDownSquareFill, BsArrowLeftSquareFill, BsArrowRightSquareFill, BsArrowUpSquareFill, BsExclamationCircle } from "react-icons/bs";
-import ConvertOption from "../ConvertOption";
-import LuaCodeOption from "../LuaCodeOption";
+import type ConvertOption from "../ConvertOption";
+import type LuaCodeOption from "../LuaCodeOption";
 import LabeledInput from "./util/LabeledInput";
 
 export type BasicSettingTabProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   changeLuaCodeSettings: (v: LuaCodeOption | any, needReconvert?: boolean) => any;
   convertOption: ConvertOption;
   luaCodeOption: LuaCodeOption;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type BasicSettingTabState = {
 }
 
