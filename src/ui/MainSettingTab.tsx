@@ -10,7 +10,7 @@ import type LuaCodeOption from '../LuaCodeOption';
 import ColorListItem from './ColorListItem';
 import LabeledInput from './util/LabeledInput';
 
-export type MainSettingTabProps = {
+export type MainSettingTabPropsBase = {
   changeConvertSettings: (v: ConvertOption | any, needReconvert?: boolean) => any;
   changeLuaCodeSettings: (v: LuaCodeOption | any) => any;
   luaCodeOption: LuaCodeOption;
@@ -22,9 +22,11 @@ export type MainSettingTabProps = {
   onDrawFlagChange: Function;
   onMoveUpClick: Function;
   onMoveDownClick: Function;
-} & WithTranslation;
+};
 
-class MainSettingTab extends React.Component<MainSettingTabProps> {
+export type MainSettingTabProps = MainSettingTabPropsBase;
+
+class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTranslation> {
   handleColorChange(index: number, evt: React.ChangeEvent) {
     this.props.onColorChange(index, (evt.target as any).value);
   }
