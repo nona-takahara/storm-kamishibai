@@ -1,4 +1,4 @@
-﻿Storm Kamishibai v0.5.4
+Storm Kamishibai v0.5.4
 
 (C) 2022, 2026 Nona Takahara
 

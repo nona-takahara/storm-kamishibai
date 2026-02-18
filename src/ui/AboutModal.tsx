@@ -1,4 +1,4 @@
-﻿import { Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import type ModalProps from '../ModalProps';
 import LocalizedMarkdown from './LocalizedMarkdown';

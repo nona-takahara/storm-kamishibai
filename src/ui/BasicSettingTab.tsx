@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Alert, ButtonGroup, Card, Col, Form, FormControl, InputGroup, Row, Stack, ToggleButton } from 'react-bootstrap';
 import { BsArrowDownSquareFill, BsArrowLeftSquareFill, BsArrowRightSquareFill, BsArrowUpSquareFill, BsExclamationCircle } from 'react-icons/bs';
 import { withTranslation, type WithTranslation } from 'react-i18next';

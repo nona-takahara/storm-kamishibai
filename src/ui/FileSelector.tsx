@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Button, Card, Col, Form, InputGroup, OverlayTrigger, Row, Spinner, Stack, Tooltip } from 'react-bootstrap';
 import { BsDashCircle, BsPlusCircle } from 'react-icons/bs';
 import { withTranslation, type WithTranslation } from 'react-i18next';

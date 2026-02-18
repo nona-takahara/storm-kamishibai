@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Alert, Card, Col, Form, InputGroup, ListGroup, Row, Stack } from 'react-bootstrap';

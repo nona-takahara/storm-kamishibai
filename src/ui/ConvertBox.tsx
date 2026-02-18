@@ -1,4 +1,4 @@
-﻿import { Button, Card, Col, Row, Stack } from 'react-bootstrap';
+import { Button, Card, Col, Row, Stack } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 type ConvertBoxProps = {

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Button, Card, Col, InputGroup, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
 import { BsDownload, BsFillCaretLeftFill, BsFillCaretRightFill, BsFillExclamationTriangleFill } from 'react-icons/bs';
 import { withTranslation, type WithTranslation } from 'react-i18next';
