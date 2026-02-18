@@ -1,4 +1,5 @@
 import { Nav, Tab, Card } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import BasicSettingTab from "./BasicSettingTab";
 import MainSettingTab from "./MainSettingTab";
@@ -10,16 +11,17 @@ type SettingsProps = {
 }
 
 export default function ConvertBox(props: SettingsProps) {
+  const { t } = useTranslation();
   return (props.isVisible && (
     <Tab.Container defaultActiveKey="reconvsetting">
       <Card>
         <Card.Header>
           <Nav variant="tabs" >
             <Nav.Item>
-              <Nav.Link eventKey="reconvsetting">解析オプション</Nav.Link>
+              <Nav.Link eventKey="reconvsetting">{t('settings.reconvTab')}</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="mainsetting">描画オプション</Nav.Link>
+              <Nav.Link eventKey="mainsetting">{t('settings.mainTab')}</Nav.Link>
             </Nav.Item>
           </Nav>
         </Card.Header>

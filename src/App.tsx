@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+﻿import { useCallback, useEffect, useRef, useState } from 'react';
 import { Col, Container, Nav, Navbar, Row, Stack } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 import type ConvertOption from './ConvertOption';
 import { getConvertOptionDefault } from './ConvertOption';
@@ -30,6 +31,7 @@ import './App.scss';
 type ModalView = '' | 'help' | 'about';
 
 export default function App() {
+  const { t } = useTranslation();
   const [imageUrl, setImageUrl] = useState('');
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
@@ -291,11 +293,9 @@ export default function App() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
             <Nav>
-              <Nav.Link href="https://forms.gle/TRxMsVQLBrCc3yJF7" target="_blank">
-                問い合わせフォーム
-              </Nav.Link>
-              <Nav.Link onClick={() => setModalShow('help')}>使い方</Nav.Link>
-              <Nav.Link onClick={() => setModalShow('about')}>このアプリについて</Nav.Link>
+              <Nav.Link href="https://forms.gle/TRxMsVQLBrCc3yJF7" target="_blank">{t('app.contact')}</Nav.Link>
+              <Nav.Link onClick={() => setModalShow('help')}>{t('app.help')}</Nav.Link>
+              <Nav.Link onClick={() => setModalShow('about')}>{t('app.about')}</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -349,3 +349,4 @@ export default function App() {
     </>
   );
 }
+
