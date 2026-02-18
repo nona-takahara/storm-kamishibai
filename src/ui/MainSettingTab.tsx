@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import { Alert, Card, Col, Form, InputGroup, ListGroup, Row, Stack } from "react-bootstrap";
-import Color from "../Color";
-import type ConvertOption from "../ConvertOption";
-import ColorListItem from "./ColorListItem";
-import LabeledInput from "./util/LabeledInput";
-import type LuaCodeOption from "../LuaCodeOption";
-import { BsExclamationCircle } from "react-icons/bs";
+import React from 'react';
+import { Alert, Card, Col, Form, InputGroup, ListGroup, Row, Stack } from 'react-bootstrap';
+import { BsExclamationCircle } from 'react-icons/bs';
+import { withTranslation, type WithTranslation } from 'react-i18next';
+import Color from '../Color';
+import type ConvertOption from '../ConvertOption';
+import type LuaCodeOption from '../LuaCodeOption';
+import ColorListItem from './ColorListItem';
+import LabeledInput from './util/LabeledInput';
 
-export type MainSettingTabProps = {
+export type MainSettingTabPropsBase = {
   changeConvertSettings: (v: ConvertOption | any, needReconvert?: boolean) => any;
   changeLuaCodeSettings: (v: LuaCodeOption | any) => any;
   luaCodeOption: LuaCodeOption;
@@ -21,9 +22,11 @@ export type MainSettingTabProps = {
   onDrawFlagChange: Function;
   onMoveUpClick: Function;
   onMoveDownClick: Function;
-}
+};
 
-export default class MainSettingTab extends React.Component<MainSettingTabProps> {
+export type MainSettingTabProps = MainSettingTabPropsBase;
+
+class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTranslation> {
   handleColorChange(index: number, evt: React.ChangeEvent) {
     this.props.onColorChange(index, (evt.target as any).value);
   }
@@ -43,13 +46,13 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
   }
 
   render() {
-    let k: any = false
+    const { t } = this.props;
+    let list: any = false;
     if (this.props.colorSet !== undefined) {
-      k = new Array(this.props.colorSet.length);
+      list = new Array(this.props.colorSet.length);
       for (let i = 0; i < this.props.colorSet.length; i++) {
-        //const v = this.props.colorSet[i];
         const undraw = this.props.colorOrder[i] >= this.props.transparentStartOrder;
-        k[this.props.colorOrder[i]] = (
+        list[this.props.colorOrder[i]] = (
           <ListGroup.Item key={i} variant={undraw ? 'secondary' : ''}>
             <ColorListItem
               order={this.props.colorOrder[i]}
@@ -60,9 +63,12 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
               onDrawFlagChange={(e) => this.handleDrawFlagChange(i, e)}
               onMoveUpClick={(e) => this.handleMoveUpClick(i, e)}
               onMoveDownClick={(e) => this.handleMoveDownClick(i, e)}
-            /></ListGroup.Item>);
+            />
+          </ListGroup.Item>
+        );
       }
     }
+
     return (
       <Stack gap={2}>
         <Alert variant="info" className="mb-0">
@@ -70,95 +76,78 @@ export default class MainSettingTab extends React.Component<MainSettingTabProps>
             <Col xs="auto" className="pe-0">
               <BsExclamationCircle />
             </Col>
-            <Col>
-              この解析オプションを変更すると再度解析が必要になります。
-            </Col>
+            <Col>{t('main.info')}</Col>
           </Row>
         </Alert>
         <Card>
-          <Card.Header>
-            画像切り抜き設定
-          </Card.Header>
+          <Card.Header>{t('main.imageConversionSettings')}</Card.Header>
           <Card.Body>
             <Stack gap={1}>
               <Row>
-                <Form.Label column xs={2}>
-                  サイズ
-                </Form.Label>
+                <Form.Label column xs={2}>{t('main.size')}</Form.Label>
                 <InputGroup as={Col}>
                   <LabeledInput
-                    label="幅"
+                    label={t('main.width')}
                     type="number"
                     defaultValue={this.props.convertOption.luaCardWidth}
-                    onChange={(e) => {
-                      this.props.changeConvertSettings({ luaCardWidth: Number(e.target.value) }, true);
-                    }} />
+                    onChange={(e) => this.props.changeConvertSettings({ luaCardWidth: Number(e.target.value) }, true)}
+                  />
                   <LabeledInput
-                    label="高さ"
+                    label={t('main.height')}
                     type="number"
                     defaultValue={this.props.convertOption.luaCardHeight}
-                    onChange={(e) => {
-                      this.props.changeConvertSettings({ luaCardHeight: Number(e.target.value) }, true);
-                    }} />
+                    onChange={(e) => this.props.changeConvertSettings({ luaCardHeight: Number(e.target.value) }, true)}
+                  />
                 </InputGroup>
               </Row>
               <Row className="mt-3">
-                <Form.Label column xs={2}>
-                  開始位置
-                </Form.Label>
+                <Form.Label column xs={2}>{t('main.offset')}</Form.Label>
                 <InputGroup as={Col}>
                   <LabeledInput
-                    label="X"
+                    label={t('main.x')}
                     type="number"
                     defaultValue={this.props.convertOption.pictureOffsetX}
-                    onChange={(e) => {
-                      this.props.changeConvertSettings({ pictureOffsetX: Number(e.target.value) }, true);
-                    }} />
+                    onChange={(e) => this.props.changeConvertSettings({ pictureOffsetX: Number(e.target.value) }, true)}
+                  />
                   <LabeledInput
-                    label="Y"
+                    label={t('main.y')}
                     type="number"
                     defaultValue={this.props.convertOption.pictureOffsetY}
-                    onChange={(e) => {
-                      this.props.changeConvertSettings({ pictureOffsetY: Number(e.target.value) }, true);
-                    }} />
+                    onChange={(e) => this.props.changeConvertSettings({ pictureOffsetY: Number(e.target.value) }, true)}
+                  />
                 </InputGroup>
               </Row>
               <Row>
-                <Form.Label column xs={2}>
-                  スキップ
-                </Form.Label>
+                <Form.Label column xs={2}>{t('main.skip')}</Form.Label>
                 <InputGroup as={Col}>
                   <LabeledInput
-                    label="水平"
+                    label={t('main.horizonal')}
                     type="number"
                     defaultValue={this.props.convertOption.pictureSkipH}
-                    onChange={(e) => {
-                      this.props.changeConvertSettings({ pictureSkipH: Number(e.target.value) }, true);
-                    }} />
+                    onChange={(e) => this.props.changeConvertSettings({ pictureSkipH: Number(e.target.value) }, true)}
+                  />
                   <LabeledInput
-                    label="垂直"
+                    label={t('main.vectral')}
                     type="number"
                     defaultValue={this.props.convertOption.pictureSkipV}
-                    onChange={(e) => {
-                      this.props.changeConvertSettings({ pictureSkipV: Number(e.target.value) }, true);
-                    }} />
+                    onChange={(e) => this.props.changeConvertSettings({ pictureSkipV: Number(e.target.value) }, true)}
+                  />
                 </InputGroup>
               </Row>
             </Stack>
           </Card.Body>
         </Card>
         <Card>
-          <Card.Header>
-            色の重ね順序
-          </Card.Header>
+          <Card.Header>{t('main.colorOrderAndDrawFlags')}</Card.Header>
           <Card.Body className="p-0">
-            <ListGroup variant='flush'>
-              {k}
-            </ListGroup>
+            <ListGroup variant="flush">{list}</ListGroup>
           </Card.Body>
         </Card>
       </Stack>
     );
   }
 }
+
+const TranslatedMainSettingTab = withTranslation()(MainSettingTab);
+export default TranslatedMainSettingTab;
 

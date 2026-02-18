@@ -107,6 +107,7 @@ function convertLayer(picture: Uint32Array, w: number, h: number, targetColor: n
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function makeIndexer(width: number, height: number) {
   return (x: number, y: number) => {
     return y * width + x;

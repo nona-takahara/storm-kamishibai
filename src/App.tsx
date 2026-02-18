@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import React from 'react';
 import { Container, Navbar, Row, Col, Stack, Nav } from 'react-bootstrap';
-
+import { withTranslation, type WithTranslation } from 'react-i18next';
 import FileSelector from './ui/FileSelector';
 import LuaCode from './ui/LuaCode';
 import ConvertBox from './ui/ConvertBox';
@@ -55,7 +55,7 @@ type AppState = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default class App extends React.Component<any, AppState> {
+class App extends React.Component<any & WithTranslation, AppState> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(props: any) {
     super(props);
@@ -261,7 +261,7 @@ export default class App extends React.Component<any, AppState> {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (ss as any)[key] = (opt as any)[key];
           } else {
-            console.error(`ConvertOptionに${key}というキーはありません`);
+            console.error(`Key ${key} is not found in ConvertOption.`);
           }
         }
       }
@@ -278,7 +278,7 @@ export default class App extends React.Component<any, AppState> {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (ss as any)[key] = (opt as any)[key];
           } else {
-            console.log(`LuaCodeOptionに${key}というキーはありません`);
+            console.log(`Key ${key} is not found in LuaCodeOption.`);
           }
           
         }
@@ -288,6 +288,7 @@ export default class App extends React.Component<any, AppState> {
   }
 
   render(): React.ReactNode {
+    const { t } = this.props;
     return (
       <>
         <Navbar collapseOnSelect expand="md" bg="light">
@@ -296,9 +297,9 @@ export default class App extends React.Component<any, AppState> {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
               <Nav>
-                <Nav.Link href='https://forms.gle/TRxMsVQLBrCc3yJF7' target="_blank">問い合わせフォーム</Nav.Link>
-                <Nav.Link onClick={() => { this.setState({ modalShow: 'help' }); }}>使い方</Nav.Link>
-                <Nav.Link onClick={() => { this.setState({ modalShow: 'about' }); }}>このアプリについて</Nav.Link>
+                <Nav.Link href='https://forms.gle/TRxMsVQLBrCc3yJF7' target="_blank">{t('app.contact')}</Nav.Link>
+                <Nav.Link onClick={() => { this.setState({ modalShow: 'help' }); }}>{t('app.help')}</Nav.Link>
+                <Nav.Link onClick={() => { this.setState({ modalShow: 'about' }); }}>{t('app.about')}</Nav.Link>
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -343,7 +344,8 @@ export default class App extends React.Component<any, AppState> {
                   onMoveUpClick: this.handleOnMoveUpClick,
                   onMoveDownClick: this.handleOnMoveDownClick,
                   onColorChange: this.handleOnColorChange
-                }} />
+                }}
+                />
             </Col>
           </Row>
         </Container>
@@ -353,3 +355,5 @@ export default class App extends React.Component<any, AppState> {
     );
   }
 }
+
+export default withTranslation()(App);
