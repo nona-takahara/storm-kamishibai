@@ -13,17 +13,26 @@ export default function LocalizedMarkdown(props: LocalizedMarkdownProps) {
   useEffect(() => {
     let canceled = false;
     const fallbackLanguage = props.fallbackLanguage ?? 'en';
-    const paths = [`/content/${props.language}/${props.pathBase}.md`, `/content/${fallbackLanguage}/${props.pathBase}.md`];
+    const baseUrl = import.meta.env.BASE_URL;
+    const normalizedLanguage = props.language.split('-')[0];
+    const candidates = [props.language, normalizedLanguage, fallbackLanguage].filter(
+      (v, i, arr) => v && arr.indexOf(v) === i,
+    );
+    const paths = candidates.map((lang) => `${baseUrl}content/${lang}/${props.pathBase}.md`);
 
     const load = async () => {
       for (const path of paths) {
-        const res = await fetch(path);
-        if (res.ok) {
-          const text = await res.text();
-          if (!canceled) {
-            setContent(text);
+        try {
+          const res = await fetch(path);
+          if (res.ok) {
+            const text = await res.text();
+            if (!canceled) {
+              setContent(text);
+            }
+            return;
           }
-          return;
+        } catch {
+          // Try next candidate language file.
         }
       }
       if (!canceled) {

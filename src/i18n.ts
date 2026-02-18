@@ -1,4 +1,4 @@
-﻿import i18n from 'i18next';
+import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 const resources = {
@@ -22,6 +22,7 @@ const resources = {
       },
       landing: {
         title: 'What can Storm Kamishibai do?',
+        exampleAlt: 'Example image',
       },
       fileSelector: {
         title: 'Image selection',
@@ -87,6 +88,7 @@ const resources = {
       },
       landing: {
         title: 'Storm Kamishibaiで何ができる？',
+        exampleAlt: '見本画像',
       },
       fileSelector: {
         title: '画像選択',

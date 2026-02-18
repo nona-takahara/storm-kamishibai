@@ -1,4 +1,4 @@
-﻿import { Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import LocalizedMarkdown from './LocalizedMarkdown';
 
@@ -14,6 +14,7 @@ export default function LandingBox(props: LandingBoxProps) {
       <Card>
         <Card.Header>{t('landing.title')}</Card.Header>
         <Card.Body>
+          <img src="example.png" className="m-1 float-end" alt={t('landing.exampleAlt')} />
           <LocalizedMarkdown pathBase="landing" language={i18n.resolvedLanguage ?? 'ja'} />
         </Card.Body>
       </Card>
