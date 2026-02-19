@@ -12,6 +12,7 @@ jobs:
   check-head-branch:
     name: Check PR source branch
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' }}
     steps:
       - name: Inspect PR metadata
         run: |
