@@ -6,23 +6,24 @@ type ColorBoxProps = {
   g: number;
   b: number;
   placement?: Placement;
-}
+};
 
 export default function ColorBoxOverlays(props: ColorBoxProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const overlay = (kprops: any) => (
-    <Tooltip {...kprops}>
-      {`rgb(${props.r}, ${props.g}, ${props.b})`}
-    </Tooltip>
+    <Tooltip {...kprops}>{`rgb(${props.r}, ${props.g}, ${props.b})`}</Tooltip>
   );
 
   return (
-    <OverlayTrigger
-      overlay={overlay} {...props}>
-      <span style={{
-        width: '1em',
-        height: '1em',
-        backgroundColor: `rgb(${props.r},${props.g},${props.b})`,
-        border: '1px solid rgb(0,0,0)'
-      }} /></OverlayTrigger>);
+    <OverlayTrigger overlay={overlay} {...props}>
+      <span
+        style={{
+          width: "1em",
+          height: "1em",
+          backgroundColor: `rgb(${props.r},${props.g},${props.b})`,
+          border: "1px solid rgb(0,0,0)",
+        }}
+      />
+    </OverlayTrigger>
+  );
 }

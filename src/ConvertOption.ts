@@ -7,7 +7,7 @@ type ConvertOption = {
   pictureOffsetY: number;
   pictureSkipH: number;
   pictureSkipV: number;
-}
+};
 
 export function getConvertOptionDefault(): ConvertOption {
   return {
@@ -24,13 +24,13 @@ export function getConvertOptionDefault(): ConvertOption {
 
 export type ConvertInfo = {
   offsetListIndex: number;
-}
+};
 
 export type ConvertResultInfo = {
   offsetListIndex: number;
   finished: number;
   length: number;
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

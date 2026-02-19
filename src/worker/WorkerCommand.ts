@@ -1,4 +1,4 @@
 export default abstract class WorkerCommand {
-  readonly abstract command: string;
+  abstract readonly command: string;
   public abstract getTransfer(): Array<Transferable>;
 }

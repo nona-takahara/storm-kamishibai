@@ -1,35 +1,35 @@
 /* eslint-disable prefer-const */
-import React from 'react';
-import { Container, Navbar, Row, Col, Stack, Nav } from 'react-bootstrap';
-import { withTranslation, type WithTranslation } from 'react-i18next';
-import FileSelector from './ui/FileSelector';
-import LuaCode from './ui/LuaCode';
-import ConvertBox from './ui/ConvertBox';
+import React from "react";
+import { Container, Navbar, Row, Col, Stack, Nav } from "react-bootstrap";
+import { withTranslation, type WithTranslation } from "react-i18next";
+import FileSelector from "./ui/FileSelector";
+import LuaCode from "./ui/LuaCode";
+import ConvertBox from "./ui/ConvertBox";
 
-import type LuaCodeOption from './LuaCodeOption';
-import  { getLuaCodeOptionDefault } from './LuaCodeOption';
-import './App.scss';
-import Settings from './ui/Settings';
-import type ConvertOption from './ConvertOption';
-import { getConvertOptionDefault } from './ConvertOption';
-import FinalizeLuaCode from './gencode/FinalizeLuaCode';
-import HelpModal from './ui/HelpModal';
-import AboutModal from './ui/AboutModal';
-import LandingBox from './ui/LandingBox';
-import FinalLuaCode from './gencode/FinalLuaCode';
-import ConvertCardCommand from './worker/ConvertCardCommand';
-import ConvertSucceedCommand from './worker/ConvertSucceedCommand';
-import TerminateConverterCommand from './worker/TerminateConverterCommand';
-import StartConvertCommand from './worker/StartConvertCommand';
-import OpenFileCommand from './worker/OpenFileCommand';
-import { fileToU8Image } from './PictureFileReader';
-import Color from './Color';
-import FileLoadedCommand from './worker/FileLoadedCommand';
-import WorkerCommand from './worker/WorkerCommand';
-import ConvertResultCommand from './worker/ConvertResultCommand';
-import EndConvertCommand from './worker/EndConvertCommand';
-import MainWorker from './worker/Worker.ts?worker';
-import GenCodeWorker from './gencode/GenCode.ts?worker';
+import type LuaCodeOption from "./LuaCodeOption";
+import { getLuaCodeOptionDefault } from "./LuaCodeOption";
+import "./App.scss";
+import Settings from "./ui/Settings";
+import type ConvertOption from "./ConvertOption";
+import { getConvertOptionDefault } from "./ConvertOption";
+import FinalizeLuaCode from "./gencode/FinalizeLuaCode";
+import HelpModal from "./ui/HelpModal";
+import AboutModal from "./ui/AboutModal";
+import LandingBox from "./ui/LandingBox";
+import FinalLuaCode from "./gencode/FinalLuaCode";
+import ConvertCardCommand from "./worker/ConvertCardCommand";
+import ConvertSucceedCommand from "./worker/ConvertSucceedCommand";
+import TerminateConverterCommand from "./worker/TerminateConverterCommand";
+import StartConvertCommand from "./worker/StartConvertCommand";
+import OpenFileCommand from "./worker/OpenFileCommand";
+import { fileToU8Image } from "./PictureFileReader";
+import Color from "./Color";
+import FileLoadedCommand from "./worker/FileLoadedCommand";
+import WorkerCommand from "./worker/WorkerCommand";
+import ConvertResultCommand from "./worker/ConvertResultCommand";
+import EndConvertCommand from "./worker/EndConvertCommand";
+import MainWorker from "./worker/Worker.ts?worker";
+import GenCodeWorker from "./gencode/GenCode.ts?worker";
 
 type AppState = {
   imageUrl: string;
@@ -53,7 +53,7 @@ type AppState = {
   convertOption: ConvertOption;
   luaCodeOption: LuaCodeOption;
 
-  modalShow: '' | 'help' | 'about';
+  modalShow: "" | "help" | "about";
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,20 +64,32 @@ class App extends React.Component<any & WithTranslation, AppState> {
     this.handleFileChange = this.handleFileChange.bind(this);
     this.handleOnDrawChange = this.handleOnDrawChange.bind(this);
     this.handleOnMoveUpClick = this.handleOnMoveUpClick.bind(this);
-    this.handleOnMoveDownClick = this.handleOnMoveDownClick.bind(this);    
-    this.handleOnColorChange = this.handleOnColorChange.bind(this);    
+    this.handleOnMoveDownClick = this.handleOnMoveDownClick.bind(this);
+    this.handleOnColorChange = this.handleOnColorChange.bind(this);
     this.handleStartConvertClick = this.handleStartConvertClick.bind(this);
     this.handleStopConvertClick = this.handleStopConvertClick.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
-    this.handleChangeConvertSettings = this.handleChangeConvertSettings.bind(this);
-    this.handleChangeLuaCodeSettings = this.handleChangeLuaCodeSettings.bind(this);
+    this.handleChangeConvertSettings =
+      this.handleChangeConvertSettings.bind(this);
+    this.handleChangeLuaCodeSettings =
+      this.handleChangeLuaCodeSettings.bind(this);
     this.handleApplySettingsClick = this.handleApplySettingsClick.bind(this);
     this.state = {
-      convertProgress: 0, colorSet: [], orderTable: [], transparentStartOrder: 0, isWorking: false,
-      generatedCode: new FinalLuaCode([]), convertOption: getConvertOptionDefault(),
-      luaCodeOption: getLuaCodeOptionDefault(), modalShow: '', imageLoading: false,
-      imageUrl: '', imageWidth: 0, imageHeight: 0, needReconvert: false
+      convertProgress: 0,
+      colorSet: [],
+      orderTable: [],
+      transparentStartOrder: 0,
+      isWorking: false,
+      generatedCode: new FinalLuaCode([]),
+      convertOption: getConvertOptionDefault(),
+      luaCodeOption: getLuaCodeOptionDefault(),
+      modalShow: "",
+      imageLoading: false,
+      imageUrl: "",
+      imageWidth: 0,
+      imageHeight: 0,
+      needReconvert: false,
     };
   }
 
@@ -105,31 +117,44 @@ class App extends React.Component<any & WithTranslation, AppState> {
       }
       const ndata = ConvertCardCommand.from(data);
       _subworker.postMessage(ndata, ndata.getTransfer());
-
     } else if (TerminateConverterCommand.is(data)) {
       this.state.subWorker?.terminate();
       this.setState({ subWorker: undefined });
-
     } else if (ConvertSucceedCommand.is(data)) {
       const ndata = ConvertSucceedCommand.from(data);
       this.getWorker().postMessage(ndata, ndata.getTransfer());
-
     } else if (FileLoadedCommand.is(data)) {
-      const colorSet = data.colorPallete.map((v) => new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw));
+      const colorSet = data.colorPallete.map(
+        (v) =>
+          new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw),
+      );
       const orderTable = colorSet.map((_, i) => i);
 
       this.setState({
-        colorSet: colorSet, orderTable: orderTable, imageLoading: false,
-        transparentStartOrder: orderTable.length, needReconvert: true });
+        colorSet: colorSet,
+        orderTable: orderTable,
+        imageLoading: false,
+        transparentStartOrder: orderTable.length,
+        needReconvert: true,
+      });
     } else if (ConvertResultCommand.is(data)) {
       this.setState((state) => {
         const l = state.luaCodes || [];
         l[data.metaData.offsetListIndex] = data.luaList;
-        return { ...state, luaCodes: l, convertProgress: data.metaData.finished / data.metaData.length };
+        return {
+          ...state,
+          luaCodes: l,
+          convertProgress: data.metaData.finished / data.metaData.length,
+        };
       });
     } else if (EndConvertCommand.is(data)) {
       this.setState((state) => {
-        return { ...state, isWorking: false, convertProgress: 1, needReconvert: false }
+        return {
+          ...state,
+          isWorking: false,
+          convertProgress: 1,
+          needReconvert: false,
+        };
       });
       this.handleApplySettingsClick();
     }
@@ -158,7 +183,11 @@ class App extends React.Component<any & WithTranslation, AppState> {
   handleFileChange(file: File) {
     this.setState({ imageLoading: true });
     fileToU8Image(file, true).then((res) => {
-      this.setState({ imageUrl: res.dataUrl, imageWidth: res.width, imageHeight: res.height });
+      this.setState({
+        imageUrl: res.dataUrl,
+        imageWidth: res.width,
+        imageHeight: res.height,
+      });
       const cmd = new OpenFileCommand(res.u8Image, res.width, res.height, true);
       this.getWorker().postMessage(cmd, cmd.getTransfer());
     });
@@ -171,14 +200,19 @@ class App extends React.Component<any & WithTranslation, AppState> {
       let to = state.transparentStartOrder;
 
       if (o < to && drawFlag) {
-        k = k.map((v) => (v > o && v < to) ? v - 1 : v);
+        k = k.map((v) => (v > o && v < to ? v - 1 : v));
         k[colorIndex] = --to;
       } else if (o >= to && !drawFlag) {
-        k = k.map((v) => (v >= to && v < o) ? v + 1 : v);
+        k = k.map((v) => (v >= to && v < o ? v + 1 : v));
         k[colorIndex] = to++;
       }
 
-      return { ...state,  orderTable: k, transparentStartOrder: to, needReconvert: true };
+      return {
+        ...state,
+        orderTable: k,
+        transparentStartOrder: to,
+        needReconvert: true,
+      };
     });
   }
 
@@ -190,7 +224,7 @@ class App extends React.Component<any & WithTranslation, AppState> {
       k[k.indexOf(o - 1)] = o;
       k[colorIndex] = o - 1;
 
-      return { ...state,  orderTable: k, needReconvert: true };
+      return { ...state, orderTable: k, needReconvert: true };
     });
   }
 
@@ -202,7 +236,7 @@ class App extends React.Component<any & WithTranslation, AppState> {
       k[k.indexOf(o + 1)] = o;
       k[colorIndex] = o + 1;
 
-      return { ...state,  orderTable: k, needReconvert: true };
+      return { ...state, orderTable: k, needReconvert: true };
     });
   }
 
@@ -222,8 +256,12 @@ class App extends React.Component<any & WithTranslation, AppState> {
         for (let i = 0; i < state.orderTable.length; i++) {
           u[state.orderTable[i]] = state.colorSet[i].raw || 0;
         }
-        
-        const cmd = new StartConvertCommand(state.convertOption, u, state.transparentStartOrder);
+
+        const cmd = new StartConvertCommand(
+          state.convertOption,
+          u,
+          state.transparentStartOrder,
+        );
         this.getWorker().postMessage(cmd, cmd.getTransfer());
         return { ...state, isWorking: true, luaCodes: [] };
       } else {
@@ -244,17 +282,25 @@ class App extends React.Component<any & WithTranslation, AppState> {
       for (let i = 0; i < state.orderTable.length; i++) {
         u[state.orderTable[i]] = state.colorSet[i];
       }
-      const final = FinalizeLuaCode(state.luaCodes || [], u, state.convertOption, state.luaCodeOption);
+      const final = FinalizeLuaCode(
+        state.luaCodes || [],
+        u,
+        state.convertOption,
+        state.luaCodeOption,
+      );
       return { ...state, generatedCode: final };
     });
   }
 
   // 対応済み
   handleModalClose() {
-    this.setState({ modalShow: '' });
+    this.setState({ modalShow: "" });
   }
 
-  handleChangeConvertSettings(opt: ConvertOption, needReconvert: boolean = false) {
+  handleChangeConvertSettings(
+    opt: ConvertOption,
+    needReconvert: boolean = false,
+  ) {
     this.setState((state) => {
       let ss: ConvertOption = state.convertOption;
       for (const key in opt) {
@@ -267,7 +313,11 @@ class App extends React.Component<any & WithTranslation, AppState> {
           }
         }
       }
-      return { ...state, convertOption: ss, needReconvert: needReconvert || state.needReconvert };
+      return {
+        ...state,
+        convertOption: ss,
+        needReconvert: needReconvert || state.needReconvert,
+      };
     });
   }
 
@@ -282,7 +332,6 @@ class App extends React.Component<any & WithTranslation, AppState> {
           } else {
             console.log(`Key ${key} is not found in LuaCodeOption.`);
           }
-          
         }
       }
       return { ...state, luaCodeOption: ss };
@@ -297,43 +346,65 @@ class App extends React.Component<any & WithTranslation, AppState> {
           <Container className="px-5" fluid="xl">
             <Navbar.Brand>Storm Kamishibai</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
+            <Navbar.Collapse
+              id="responsive-navbar-nav"
+              className="justify-content-end"
+            >
               <Nav>
-                <Nav.Link href='https://forms.gle/TRxMsVQLBrCc3yJF7' target="_blank">{t('app.contact')}</Nav.Link>
-                <Nav.Link onClick={() => { this.setState({ modalShow: 'help' }); }}>{t('app.help')}</Nav.Link>
-                <Nav.Link onClick={() => { this.setState({ modalShow: 'about' }); }}>{t('app.about')}</Nav.Link>
+                <Nav.Link
+                  href="https://forms.gle/TRxMsVQLBrCc3yJF7"
+                  target="_blank"
+                >
+                  {t("app.contact")}
+                </Nav.Link>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({ modalShow: "help" });
+                  }}
+                >
+                  {t("app.help")}
+                </Nav.Link>
+                <Nav.Link
+                  onClick={() => {
+                    this.setState({ modalShow: "about" });
+                  }}
+                >
+                  {t("app.about")}
+                </Nav.Link>
               </Nav>
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Container className='px-5 mb-4' fluid="xl">
+        <Container className="px-5 mb-4" fluid="xl">
           <Row>
-            <Col md={4} lg={6} className='mt-4'>
+            <Col md={4} lg={6} className="mt-4">
               <Stack gap={2}>
                 <FileSelector
                   onFileChange={this.handleFileChange}
                   imageUrl={this.state.imageUrl}
                   width={this.state.imageWidth}
                   height={this.state.imageHeight}
-                  loading={this.state.imageLoading} />
+                  loading={this.state.imageLoading}
+                />
                 <ConvertBox
-                  isVisible={this.state.imageUrl !== ''}
+                  isVisible={this.state.imageUrl !== ""}
                   isWorking={this.state.isWorking}
                   onStartConvertClick={this.handleStartConvertClick}
                   onStopConvertClick={this.handleStopConvertClick}
                   onApplyClick={this.handleApplySettingsClick}
                   needReconvert={this.state.needReconvert}
-                  convertProgress={this.state.convertProgress} />
+                  convertProgress={this.state.convertProgress}
+                />
                 <LuaCode
-                  isVisible={this.state.imageUrl !== ''}
-                  code={this.state.generatedCode} />
+                  isVisible={this.state.imageUrl !== ""}
+                  code={this.state.generatedCode}
+                />
               </Stack>
             </Col>
-            <Col md={8} lg={6} className='mt-4'>
-              <LandingBox
-                isVisible={this.state.imageUrl === ''} />
+            <Col md={8} lg={6} className="mt-4">
+              <LandingBox isVisible={this.state.imageUrl === ""} />
               <Settings
-                isVisible={this.state.imageUrl !== ''}
+                isVisible={this.state.imageUrl !== ""}
                 main={{
                   changeConvertSettings: this.handleChangeConvertSettings,
                   changeLuaCodeSettings: this.handleChangeLuaCodeSettings,
@@ -345,17 +416,24 @@ class App extends React.Component<any & WithTranslation, AppState> {
                   onDrawFlagChange: this.handleOnDrawChange,
                   onMoveUpClick: this.handleOnMoveUpClick,
                   onMoveDownClick: this.handleOnMoveDownClick,
-                  onColorChange: this.handleOnColorChange
+                  onColorChange: this.handleOnColorChange,
                 }}
-                />
+              />
             </Col>
           </Row>
         </Container>
-        <HelpModal show={this.state.modalShow === 'help'} onClose={this.handleModalClose} />
-        <AboutModal show={this.state.modalShow === 'about'} onClose={this.handleModalClose} />
+        <HelpModal
+          show={this.state.modalShow === "help"}
+          onClose={this.handleModalClose}
+        />
+        <AboutModal
+          show={this.state.modalShow === "about"}
+          onClose={this.handleModalClose}
+        />
       </>
     );
   }
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default withTranslation()(App);

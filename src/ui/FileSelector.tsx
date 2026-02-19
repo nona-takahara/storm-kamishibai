@@ -1,7 +1,18 @@
-import React from 'react';
-import { Button, Card, Col, Form, InputGroup, OverlayTrigger, Row, Spinner, Stack, Tooltip } from 'react-bootstrap';
-import { BsDashCircle, BsPlusCircle } from 'react-icons/bs';
-import { withTranslation, type WithTranslation } from 'react-i18next';
+import React from "react";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  InputGroup,
+  OverlayTrigger,
+  Row,
+  Spinner,
+  Stack,
+  Tooltip,
+} from "react-bootstrap";
+import { BsDashCircle, BsPlusCircle } from "react-icons/bs";
+import { withTranslation, type WithTranslation } from "react-i18next";
 
 export type FileSelectorProps = {
   onFileChange: (file: File) => void;
@@ -15,7 +26,10 @@ export type FileSelectorState = {
   scale: number;
 };
 
-class FileSelector extends React.Component<FileSelectorProps, FileSelectorState> {
+class FileSelector extends React.Component<
+  FileSelectorProps,
+  FileSelectorState
+> {
   constructor(props: FileSelectorProps) {
     super(props);
     this.state = { scale: 0 };
@@ -24,7 +38,7 @@ class FileSelector extends React.Component<FileSelectorProps, FileSelectorState>
 
   handleFileChange(evt: React.ChangeEvent<HTMLInputElement>) {
     const target = evt.target.files?.[0];
-    if (target && target.type.match('image.*')) {
+    if (target && target.type.match("image.*")) {
       this.props.onFileChange(target);
     }
   }
@@ -37,20 +51,32 @@ class FileSelector extends React.Component<FileSelectorProps, FileSelectorState>
       <Card>
         <Card.Header>
           <Row className="align-items-center">
-            <Col>{t('fileSelector.title')}</Col>
+            <Col>{t("fileSelector.title")}</Col>
             <Col xs="auto" className="justify-content-end">
               <InputGroup>
                 <Button
                   variant="outline-secondary"
-                  onClick={() => this.setState((state) => ({ ...state, scale: Math.max(state.scale - 1, scaleMin) }))}
+                  onClick={() =>
+                    this.setState((state) => ({
+                      ...state,
+                      scale: Math.max(state.scale - 1, scaleMin),
+                    }))
+                  }
                   disabled={this.state.scale <= scaleMin}
                 >
                   <BsDashCircle />
                 </Button>
-                <InputGroup.Text>{Math.pow(2, this.state.scale) * 100} %</InputGroup.Text>
+                <InputGroup.Text>
+                  {Math.pow(2, this.state.scale) * 100} %
+                </InputGroup.Text>
                 <Button
                   variant="outline-secondary"
-                  onClick={() => this.setState((state) => ({ ...state, scale: Math.min(state.scale + 1, scaleMax) }))}
+                  onClick={() =>
+                    this.setState((state) => ({
+                      ...state,
+                      scale: Math.min(state.scale + 1, scaleMax),
+                    }))
+                  }
                   disabled={this.state.scale >= scaleMax}
                 >
                   <BsPlusCircle />
@@ -62,13 +88,30 @@ class FileSelector extends React.Component<FileSelectorProps, FileSelectorState>
         <Card.Body>
           <Stack gap={2}>
             <Form.Group controlId="formFile">
-              <Form.Control type="file" accept="image/*" onChange={this.handleFileChange} />
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={this.handleFileChange}
+              />
             </Form.Group>
-            <OverlayTrigger overlay={<Tooltip>{t('fileSelector.tooltipSize', { width: this.props.width, height: this.props.height })}</Tooltip>}>
-              <div style={{ overflow: 'auto', maxHeight: window.innerHeight / 3 }}>
+            <OverlayTrigger
+              overlay={
+                <Tooltip>
+                  {t("fileSelector.tooltipSize", {
+                    width: this.props.width,
+                    height: this.props.height,
+                  })}
+                </Tooltip>
+              }
+            >
+              <div
+                style={{ overflow: "auto", maxHeight: window.innerHeight / 3 }}
+              >
                 {this.props.loading ? (
                   <Spinner animation="border" role="status">
-                    <span className="visually-hidden">{t('fileSelector.loading')}</span>
+                    <span className="visually-hidden">
+                      {t("fileSelector.loading")}
+                    </span>
                   </Spinner>
                 ) : (
                   <img
@@ -77,7 +120,7 @@ class FileSelector extends React.Component<FileSelectorProps, FileSelectorState>
                     style={{
                       height: this.props.height * Math.pow(2, this.state.scale),
                       width: this.props.width * Math.pow(2, this.state.scale),
-                      imageRendering: 'pixelated',
+                      imageRendering: "pixelated",
                     }}
                   />
                 )}
@@ -92,4 +135,3 @@ class FileSelector extends React.Component<FileSelectorProps, FileSelectorState>
 
 const TranslatedFileSelector = withTranslation()(FileSelector);
 export default TranslatedFileSelector;
-
