@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Container, Navbar, Row, Col, Stack, Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
