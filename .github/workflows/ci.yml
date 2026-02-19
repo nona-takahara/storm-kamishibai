@@ -17,14 +17,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js v24
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
           cache: 'pnpm'
 
       - name: Setup pnpm
-        run: npm install -g pnpm@8
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -51,11 +53,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 24.x
           cache: 'pnpm'
 
       - name: Setup pnpm
-        run: npm install -g pnpm@8
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
