@@ -40,6 +40,9 @@ importers:
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.10)(react@19.2.4)
+      zustand:
+        specifier: ^4.5.0
+        version: 4.5.7(@types/react@19.2.10)(react@19.2.4)
     devDependencies:
       "@eslint/js":
         specifier: ^9.39.1
@@ -618,7 +621,6 @@ packages:
     engines: { node: ">= 10.0.0" }
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   "@parcel/watcher-linux-arm-musl@2.5.6":
     resolution:
@@ -628,7 +630,6 @@ packages:
     engines: { node: ">= 10.0.0" }
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   "@parcel/watcher-linux-arm64-glibc@2.5.6":
     resolution:
@@ -638,7 +639,6 @@ packages:
     engines: { node: ">= 10.0.0" }
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   "@parcel/watcher-linux-arm64-musl@2.5.6":
     resolution:
@@ -648,7 +648,6 @@ packages:
     engines: { node: ">= 10.0.0" }
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   "@parcel/watcher-linux-x64-glibc@2.5.6":
     resolution:
@@ -658,7 +657,6 @@ packages:
     engines: { node: ">= 10.0.0" }
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   "@parcel/watcher-linux-x64-musl@2.5.6":
     resolution:
@@ -668,7 +666,6 @@ packages:
     engines: { node: ">= 10.0.0" }
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   "@parcel/watcher-win32-arm64@2.5.6":
     resolution:
@@ -805,7 +802,6 @@ packages:
       }
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   "@rollup/rollup-linux-arm-musleabihf@4.57.0":
     resolution:
@@ -814,7 +810,6 @@ packages:
       }
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   "@rollup/rollup-linux-arm64-gnu@4.57.0":
     resolution:
@@ -823,7 +818,6 @@ packages:
       }
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   "@rollup/rollup-linux-arm64-musl@4.57.0":
     resolution:
@@ -832,7 +826,6 @@ packages:
       }
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   "@rollup/rollup-linux-loong64-gnu@4.57.0":
     resolution:
@@ -841,7 +834,6 @@ packages:
       }
     cpu: [loong64]
     os: [linux]
-    libc: [glibc]
 
   "@rollup/rollup-linux-loong64-musl@4.57.0":
     resolution:
@@ -850,7 +842,6 @@ packages:
       }
     cpu: [loong64]
     os: [linux]
-    libc: [musl]
 
   "@rollup/rollup-linux-ppc64-gnu@4.57.0":
     resolution:
@@ -859,7 +850,6 @@ packages:
       }
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   "@rollup/rollup-linux-ppc64-musl@4.57.0":
     resolution:
@@ -868,7 +858,6 @@ packages:
       }
     cpu: [ppc64]
     os: [linux]
-    libc: [musl]
 
   "@rollup/rollup-linux-riscv64-gnu@4.57.0":
     resolution:
@@ -877,7 +866,6 @@ packages:
       }
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   "@rollup/rollup-linux-riscv64-musl@4.57.0":
     resolution:
@@ -886,7 +874,6 @@ packages:
       }
     cpu: [riscv64]
     os: [linux]
-    libc: [musl]
 
   "@rollup/rollup-linux-s390x-gnu@4.57.0":
     resolution:
@@ -895,7 +882,6 @@ packages:
       }
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   "@rollup/rollup-linux-x64-gnu@4.57.0":
     resolution:
@@ -904,7 +890,6 @@ packages:
       }
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   "@rollup/rollup-linux-x64-musl@4.57.0":
     resolution:
@@ -913,7 +898,6 @@ packages:
       }
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   "@rollup/rollup-openbsd-x64@4.57.0":
     resolution:
@@ -998,7 +982,6 @@ packages:
     engines: { node: ">=10" }
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   "@swc/core-linux-arm64-musl@1.15.11":
     resolution:
@@ -1008,7 +991,6 @@ packages:
     engines: { node: ">=10" }
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   "@swc/core-linux-x64-gnu@1.15.11":
     resolution:
@@ -1018,7 +1000,6 @@ packages:
     engines: { node: ">=10" }
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   "@swc/core-linux-x64-musl@1.15.11":
     resolution:
@@ -1028,7 +1009,6 @@ packages:
     engines: { node: ">=10" }
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   "@swc/core-win32-arm64-msvc@1.15.11":
     resolution:
@@ -2607,7 +2587,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [arm64]
     os: [linux]
-    libc: glibc
 
   sass-embedded-linux-arm@1.97.3:
     resolution:
@@ -2617,7 +2596,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [arm]
     os: [linux]
-    libc: glibc
 
   sass-embedded-linux-musl-arm64@1.97.3:
     resolution:
@@ -2627,7 +2605,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [arm64]
     os: [linux]
-    libc: musl
 
   sass-embedded-linux-musl-arm@1.97.3:
     resolution:
@@ -2637,7 +2614,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [arm]
     os: [linux]
-    libc: musl
 
   sass-embedded-linux-musl-riscv64@1.97.3:
     resolution:
@@ -2647,7 +2623,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [riscv64]
     os: [linux]
-    libc: musl
 
   sass-embedded-linux-musl-x64@1.97.3:
     resolution:
@@ -2657,7 +2632,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [x64]
     os: [linux]
-    libc: musl
 
   sass-embedded-linux-riscv64@1.97.3:
     resolution:
@@ -2667,7 +2641,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [riscv64]
     os: [linux]
-    libc: glibc
 
   sass-embedded-linux-x64@1.97.3:
     resolution:
@@ -2677,7 +2650,6 @@ packages:
     engines: { node: ">=14.0.0" }
     cpu: [x64]
     os: [linux]
-    libc: glibc
 
   sass-embedded-unknown-all@1.97.3:
     resolution:
@@ -3095,6 +3067,24 @@ packages:
       {
         integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==,
       }
+
+  zustand@4.5.7:
+    resolution:
+      {
+        integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==,
+      }
+    engines: { node: ">=12.7.0" }
+    peerDependencies:
+      "@types/react": ">=16.8"
+      immer: ">=9.0.6"
+      react: ">=16.8"
+    peerDependenciesMeta:
+      "@types/react":
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
 
   zwitch@2.0.4:
     resolution:
@@ -4909,5 +4899,12 @@ snapshots:
       zod: 4.3.6
 
   zod@4.3.6: {}
+
+  zustand@4.5.7(@types/react@19.2.10)(react@19.2.4):
+    dependencies:
+      use-sync-external-store: 1.6.0(react@19.2.4)
+    optionalDependencies:
+      "@types/react": 19.2.10
+      react: 19.2.4
 
   zwitch@2.0.4: {}

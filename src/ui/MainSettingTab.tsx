@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback } from "react";
 import {
   Alert,
@@ -20,11 +19,8 @@ import ColorListItem from "./ColorListItem";
 import LabeledInput from "./util/LabeledInput";
 
 export type MainSettingTabPropsBase = {
-  changeConvertSettings: (
-    v: ConvertOption | any,
-    needReconvert?: boolean,
-  ) => any;
-  changeLuaCodeSettings: (v: LuaCodeOption | any) => any;
+  changeConvertSettings: (v: ConvertOption, needReconvert?: boolean) => void;
+  changeLuaCodeSettings: (v: LuaCodeOption) => void;
   luaCodeOption: LuaCodeOption;
   convertOption: ConvertOption;
   colorSet?: Array<Color>;
@@ -43,7 +39,7 @@ const MainSettingTab: React.FC<MainSettingTabProps> = (props) => {
 
   const handleColorChange = useCallback(
     (index: number, evt: React.ChangeEvent) => {
-      props.onColorChange(index, (evt.target as any).value);
+      props.onColorChange(index, (evt.target as HTMLInputElement).value);
     },
     [props],
   );
@@ -66,12 +62,12 @@ const MainSettingTab: React.FC<MainSettingTabProps> = (props) => {
 
   const handleDrawFlagChange = useCallback(
     (index: number, evt: React.ChangeEvent) => {
-      props.onDrawFlagChange(index, !(evt.target as any).checked);
+      props.onDrawFlagChange(index, !(evt.target as HTMLInputElement).checked);
     },
     [props],
   );
 
-  let list: any = false;
+  let list: boolean = false;
   if (props.colorSet !== undefined) {
     list = new Array(props.colorSet.length);
     for (let i = 0; i < props.colorSet.length; i++) {

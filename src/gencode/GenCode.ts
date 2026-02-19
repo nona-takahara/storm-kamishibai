@@ -5,8 +5,7 @@ import ConvertSucceedCommand from "../worker/ConvertSucceedCommand";
 
 export default undefined;
 
-// eslint-disable-next-line
-const ctx: Worker = self as any;
+const ctx: Worker = self as Worker;
 
 ctx.addEventListener("message", (evt: MessageEvent<WorkerCommand>) => {
   const data = evt.data;
