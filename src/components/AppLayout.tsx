@@ -10,6 +10,7 @@ import AboutModal from "../ui/AboutModal";
 import LandingBox from "../ui/LandingBox";
 import ConvertOption from "../ConvertOption";
 import LuaCodeOption from "../LuaCodeOption";
+import { useAppStore } from "../store/AppStore";
 
 interface AppLayoutProps {
   handleFileChange: (file: File) => void;
