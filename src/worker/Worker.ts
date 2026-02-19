@@ -10,6 +10,7 @@ import TerminateConverterCommand from "./TerminateConverterCommand";
 import ConvertCardCommand from "./ConvertCardCommand";
 import Color from "../Color";
 import EndConvertCommand from "./EndConvertCommand";
+import GenCodeWorker from '../gencode/GenCode.ts?worker';
 
 export default undefined;
 
@@ -54,9 +55,9 @@ ctx.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
     workerData = defaultWorkerData();
   }
   if (Worker) {
-    if (!workerData.subWorker) {
-      workerData.subWorker = new Worker(new URL('../gencode/GenCode.ts', import.meta.url));
-      workerData.subWorker.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
+      if (!workerData.subWorker) {
+      	workerData.subWorker = new GenCodeWorker();
+      	workerData.subWorker.addEventListener('message', (evt: MessageEvent<WorkerCommand>) => {
         const data = evt.data;
         commandFromSubWorker(data);
 

@@ -28,6 +28,8 @@ import FileLoadedCommand from './worker/FileLoadedCommand';
 import WorkerCommand from './worker/WorkerCommand';
 import ConvertResultCommand from './worker/ConvertResultCommand';
 import EndConvertCommand from './worker/EndConvertCommand';
+import MainWorker from './worker/Worker.ts?worker';
+import GenCodeWorker from './gencode/GenCode.ts?worker';
 
 type AppState = {
   imageUrl: string;
@@ -82,7 +84,7 @@ class App extends React.Component<any & WithTranslation, AppState> {
   // ----- WebWorker
   restartWorker() {
     this.state.worker?.terminate();
-    const _worker = new Worker(new URL('./worker/Worker.ts', import.meta.url));
+    const _worker = new MainWorker();
     _worker.onmessage = this.handleWorkerMessage.bind(this);
     this.setState({ worker: _worker });
     return _worker;
@@ -97,7 +99,7 @@ class App extends React.Component<any & WithTranslation, AppState> {
     if (ConvertCardCommand.is(data)) {
       let _subworker = this.state.subWorker;
       if (!_subworker) {
-        _subworker = new Worker(new URL('./gencode/GenCode.ts', import.meta.url));
+        _subworker = new GenCodeWorker();
         _subworker.onmessage = this.handleWorkerMessage.bind(this);
         this.setState({ subWorker: _subworker });
       }
