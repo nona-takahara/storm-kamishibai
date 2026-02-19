@@ -41,23 +41,35 @@ export type MainSettingTabProps = MainSettingTabPropsBase;
 const MainSettingTab: React.FC<MainSettingTabProps> = (props) => {
   const { t } = useTranslation();
 
-  const handleColorChange = useCallback((index: number, evt: React.ChangeEvent) => {
-    props.onColorChange(index, (evt.target as any).value);
-  }, [props]);
+  const handleColorChange = useCallback(
+    (index: number, evt: React.ChangeEvent) => {
+      props.onColorChange(index, (evt.target as any).value);
+    },
+    [props],
+  );
 
-  const handleMoveUpClick = useCallback((index: number, evt: React.MouseEvent) => {
-    evt.preventDefault();
-    props.onMoveUpClick(index);
-  }, [props]);
+  const handleMoveUpClick = useCallback(
+    (index: number, evt: React.MouseEvent) => {
+      evt.preventDefault();
+      props.onMoveUpClick(index);
+    },
+    [props],
+  );
 
-  const handleMoveDownClick = useCallback((index: number, evt: React.MouseEvent) => {
-    evt.preventDefault();
-    props.onMoveDownClick(index);
-  }, [props]);
+  const handleMoveDownClick = useCallback(
+    (index: number, evt: React.MouseEvent) => {
+      evt.preventDefault();
+      props.onMoveDownClick(index);
+    },
+    [props],
+  );
 
-  const handleDrawFlagChange = useCallback((index: number, evt: React.ChangeEvent) => {
-    props.onDrawFlagChange(index, !(evt.target as any).checked);
-  }, [props]);
+  const handleDrawFlagChange = useCallback(
+    (index: number, evt: React.ChangeEvent) => {
+      props.onDrawFlagChange(index, !(evt.target as any).checked);
+    },
+    [props],
+  );
 
   let list: any = false;
   if (props.colorSet !== undefined) {

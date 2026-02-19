@@ -78,12 +78,16 @@ const BasicSettingTab: React.FC<BasicSettingTabProps> = ({
                   defaultValue={luaCodeOption.luaRollSignGap}
                   disabled={!luaCodeOption.isRollSign}
                   onChange={(evt) =>
-                    changeLuaCodeSettings({ luaRollSignGap: Number(evt.target.value) })
+                    changeLuaCodeSettings({
+                      luaRollSignGap: Number(evt.target.value),
+                    })
                   }
                 />
               </Col>
             </Form.Group>
-            {luaCodeOption.isRollSign && convertOption.luaCardHeight + luaCodeOption.luaRollSignGap !== 32 ? (
+            {luaCodeOption.isRollSign &&
+            convertOption.luaCardHeight + luaCodeOption.luaRollSignGap !==
+              32 ? (
               <Alert variant="warning" className="mb-0">
                 <Row>
                   <Col xs="auto" className="pe-0">
@@ -108,7 +112,9 @@ const BasicSettingTab: React.FC<BasicSettingTabProps> = ({
             defaultValue={luaCodeOption.luaCardIndexStartWith}
             disabled={luaCodeOption.isRollSign}
             onChange={(evt) =>
-              changeLuaCodeSettings({ luaCardIndexStartWith: Number(evt.target.value) })
+              changeLuaCodeSettings({
+                luaCardIndexStartWith: Number(evt.target.value),
+              })
             }
           />
         </Col>
@@ -123,7 +129,9 @@ const BasicSettingTab: React.FC<BasicSettingTabProps> = ({
             defaultValue={luaCodeOption.luaReadChannel}
             disabled={luaCodeOption.isRollSign}
             onChange={(evt) =>
-              changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) })
+              changeLuaCodeSettings({
+                luaReadChannel: Number(evt.target.value),
+              })
             }
           />
         </Col>
@@ -136,7 +144,9 @@ const BasicSettingTab: React.FC<BasicSettingTabProps> = ({
           <Form.Control
             type="number"
             defaultValue={luaCodeOption.luaMaxLength}
-            onChange={(evt) => changeLuaCodeSettings({ luaMaxLength: Number(evt.target.value) })}
+            onChange={(evt) =>
+              changeLuaCodeSettings({ luaMaxLength: Number(evt.target.value) })
+            }
           />
         </Col>
       </Form.Group>
@@ -149,14 +159,18 @@ const BasicSettingTab: React.FC<BasicSettingTabProps> = ({
             label={t("main.x")}
             type="number"
             defaultValue={luaCodeOption.luaOffsetX}
-            onChange={(evt) => changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) })}
+            onChange={(evt) =>
+              changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) })
+            }
           />
           <LabeledInput
             label={t("main.y")}
             type="number"
             defaultValue={luaCodeOption.luaOffsetY}
             disabled={luaCodeOption.isRollSign}
-            onChange={(evt) => changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) })}
+            onChange={(evt) =>
+              changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) })
+            }
           />
         </InputGroup>
       </Row>
@@ -170,14 +184,18 @@ const BasicSettingTab: React.FC<BasicSettingTabProps> = ({
             type="number"
             defaultValue={luaCodeOption.luaScaleH}
             disabled={luaCodeOption.isRollSign}
-            onChange={(evt) => changeLuaCodeSettings({ luaScaleH: Number(evt.target.value) })}
+            onChange={(evt) =>
+              changeLuaCodeSettings({ luaScaleH: Number(evt.target.value) })
+            }
           />
           <LabeledInput
             label={t("main.vectral")}
             type="number"
             defaultValue={luaCodeOption.luaScaleV}
             disabled={luaCodeOption.isRollSign}
-            onChange={(evt) => changeLuaCodeSettings({ luaScaleV: Number(evt.target.value) })}
+            onChange={(evt) =>
+              changeLuaCodeSettings({ luaScaleV: Number(evt.target.value) })
+            }
           />
         </InputGroup>
       </Row>
@@ -201,7 +219,9 @@ const BasicSettingTab: React.FC<BasicSettingTabProps> = ({
                 disabled={luaCodeOption.isRollSign}
                 value={radio.value}
                 checked={luaCodeOption.luaRotate === radio.value}
-                onChange={(evt) => changeLuaCodeSettings({ luaRotate: Number(evt.target.value) })}
+                onChange={(evt) =>
+                  changeLuaCodeSettings({ luaRotate: Number(evt.target.value) })
+                }
               >
                 {radio.name}
               </ToggleButton>

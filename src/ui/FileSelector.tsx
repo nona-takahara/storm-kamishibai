@@ -34,12 +34,15 @@ const FileSelector: React.FC<FileSelectorProps> = ({
   const scaleMax = 3;
   const scaleMin = -2;
 
-  const handleFileChange = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
-    const target = evt.target.files?.[0];
-    if (target && target.type.match("image.*")) {
-      onFileChange(target);
-    }
-  }, [onFileChange]);
+  const handleFileChange = useCallback(
+    (evt: React.ChangeEvent<HTMLInputElement>) => {
+      const target = evt.target.files?.[0];
+      if (target && target.type.match("image.*")) {
+        onFileChange(target);
+      }
+    },
+    [onFileChange],
+  );
 
   return (
     <Card>
@@ -70,19 +73,30 @@ const FileSelector: React.FC<FileSelectorProps> = ({
       <Card.Body>
         <Stack gap={2}>
           <Form.Group controlId="formFile">
-            <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
           </Form.Group>
           <OverlayTrigger
             overlay={
               <Tooltip>
-                {t("fileSelector.tooltipSize", { width: width, height: height })}
+                {t("fileSelector.tooltipSize", {
+                  width: width,
+                  height: height,
+                })}
               </Tooltip>
             }
           >
-            <div style={{ overflow: "auto", maxHeight: window.innerHeight / 3 }}>
+            <div
+              style={{ overflow: "auto", maxHeight: window.innerHeight / 3 }}
+            >
               {loading ? (
                 <Spinner animation="border" role="status">
-                  <span className="visually-hidden">{t("fileSelector.loading")}</span>
+                  <span className="visually-hidden">
+                    {t("fileSelector.loading")}
+                  </span>
                 </Spinner>
               ) : (
                 <img

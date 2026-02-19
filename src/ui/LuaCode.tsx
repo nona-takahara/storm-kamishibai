@@ -28,7 +28,10 @@ const LuaCode: React.FC<LuaCodeProps> = ({ isVisible, code }) => {
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
 
-  const i = useMemo(() => Math.min(Math.max(index, 0), Math.max(code.codes.length - 1, 0)), [index, code.codes.length]);
+  const i = useMemo(
+    () => Math.min(Math.max(index, 0), Math.max(code.codes.length - 1, 0)),
+    [index, code.codes.length],
+  );
 
   const handleOnClickUp = useCallback(() => {
     setIndex((s) => Math.min(s + 1, code.codes.length - 1));
@@ -57,13 +60,21 @@ const LuaCode: React.FC<LuaCodeProps> = ({ isVisible, code }) => {
           <Col xs="auto">{t("luaCode.title")}</Col>
           <Col xs="auto">
             <InputGroup>
-              <Button variant="outline-secondary" onClick={handleOnClickDown} disabled={i <= 0}>
+              <Button
+                variant="outline-secondary"
+                onClick={handleOnClickDown}
+                disabled={i <= 0}
+              >
                 <BsFillCaretLeftFill />
               </Button>
               <InputGroup.Text>
                 {i + 1} / {code.codes.length}
               </InputGroup.Text>
-              <Button variant="outline-secondary" onClick={handleOnClickUp} disabled={i >= code.codes.length - 1}>
+              <Button
+                variant="outline-secondary"
+                onClick={handleOnClickUp}
+                disabled={i >= code.codes.length - 1}
+              >
                 <BsFillCaretRightFill />
               </Button>
             </InputGroup>
@@ -105,7 +116,13 @@ const LuaCode: React.FC<LuaCodeProps> = ({ isVisible, code }) => {
           </Col>
         </Row>
       </Card.Header>
-      <Card.Body as="textarea" rows={12} className="font-monospace p-1" value={code.codes[i] || ""} readOnly={true} />
+      <Card.Body
+        as="textarea"
+        rows={12}
+        className="font-monospace p-1"
+        value={code.codes[i] || ""}
+        readOnly={true}
+      />
     </Card>
   );
 };
