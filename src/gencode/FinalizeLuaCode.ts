@@ -1,8 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Color from "../Color";
 import type ConvertOption from "../ConvertOption";
 import type LuaCodeOption from "../LuaCodeOption";
 import FinalLuaCode from "./FinalLuaCode";
+
+type Placeholder = {
+  x: string;
+  y: string;
+};
 
 export default function FinalizeLuaCode(
   sn: string[][],
@@ -11,7 +15,7 @@ export default function FinalizeLuaCode(
   lopt: LuaCodeOption,
 ): FinalLuaCode {
   if (!lopt.isRollSign) {
-    let ph: any = {
+    let ph: Placeholder = {
       x:
         lopt.luaRotate === 270 || lopt.luaRotate === 180
           ? `(${copt.luaCardWidth}-x)`

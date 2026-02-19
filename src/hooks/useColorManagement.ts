@@ -30,34 +30,45 @@ export const useColorManagement = () => {
         return k;
       });
     },
-    [setOrderTable, setTransparentStartOrder, setNeedReconvert, transparentStartOrderRef],
+    [
+      setOrderTable,
+      setTransparentStartOrder,
+      setNeedReconvert,
+      transparentStartOrderRef,
+    ],
   );
 
-  const handleOnMoveUpClick = useCallback((colorIndex: number) => {
-    setOrderTable((state) => {
-      const k = state.slice();
-      const o = k[colorIndex];
+  const handleOnMoveUpClick = useCallback(
+    (colorIndex: number) => {
+      setOrderTable((state) => {
+        const k = state.slice();
+        const o = k[colorIndex];
 
-      k[k.indexOf(o - 1)] = o;
-      k[colorIndex] = o - 1;
+        k[k.indexOf(o - 1)] = o;
+        k[colorIndex] = o - 1;
 
-      setNeedReconvert(true);
-      return k;
-    });
-  }, [setOrderTable, setNeedReconvert]);
+        setNeedReconvert(true);
+        return k;
+      });
+    },
+    [setOrderTable, setNeedReconvert],
+  );
 
-  const handleOnMoveDownClick = useCallback((colorIndex: number) => {
-    setOrderTable((state) => {
-      const k = state.slice();
-      const o = k[colorIndex];
+  const handleOnMoveDownClick = useCallback(
+    (colorIndex: number) => {
+      setOrderTable((state) => {
+        const k = state.slice();
+        const o = k[colorIndex];
 
-      k[k.indexOf(o + 1)] = o;
-      k[colorIndex] = o + 1;
+        k[k.indexOf(o + 1)] = o;
+        k[colorIndex] = o + 1;
 
-      setNeedReconvert(true);
-      return k;
-    });
-  }, [setOrderTable, setNeedReconvert]);
+        setNeedReconvert(true);
+        return k;
+      });
+    },
+    [setOrderTable, setNeedReconvert],
+  );
 
   const handleOnColorChange = useCallback(
     (colorIndex: number, colorInput: string) => {

@@ -21,14 +21,11 @@ export const useWorker = () => {
     setImageLoading,
     setTransparentStartOrder,
     setNeedReconvert,
-    setLuaCodes,
     setConvertProgress,
     setIsWorking,
     setGeneratedCode,
     colorSetRef,
     orderTableRef,
-    transparentStartOrderRef,
-    needReconvertRef,
     convertOptionRef,
     luaCodeOptionRef,
   } = useAppStore();
@@ -97,7 +94,6 @@ export const useWorker = () => {
       setGeneratedCode,
       colorSetRef,
       orderTableRef,
-      transparentStartOrderRef,
       convertOptionRef,
       luaCodeOptionRef,
     ],
@@ -111,9 +107,12 @@ export const useWorker = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const postMessageToMain = useCallback((command: any, transfer?: Transferable[]) => {
-    workerServiceRef.current?.postMessageToMain(command, transfer);
-  }, []);
+  const postMessageToMain = useCallback(
+    (command: unknown, transfer?: Transferable[]) => {
+      workerServiceRef.current?.postMessageToMain(command, transfer);
+    },
+    [],
+  );
 
   return { postMessageToMain, luaCodesRef };
 };

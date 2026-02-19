@@ -8,14 +8,16 @@ import Settings from "../ui/Settings";
 import HelpModal from "../ui/HelpModal";
 import AboutModal from "../ui/AboutModal";
 import LandingBox from "../ui/LandingBox";
+import ConvertOption from "../ConvertOption";
+import LuaCodeOption from "../LuaCodeOption";
 
 interface AppLayoutProps {
   handleFileChange: (file: File) => void;
   handleStartConvertClick: () => void;
   handleStopConvertClick: () => void;
   handleApplySettingsClick: () => void;
-  handleChangeConvertSettings: (opt: any, need?: boolean) => void;
-  handleChangeLuaCodeSettings: (opt: any) => void;
+  handleChangeConvertSettings: (opt: ConvertOption, need?: boolean) => void;
+  handleChangeLuaCodeSettings: (opt: LuaCodeOption) => void;
   handleOnDrawChange: (colorIndex: number, drawFlag: boolean) => void;
   handleOnMoveUpClick: (colorIndex: number) => void;
   handleOnMoveDownClick: (colorIndex: number) => void;

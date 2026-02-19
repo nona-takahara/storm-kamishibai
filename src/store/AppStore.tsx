@@ -1,11 +1,11 @@
-import { create } from 'zustand';
-import React from 'react';
-import Color from '../Color';
-import type LuaCodeOption from '../LuaCodeOption';
-import { getLuaCodeOptionDefault } from '../LuaCodeOption';
-import type ConvertOption from '../ConvertOption';
-import { getConvertOptionDefault } from '../ConvertOption';
-import FinalLuaCode from '../gencode/FinalLuaCode';
+import { create } from "zustand";
+import React from "react";
+import Color from "../Color";
+import type LuaCodeOption from "../LuaCodeOption";
+import { getLuaCodeOptionDefault } from "../LuaCodeOption";
+import type ConvertOption from "../ConvertOption";
+import { getConvertOptionDefault } from "../ConvertOption";
+import FinalLuaCode from "../gencode/FinalLuaCode";
 
 type ModalShow = "" | "help" | "about";
 
@@ -44,15 +44,21 @@ interface AppStore extends AppState {
 
   setColorSet: (value: Color[] | ((prev: Color[]) => Color[])) => void;
   setOrderTable: (value: number[] | ((prev: number[]) => number[])) => void;
-  setTransparentStartOrder: (value: number | ((prev: number) => number)) => void;
+  setTransparentStartOrder: (
+    value: number | ((prev: number) => number),
+  ) => void;
 
   setConvertProgress: (value: number) => void;
   setIsWorking: (value: boolean) => void;
   setNeedReconvert: (value: boolean | ((prev: boolean) => boolean)) => void;
   setGeneratedCode: (value: FinalLuaCode) => void;
 
-  setConvertOption: (value: ConvertOption | ((prev: ConvertOption) => ConvertOption)) => void;
-  setLuaCodeOption: (value: LuaCodeOption | ((prev: LuaCodeOption) => LuaCodeOption)) => void;
+  setConvertOption: (
+    value: ConvertOption | ((prev: ConvertOption) => ConvertOption),
+  ) => void;
+  setLuaCodeOption: (
+    value: LuaCodeOption | ((prev: LuaCodeOption) => LuaCodeOption),
+  ) => void;
 
   setModalShow: (value: ModalShow) => void;
 
@@ -111,12 +117,16 @@ const useAppStore = create<AppStore>((set, get) => {
       set({ colorSet: next });
     },
     setOrderTable: (value) => {
-      const next = typeof value === "function" ? value(get().orderTable) : value;
+      const next =
+        typeof value === "function" ? value(get().orderTable) : value;
       orderTableRef.current = next;
       set({ orderTable: next });
     },
     setTransparentStartOrder: (value) => {
-      const next = typeof value === "function" ? value(get().transparentStartOrder) : value;
+      const next =
+        typeof value === "function"
+          ? value(get().transparentStartOrder)
+          : value;
       transparentStartOrderRef.current = next;
       set({ transparentStartOrder: next });
     },
@@ -124,19 +134,22 @@ const useAppStore = create<AppStore>((set, get) => {
     setConvertProgress: (value) => set({ convertProgress: value }),
     setIsWorking: (value) => set({ isWorking: value }),
     setNeedReconvert: (value) => {
-      const next = typeof value === "function" ? value(get().needReconvert) : value;
+      const next =
+        typeof value === "function" ? value(get().needReconvert) : value;
       needReconvertRef.current = next;
       set({ needReconvert: next });
     },
     setGeneratedCode: (value) => set({ generatedCode: value }),
 
     setConvertOption: (value) => {
-      const next = typeof value === "function" ? value(get().convertOption) : value;
+      const next =
+        typeof value === "function" ? value(get().convertOption) : value;
       convertOptionRef.current = next;
       set({ convertOption: next });
     },
     setLuaCodeOption: (value) => {
-      const next = typeof value === "function" ? value(get().luaCodeOption) : value;
+      const next =
+        typeof value === "function" ? value(get().luaCodeOption) : value;
       luaCodeOptionRef.current = next;
       set({ luaCodeOption: next });
     },

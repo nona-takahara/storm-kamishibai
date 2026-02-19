@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useCallback, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useCallback } from "react";
 import { useAppStore } from "./store/AppStore";
 import { useWorker } from "./hooks/useWorker";
 import { useFileHandler } from "./hooks/useFileHandler";
@@ -12,12 +10,12 @@ import Color from "./Color";
 import FinalizeLuaCode from "./gencode/FinalizeLuaCode";
 
 const App: React.FC = () => {
-  const { t } = useTranslation();
-
   const { postMessageToMain } = useWorker();
   const { handleFileChange } = useFileHandler(postMessageToMain);
-  const { handleStartConvertClick, handleStopConvertClick, luaCodesRef } = useConvert(postMessageToMain);
-  const { handleChangeConvertSettings, handleChangeLuaCodeSettings } = useSettings();
+  const { handleStartConvertClick, handleStopConvertClick, luaCodesRef } =
+    useConvert(postMessageToMain);
+  const { handleChangeConvertSettings, handleChangeLuaCodeSettings } =
+    useSettings();
   const {
     handleOnDrawChange,
     handleOnMoveUpClick,
@@ -25,7 +23,13 @@ const App: React.FC = () => {
     handleOnColorChange,
   } = useColorManagement();
 
-  const { setGeneratedCode, colorSetRef, orderTableRef, convertOptionRef, luaCodeOptionRef } = useAppStore();
+  const {
+    setGeneratedCode,
+    colorSetRef,
+    orderTableRef,
+    convertOptionRef,
+    luaCodeOptionRef,
+  } = useAppStore();
 
   const handleApplySettingsClick = useCallback(() => {
     const u = new Array<Color>(orderTableRef.current.length);
@@ -39,7 +43,14 @@ const App: React.FC = () => {
       luaCodeOptionRef.current,
     );
     setGeneratedCode(final);
-  }, [setGeneratedCode, colorSetRef, orderTableRef, luaCodesRef, convertOptionRef, luaCodeOptionRef]);
+  }, [
+    setGeneratedCode,
+    colorSetRef,
+    orderTableRef,
+    luaCodesRef,
+    convertOptionRef,
+    luaCodeOptionRef,
+  ]);
 
   const { setModalShow } = useAppStore();
 

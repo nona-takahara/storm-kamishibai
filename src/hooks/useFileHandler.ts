@@ -2,14 +2,16 @@ import { useCallback } from "react";
 import { fileToU8Image } from "../PictureFileReader";
 import OpenFileCommand from "../worker/OpenFileCommand";
 import { useAppStore } from "../store/AppStore";
+import WorkerCommand from "../worker/WorkerCommand";
 
-export const useFileHandler = (postMessageToMain: (command: any, transfer?: Transferable[]) => void) => {
-  const {
-    setImageUrl,
-    setImageWidth,
-    setImageHeight,
-    setImageLoading,
-  } = useAppStore();
+export const useFileHandler = (
+  postMessageToMain: (
+    command: WorkerCommand,
+    transfer?: Transferable[],
+  ) => void,
+) => {
+  const { setImageUrl, setImageWidth, setImageHeight, setImageLoading } =
+    useAppStore();
 
   const handleFileChange = useCallback(
     (file: File) => {
@@ -27,7 +29,13 @@ export const useFileHandler = (postMessageToMain: (command: any, transfer?: Tran
         postMessageToMain(cmd, cmd.getTransfer());
       });
     },
-    [postMessageToMain, setImageUrl, setImageWidth, setImageHeight, setImageLoading],
+    [
+      postMessageToMain,
+      setImageUrl,
+      setImageWidth,
+      setImageHeight,
+      setImageLoading,
+    ],
   );
 
   return { handleFileChange };

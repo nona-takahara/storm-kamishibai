@@ -2,8 +2,14 @@ import { useCallback, useRef } from "react";
 import StartConvertCommand from "../worker/StartConvertCommand";
 import TerminateConverterCommand from "../worker/TerminateConverterCommand";
 import { useAppStore } from "../store/AppStore";
+import WorkerCommand from "../worker/WorkerCommand";
 
-export const useConvert = (postMessageToMain: (command: any, transfer?: Transferable[]) => void) => {
+export const useConvert = (
+  postMessageToMain: (
+    command: WorkerCommand,
+    transfer?: Transferable[],
+  ) => void,
+) => {
   const luaCodesRef = useRef<string[][] | undefined>(undefined);
 
   const {
@@ -31,7 +37,15 @@ export const useConvert = (postMessageToMain: (command: any, transfer?: Transfer
       setIsWorking(true);
       luaCodesRef.current = [];
     }
-  }, [postMessageToMain, setIsWorking, needReconvertRef, orderTableRef, colorSetRef, convertOptionRef, transparentStartOrderRef]);
+  }, [
+    postMessageToMain,
+    setIsWorking,
+    needReconvertRef,
+    orderTableRef,
+    colorSetRef,
+    convertOptionRef,
+    transparentStartOrderRef,
+  ]);
 
   const handleStopConvertClick = useCallback(() => {
     const cmd = new TerminateConverterCommand();
