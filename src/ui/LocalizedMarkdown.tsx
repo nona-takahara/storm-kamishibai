@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 type LocalizedMarkdownProps = {
   pathBase: string;
@@ -8,17 +8,21 @@ type LocalizedMarkdownProps = {
 };
 
 export default function LocalizedMarkdown(props: LocalizedMarkdownProps) {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     let canceled = false;
-    const fallbackLanguage = props.fallbackLanguage ?? 'en';
+    const fallbackLanguage = props.fallbackLanguage ?? "en";
     const baseUrl = import.meta.env.BASE_URL;
-    const normalizedLanguage = props.language.split('-')[0];
-    const candidates = [props.language, normalizedLanguage, fallbackLanguage].filter(
-      (v, i, arr) => v && arr.indexOf(v) === i,
+    const normalizedLanguage = props.language.split("-")[0];
+    const candidates = [
+      props.language,
+      normalizedLanguage,
+      fallbackLanguage,
+    ].filter((v, i, arr) => v && arr.indexOf(v) === i);
+    const paths = candidates.map(
+      (lang) => `${baseUrl}content/${lang}/${props.pathBase}.md`,
     );
-    const paths = candidates.map((lang) => `${baseUrl}content/${lang}/${props.pathBase}.md`);
 
     const load = async () => {
       for (const path of paths) {
@@ -36,7 +40,7 @@ export default function LocalizedMarkdown(props: LocalizedMarkdownProps) {
         }
       }
       if (!canceled) {
-        setContent('');
+        setContent("");
       }
     };
 

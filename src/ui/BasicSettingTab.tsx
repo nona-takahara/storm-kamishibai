@@ -1,13 +1,33 @@
-import React from 'react';
-import { Alert, ButtonGroup, Card, Col, Form, FormControl, InputGroup, Row, Stack, ToggleButton } from 'react-bootstrap';
-import { BsArrowDownSquareFill, BsArrowLeftSquareFill, BsArrowRightSquareFill, BsArrowUpSquareFill, BsExclamationCircle } from 'react-icons/bs';
-import { withTranslation, type WithTranslation } from 'react-i18next';
-import type ConvertOption from '../ConvertOption';
-import type LuaCodeOption from '../LuaCodeOption';
-import LabeledInput from './util/LabeledInput';
+import React from "react";
+import {
+  Alert,
+  ButtonGroup,
+  Card,
+  Col,
+  Form,
+  FormControl,
+  InputGroup,
+  Row,
+  Stack,
+  ToggleButton,
+} from "react-bootstrap";
+import {
+  BsArrowDownSquareFill,
+  BsArrowLeftSquareFill,
+  BsArrowRightSquareFill,
+  BsArrowUpSquareFill,
+  BsExclamationCircle,
+} from "react-icons/bs";
+import { withTranslation, type WithTranslation } from "react-i18next";
+import type ConvertOption from "../ConvertOption";
+import type LuaCodeOption from "../LuaCodeOption";
+import LabeledInput from "./util/LabeledInput";
 
 export type BasicSettingTabProps = {
-  changeLuaCodeSettings: (v: Partial<LuaCodeOption>, needReconvert?: boolean) => void;
+  changeLuaCodeSettings: (
+    v: Partial<LuaCodeOption>,
+    needReconvert?: boolean,
+  ) => void;
   convertOption: ConvertOption;
   luaCodeOption: LuaCodeOption;
 } & WithTranslation;
@@ -25,36 +45,54 @@ class BasicSettingTab extends React.Component<BasicSettingTabProps> {
                   type="checkbox"
                   id="rollsign"
                   defaultChecked={this.props.luaCodeOption.isRollSign}
-                  onChange={(evt) => this.props.changeLuaCodeSettings({ isRollSign: evt.target.checked })}
+                  onChange={(evt) =>
+                    this.props.changeLuaCodeSettings({
+                      isRollSign: evt.target.checked,
+                    })
+                  }
                 />
-                <Form.Check.Label htmlFor="rollsign">{t('basic.rollsignMode')}</Form.Check.Label>
+                <Form.Check.Label htmlFor="rollsign">
+                  {t("basic.rollsignMode")}
+                </Form.Check.Label>
               </Form.Check>
               <Card.Text>
-                {t('basic.rollsignBefore')}
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940" target="_blank" rel="noopener noreferrer">
+                {t("basic.rollsignBefore")}
+                <a
+                  href="https://steamcommunity.com/sharedfiles/filedetails/?id=2850204940"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Analog Destination Indicator (Rollsign)
                 </a>
-                {t('basic.rollsignAfter')}
+                {t("basic.rollsignAfter")}
               </Card.Text>
               <Form.Group as={Row}>
-                <Form.Label column xs={3}>{t('basic.gap')}</Form.Label>
+                <Form.Label column xs={3}>
+                  {t("basic.gap")}
+                </Form.Label>
                 <Col>
                   <FormControl
                     type="number"
                     defaultValue={this.props.luaCodeOption.luaRollSignGap}
                     disabled={!this.props.luaCodeOption.isRollSign}
-                    onChange={(evt) => this.props.changeLuaCodeSettings({ luaRollSignGap: Number(evt.target.value) })}
+                    onChange={(evt) =>
+                      this.props.changeLuaCodeSettings({
+                        luaRollSignGap: Number(evt.target.value),
+                      })
+                    }
                   />
                 </Col>
               </Form.Group>
               {this.props.luaCodeOption.isRollSign &&
-              this.props.convertOption.luaCardHeight + this.props.luaCodeOption.luaRollSignGap !== 32 ? (
+              this.props.convertOption.luaCardHeight +
+                this.props.luaCodeOption.luaRollSignGap !==
+                32 ? (
                 <Alert variant="warning" className="mb-0">
                   <Row>
                     <Col xs="auto" className="pe-0">
                       <BsExclamationCircle />
                     </Col>
-                    <Col>{t('basic.warning32')}</Col>
+                    <Col>{t("basic.warning32")}</Col>
                   </Row>
                 </Alert>
               ) : (
@@ -64,80 +102,114 @@ class BasicSettingTab extends React.Component<BasicSettingTabProps> {
           </Card.Body>
         </Card>
         <Form.Group as={Row}>
-          <Form.Label column xs={4}>{t('basic.startIndex')}</Form.Label>
+          <Form.Label column xs={4}>
+            {t("basic.startIndex")}
+          </Form.Label>
           <Col>
             <Form.Control
               type="number"
               defaultValue={this.props.luaCodeOption.luaCardIndexStartWith}
               disabled={this.props.luaCodeOption.isRollSign}
-              onChange={(evt) => this.props.changeLuaCodeSettings({ luaCardIndexStartWith: Number(evt.target.value) })}
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row}>
-          <Form.Label column xs={4}>{t('basic.readChannel')}</Form.Label>
-          <Col>
-            <Form.Control
-              type="number"
-              defaultValue={this.props.luaCodeOption.luaReadChannel}
-              disabled={this.props.luaCodeOption.isRollSign}
-              onChange={(evt) => this.props.changeLuaCodeSettings({ luaReadChannel: Number(evt.target.value) })}
+              onChange={(evt) =>
+                this.props.changeLuaCodeSettings({
+                  luaCardIndexStartWith: Number(evt.target.value),
+                })
+              }
             />
           </Col>
         </Form.Group>
         <Form.Group as={Row}>
           <Form.Label column xs={4}>
-            {t('basic.maxCharactersPerBlock')}
+            {t("basic.readChannel")}
+          </Form.Label>
+          <Col>
+            <Form.Control
+              type="number"
+              defaultValue={this.props.luaCodeOption.luaReadChannel}
+              disabled={this.props.luaCodeOption.isRollSign}
+              onChange={(evt) =>
+                this.props.changeLuaCodeSettings({
+                  luaReadChannel: Number(evt.target.value),
+                })
+              }
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row}>
+          <Form.Label column xs={4}>
+            {t("basic.maxCharactersPerBlock")}
           </Form.Label>
           <Col>
             <Form.Control
               type="number"
               defaultValue={this.props.luaCodeOption.luaMaxLength}
-              onChange={(evt) => this.props.changeLuaCodeSettings({ luaMaxLength: Number(evt.target.value) })}
+              onChange={(evt) =>
+                this.props.changeLuaCodeSettings({
+                  luaMaxLength: Number(evt.target.value),
+                })
+              }
             />
           </Col>
         </Form.Group>
         <Row>
           <Form.Label column xs={2}>
-            {t('basic.offset')}
+            {t("basic.offset")}
           </Form.Label>
           <InputGroup as={Col}>
             <LabeledInput
-              label={t('main.x')}
+              label={t("main.x")}
               type="number"
               defaultValue={this.props.luaCodeOption.luaOffsetX}
-              onChange={(evt) => this.props.changeLuaCodeSettings({ luaOffsetX: Number(evt.target.value) })}
+              onChange={(evt) =>
+                this.props.changeLuaCodeSettings({
+                  luaOffsetX: Number(evt.target.value),
+                })
+              }
             />
             <LabeledInput
-              label={t('main.y')}
+              label={t("main.y")}
               type="number"
               defaultValue={this.props.luaCodeOption.luaOffsetY}
               disabled={this.props.luaCodeOption.isRollSign}
-              onChange={(evt) => this.props.changeLuaCodeSettings({ luaOffsetY: Number(evt.target.value) })}
+              onChange={(evt) =>
+                this.props.changeLuaCodeSettings({
+                  luaOffsetY: Number(evt.target.value),
+                })
+              }
             />
           </InputGroup>
         </Row>
         <Row>
-          <Form.Label column xs={2}>{t('basic.scale')}</Form.Label>
+          <Form.Label column xs={2}>
+            {t("basic.scale")}
+          </Form.Label>
           <InputGroup as={Col}>
             <LabeledInput
-              label={t('main.horizonal')}
+              label={t("main.horizonal")}
               type="number"
               defaultValue={this.props.luaCodeOption.luaScaleH}
               disabled={this.props.luaCodeOption.isRollSign}
-              onChange={(evt) => this.props.changeLuaCodeSettings({ luaScaleH: Number(evt.target.value) })}
+              onChange={(evt) =>
+                this.props.changeLuaCodeSettings({
+                  luaScaleH: Number(evt.target.value),
+                })
+              }
             />
             <LabeledInput
-              label={t('main.vectral')}
+              label={t("main.vectral")}
               type="number"
               defaultValue={this.props.luaCodeOption.luaScaleV}
               disabled={this.props.luaCodeOption.isRollSign}
-              onChange={(evt) => this.props.changeLuaCodeSettings({ luaScaleV: Number(evt.target.value) })}
+              onChange={(evt) =>
+                this.props.changeLuaCodeSettings({
+                  luaScaleV: Number(evt.target.value),
+                })
+              }
             />
           </InputGroup>
         </Row>
         <Row>
-          <Col xs={2}>{t('basic.rotate')}</Col>
+          <Col xs={2}>{t("basic.rotate")}</Col>
           <Col className="d-grid">
             <ButtonGroup>
               {[
@@ -156,7 +228,11 @@ class BasicSettingTab extends React.Component<BasicSettingTabProps> {
                   disabled={this.props.luaCodeOption.isRollSign}
                   value={radio.value}
                   checked={this.props.luaCodeOption.luaRotate === radio.value}
-                  onChange={(evt) => this.props.changeLuaCodeSettings({ luaRotate: Number(evt.target.value) })}
+                  onChange={(evt) =>
+                    this.props.changeLuaCodeSettings({
+                      luaRotate: Number(evt.target.value),
+                    })
+                  }
                 >
                   {radio.name}
                 </ToggleButton>

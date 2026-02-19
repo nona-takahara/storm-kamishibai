@@ -1,8 +1,8 @@
 name: build-and-deploy
-on: 
+on:
   push:
-    branches: [ "main" ]
-  
+    branches: ["main"]
+
   workflow_dispatch:
 
 permissions:
@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Install dependancies
         run: pnpm install --frozen-lockfile
       - name: Build website
@@ -35,14 +35,14 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-  
+
   deploy:
     needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    steps:    
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

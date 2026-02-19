@@ -1,17 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
-import { Alert, Card, Col, Form, InputGroup, ListGroup, Row, Stack } from 'react-bootstrap';
-import { BsExclamationCircle } from 'react-icons/bs';
-import { withTranslation, type WithTranslation } from 'react-i18next';
-import Color from '../Color';
-import type ConvertOption from '../ConvertOption';
-import type LuaCodeOption from '../LuaCodeOption';
-import ColorListItem from './ColorListItem';
-import LabeledInput from './util/LabeledInput';
+import React from "react";
+import {
+  Alert,
+  Card,
+  Col,
+  Form,
+  InputGroup,
+  ListGroup,
+  Row,
+  Stack,
+} from "react-bootstrap";
+import { BsExclamationCircle } from "react-icons/bs";
+import { withTranslation, type WithTranslation } from "react-i18next";
+import Color from "../Color";
+import type ConvertOption from "../ConvertOption";
+import type LuaCodeOption from "../LuaCodeOption";
+import ColorListItem from "./ColorListItem";
+import LabeledInput from "./util/LabeledInput";
 
 export type MainSettingTabPropsBase = {
-  changeConvertSettings: (v: ConvertOption | any, needReconvert?: boolean) => any;
+  changeConvertSettings: (
+    v: ConvertOption | any,
+    needReconvert?: boolean,
+  ) => any;
   changeLuaCodeSettings: (v: LuaCodeOption | any) => any;
   luaCodeOption: LuaCodeOption;
   convertOption: ConvertOption;
@@ -26,7 +38,9 @@ export type MainSettingTabPropsBase = {
 
 export type MainSettingTabProps = MainSettingTabPropsBase;
 
-class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTranslation> {
+class MainSettingTab extends React.Component<
+  MainSettingTabPropsBase & WithTranslation
+> {
   handleColorChange(index: number, evt: React.ChangeEvent) {
     this.props.onColorChange(index, (evt.target as any).value);
   }
@@ -42,7 +56,7 @@ class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTrans
   }
 
   handleDrawFlagChange(index: number, evt: React.ChangeEvent) {
-    this.props.onDrawFlagChange(index, !((evt.target as any).checked));
+    this.props.onDrawFlagChange(index, !(evt.target as any).checked);
   }
 
   render() {
@@ -51,9 +65,10 @@ class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTrans
     if (this.props.colorSet !== undefined) {
       list = new Array(this.props.colorSet.length);
       for (let i = 0; i < this.props.colorSet.length; i++) {
-        const undraw = this.props.colorOrder[i] >= this.props.transparentStartOrder;
+        const undraw =
+          this.props.colorOrder[i] >= this.props.transparentStartOrder;
         list[this.props.colorOrder[i]] = (
-          <ListGroup.Item key={i} variant={undraw ? 'secondary' : ''}>
+          <ListGroup.Item key={i} variant={undraw ? "secondary" : ""}>
             <ColorListItem
               order={this.props.colorOrder[i]}
               orderListLength={this.props.transparentStartOrder}
@@ -76,61 +91,97 @@ class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTrans
             <Col xs="auto" className="pe-0">
               <BsExclamationCircle />
             </Col>
-            <Col>{t('main.info')}</Col>
+            <Col>{t("main.info")}</Col>
           </Row>
         </Alert>
         <Card>
-          <Card.Header>{t('main.imageConversionSettings')}</Card.Header>
+          <Card.Header>{t("main.imageConversionSettings")}</Card.Header>
           <Card.Body>
             <Stack gap={1}>
               <Row>
-                <Form.Label column xs={2}>{t('main.size')}</Form.Label>
+                <Form.Label column xs={2}>
+                  {t("main.size")}
+                </Form.Label>
                 <InputGroup as={Col}>
                   <LabeledInput
-                    label={t('main.width')}
+                    label={t("main.width")}
                     type="number"
                     defaultValue={this.props.convertOption.luaCardWidth}
-                    onChange={(e) => this.props.changeConvertSettings({ luaCardWidth: Number(e.target.value) }, true)}
+                    onChange={(e) =>
+                      this.props.changeConvertSettings(
+                        { luaCardWidth: Number(e.target.value) },
+                        true,
+                      )
+                    }
                   />
                   <LabeledInput
-                    label={t('main.height')}
+                    label={t("main.height")}
                     type="number"
                     defaultValue={this.props.convertOption.luaCardHeight}
-                    onChange={(e) => this.props.changeConvertSettings({ luaCardHeight: Number(e.target.value) }, true)}
+                    onChange={(e) =>
+                      this.props.changeConvertSettings(
+                        { luaCardHeight: Number(e.target.value) },
+                        true,
+                      )
+                    }
                   />
                 </InputGroup>
               </Row>
               <Row className="mt-3">
-                <Form.Label column xs={2}>{t('main.offset')}</Form.Label>
+                <Form.Label column xs={2}>
+                  {t("main.offset")}
+                </Form.Label>
                 <InputGroup as={Col}>
                   <LabeledInput
-                    label={t('main.x')}
+                    label={t("main.x")}
                     type="number"
                     defaultValue={this.props.convertOption.pictureOffsetX}
-                    onChange={(e) => this.props.changeConvertSettings({ pictureOffsetX: Number(e.target.value) }, true)}
+                    onChange={(e) =>
+                      this.props.changeConvertSettings(
+                        { pictureOffsetX: Number(e.target.value) },
+                        true,
+                      )
+                    }
                   />
                   <LabeledInput
-                    label={t('main.y')}
+                    label={t("main.y")}
                     type="number"
                     defaultValue={this.props.convertOption.pictureOffsetY}
-                    onChange={(e) => this.props.changeConvertSettings({ pictureOffsetY: Number(e.target.value) }, true)}
+                    onChange={(e) =>
+                      this.props.changeConvertSettings(
+                        { pictureOffsetY: Number(e.target.value) },
+                        true,
+                      )
+                    }
                   />
                 </InputGroup>
               </Row>
               <Row>
-                <Form.Label column xs={2}>{t('main.skip')}</Form.Label>
+                <Form.Label column xs={2}>
+                  {t("main.skip")}
+                </Form.Label>
                 <InputGroup as={Col}>
                   <LabeledInput
-                    label={t('main.horizonal')}
+                    label={t("main.horizonal")}
                     type="number"
                     defaultValue={this.props.convertOption.pictureSkipH}
-                    onChange={(e) => this.props.changeConvertSettings({ pictureSkipH: Number(e.target.value) }, true)}
+                    onChange={(e) =>
+                      this.props.changeConvertSettings(
+                        { pictureSkipH: Number(e.target.value) },
+                        true,
+                      )
+                    }
                   />
                   <LabeledInput
-                    label={t('main.vectral')}
+                    label={t("main.vectral")}
                     type="number"
                     defaultValue={this.props.convertOption.pictureSkipV}
-                    onChange={(e) => this.props.changeConvertSettings({ pictureSkipV: Number(e.target.value) }, true)}
+                    onChange={(e) =>
+                      this.props.changeConvertSettings(
+                        { pictureSkipV: Number(e.target.value) },
+                        true,
+                      )
+                    }
                   />
                 </InputGroup>
               </Row>
@@ -138,7 +189,7 @@ class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTrans
           </Card.Body>
         </Card>
         <Card>
-          <Card.Header>{t('main.colorOrderAndDrawFlags')}</Card.Header>
+          <Card.Header>{t("main.colorOrderAndDrawFlags")}</Card.Header>
           <Card.Body className="p-0">
             <ListGroup variant="flush">{list}</ListGroup>
           </Card.Body>
@@ -150,4 +201,3 @@ class MainSettingTab extends React.Component<MainSettingTabPropsBase & WithTrans
 
 const TranslatedMainSettingTab = withTranslation()(MainSettingTab);
 export default TranslatedMainSettingTab;
-

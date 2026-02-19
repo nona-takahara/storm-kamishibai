@@ -1,0 +1,40 @@
+name: Enforce allowed PR sources to main
+
+# このワークフローは `main` ブランチへの Pull Request の送信元ブランチを検査し、
+# `release/*` または `hotfix/*` 以外からの PR であれば CI を失敗させて拒否します。
+# 目的: main にマージされるソースを制限し、人為ミスを防止する。
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  check-head-branch:
+    name: Check PR source branch
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' }}
+    steps:
+      - name: Inspect PR metadata
+        run: |
+          echo "PR number: ${{ github.event.pull_request.number }}"
+          echo "PR head ref: ${{ github.event.pull_request.head.ref }}"
+
+      - name: Fail if source branch is not allowed
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          echo "Checking source branch: $HEAD_REF"
+          if [[ ! "$HEAD_REF" =~ ^(release/|hotfix/) ]]; then
+            echo "::error::PR source branch '$HEAD_REF' is not allowed to target 'main'. Only 'release/*' and 'hotfix/*' are permitted."
+            exit 1
+          fi
+
+      - name: Success message
+        if: success()
+        run: |
+          echo "Source branch '$HEAD_REF' is allowed."
+
+# 補足:
+# - このワークフローは `main` をターゲットにした PR のみ実行されます。
+# - 必要な Status Check を追加したい場合は、GitHub のブランチ保護設定で
+#   本ワークフロー（`Enforce allowed PR sources to main`）を必須 Status Check に追加してください。
