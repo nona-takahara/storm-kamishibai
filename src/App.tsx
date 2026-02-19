@@ -1,7 +1,7 @@
-/* eslint-disable prefer-const */
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Container, Navbar, Row, Col, Stack, Nav } from "react-bootstrap";
-import { withTranslation, type WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import FileSelector from "./ui/FileSelector";
 import LuaCode from "./ui/LuaCode";
 import ConvertBox from "./ui/ConvertBox";
@@ -31,299 +31,398 @@ import EndConvertCommand from "./worker/EndConvertCommand";
 import MainWorker from "./worker/Worker.ts?worker";
 import GenCodeWorker from "./gencode/GenCode.ts?worker";
 
-type AppState = {
-  imageUrl: string;
-  imageWidth: number;
-  imageHeight: number;
-  imageLoading: boolean;
+type ModalShow = "" | "help" | "about";
 
-  colorSet: Color[];
-  orderTable: number[];
-  transparentStartOrder: number;
+const App: React.FC = () => {
+  const { t } = useTranslation();
 
-  convertProgress: number;
-  worker?: Worker;
-  subWorker?: Worker;
-  isWorking: boolean;
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageWidth, setImageWidth] = useState(0);
+  const [imageHeight, setImageHeight] = useState(0);
+  const [imageLoading, setImageLoading] = useState(false);
 
-  needReconvert: boolean;
-  luaCodes?: string[][];
-  generatedCode: FinalLuaCode;
+  const [colorSet, _setColorSet] = useState<Color[]>([]);
+  const colorSetRef = useRef<Color[]>([]);
+  const setColorSet = (v: Color[] | ((prev: Color[]) => Color[])) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const next = typeof v === "function" ? (v as any)(colorSetRef.current) : v;
+    colorSetRef.current = next;
+    _setColorSet(next);
+  };
 
-  convertOption: ConvertOption;
-  luaCodeOption: LuaCodeOption;
+  const [orderTable, _setOrderTable] = useState<number[]>([]);
+  const orderTableRef = useRef<number[]>([]);
+  const setOrderTable = (v: number[] | ((prev: number[]) => number[])) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const next =
+      typeof v === "function" ? (v as any)(orderTableRef.current) : v;
+    orderTableRef.current = next;
+    _setOrderTable(next);
+  };
 
-  modalShow: "" | "help" | "about";
-};
+  const [transparentStartOrder, _setTransparentStartOrder] =
+    useState<number>(0);
+  const transparentStartOrderRef = useRef<number>(0);
+  const setTransparentStartOrder = (v: number | ((prev: number) => number)) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const next =
+      typeof v === "function"
+        ? (v as any)(transparentStartOrderRef.current)
+        : v;
+    transparentStartOrderRef.current = next as number;
+    _setTransparentStartOrder(next as number);
+  };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-class App extends React.Component<any & WithTranslation, AppState> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(props: any) {
-    super(props);
-    this.handleFileChange = this.handleFileChange.bind(this);
-    this.handleOnDrawChange = this.handleOnDrawChange.bind(this);
-    this.handleOnMoveUpClick = this.handleOnMoveUpClick.bind(this);
-    this.handleOnMoveDownClick = this.handleOnMoveDownClick.bind(this);
-    this.handleOnColorChange = this.handleOnColorChange.bind(this);
-    this.handleStartConvertClick = this.handleStartConvertClick.bind(this);
-    this.handleStopConvertClick = this.handleStopConvertClick.bind(this);
-    this.handleModalClose = this.handleModalClose.bind(this);
-    this.handleBeforeUnloadEvent = this.handleBeforeUnloadEvent.bind(this);
-    this.handleChangeConvertSettings =
-      this.handleChangeConvertSettings.bind(this);
-    this.handleChangeLuaCodeSettings =
-      this.handleChangeLuaCodeSettings.bind(this);
-    this.handleApplySettingsClick = this.handleApplySettingsClick.bind(this);
-    this.state = {
-      convertProgress: 0,
-      colorSet: [],
-      orderTable: [],
-      transparentStartOrder: 0,
-      isWorking: false,
-      generatedCode: new FinalLuaCode([]),
-      convertOption: getConvertOptionDefault(),
-      luaCodeOption: getLuaCodeOptionDefault(),
-      modalShow: "",
-      imageLoading: false,
-      imageUrl: "",
-      imageWidth: 0,
-      imageHeight: 0,
-      needReconvert: false,
-    };
-  }
+  const [convertProgress, setConvertProgress] = useState(0);
+  const workerRef = useRef<Worker | undefined>(undefined);
+  const subWorkerRef = useRef<Worker | undefined>(undefined);
+  const [isWorking, setIsWorking] = useState(false);
 
-  // ----- WebWorker
-  restartWorker() {
-    this.state.worker?.terminate();
+  const [needReconvert, _setNeedReconvert] = useState(false);
+  const needReconvertRef = useRef(false);
+  const setNeedReconvert = (v: boolean | ((prev: boolean) => boolean)) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const next =
+      typeof v === "function" ? (v as any)(needReconvertRef.current) : v;
+    needReconvertRef.current = next as boolean;
+    _setNeedReconvert(next as boolean);
+  };
+
+  const [luaCodes, _setLuaCodes] = useState<string[][] | undefined>(undefined);
+  const luaCodesRef = useRef<string[][] | undefined>(undefined);
+  const setLuaCodes = (
+    v: string[][] | undefined | ((prev?: string[][]) => string[][] | undefined),
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const next = typeof v === "function" ? (v as any)(luaCodesRef.current) : v;
+    luaCodesRef.current = next as string[][] | undefined;
+    _setLuaCodes(next as string[][] | undefined);
+  };
+
+  const [generatedCode, setGeneratedCode] = useState<FinalLuaCode>(
+    new FinalLuaCode([]),
+  );
+
+  const [convertOption, _setConvertOption] = useState<ConvertOption>(
+    getConvertOptionDefault(),
+  );
+  const convertOptionRef = useRef<ConvertOption>(convertOption);
+  const setConvertOption = (
+    v: ConvertOption | ((prev: ConvertOption) => ConvertOption),
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const next =
+      typeof v === "function" ? (v as any)(convertOptionRef.current) : v;
+    convertOptionRef.current = next as ConvertOption;
+    _setConvertOption(next as ConvertOption);
+  };
+
+  const [luaCodeOption, _setLuaCodeOption] = useState<LuaCodeOption>(
+    getLuaCodeOptionDefault(),
+  );
+  const luaCodeOptionRef = useRef<LuaCodeOption>(luaCodeOption);
+  const setLuaCodeOption = (
+    v: LuaCodeOption | ((prev: LuaCodeOption) => LuaCodeOption),
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const next =
+      typeof v === "function" ? (v as any)(luaCodeOptionRef.current) : v;
+    luaCodeOptionRef.current = next as LuaCodeOption;
+    _setLuaCodeOption(next as LuaCodeOption);
+  };
+
+  const [modalShow, setModalShow] = useState<ModalShow>("");
+
+  // helpers to ensure refs match state when state set externally
+  useEffect(() => {
+    colorSetRef.current = colorSet;
+  }, [colorSet]);
+  useEffect(() => {
+    orderTableRef.current = orderTable;
+  }, [orderTable]);
+  useEffect(() => {
+    transparentStartOrderRef.current = transparentStartOrder;
+  }, [transparentStartOrder]);
+  useEffect(() => {
+    needReconvertRef.current = needReconvert;
+  }, [needReconvert]);
+  useEffect(() => {
+    luaCodesRef.current = luaCodes;
+  }, [luaCodes]);
+  useEffect(() => {
+    convertOptionRef.current = convertOption;
+  }, [convertOption]);
+  useEffect(() => {
+    luaCodeOptionRef.current = luaCodeOption;
+  }, [luaCodeOption]);
+
+  const restartWorker = useCallback(() => {
+    try {
+      workerRef.current?.terminate();
+    } catch {
+      /* empty */
+    }
     const _worker = new MainWorker();
-    _worker.onmessage = this.handleWorkerMessage.bind(this);
-    this.setState({ worker: _worker });
+    _worker.onmessage = handleWorkerMessage;
+    workerRef.current = _worker;
     return _worker;
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  getWorker() {
-    return this.state?.worker || this.restartWorker();
-  }
+  const getWorker = useCallback(() => {
+    return workerRef.current || restartWorker();
+  }, [restartWorker]);
 
-  handleWorkerMessage(evt: MessageEvent<WorkerCommand>) {
-    const data = evt.data;
-    if (ConvertCardCommand.is(data)) {
-      let _subworker = this.state.subWorker;
-      if (!_subworker) {
-        _subworker = new GenCodeWorker();
-        _subworker.onmessage = this.handleWorkerMessage.bind(this);
-        this.setState({ subWorker: _subworker });
+  const handleWorkerMessage = useCallback(
+    (evt: MessageEvent<WorkerCommand>) => {
+      const data = evt.data;
+      if (ConvertCardCommand.is(data)) {
+        let _subworker = subWorkerRef.current;
+        if (!_subworker) {
+          _subworker = new GenCodeWorker();
+          _subworker.onmessage = handleWorkerMessage;
+          subWorkerRef.current = _subworker;
+        }
+        const ndata = ConvertCardCommand.from(data);
+        _subworker.postMessage(ndata, ndata.getTransfer());
+      } else if (TerminateConverterCommand.is(data)) {
+        subWorkerRef.current?.terminate();
+        subWorkerRef.current = undefined;
+      } else if (ConvertSucceedCommand.is(data)) {
+        const ndata = ConvertSucceedCommand.from(data);
+        getWorker().postMessage(ndata, ndata.getTransfer());
+      } else if (FileLoadedCommand.is(data)) {
+        const colorSetLocal = data.colorPallete.map(
+          (v) =>
+            new Color(
+              v.originalR,
+              v.originalG,
+              v.originalB,
+              v.originalA,
+              v.raw,
+            ),
+        );
+        const orderTableLocal = colorSetLocal.map((_, i) => i);
+
+        setColorSet(colorSetLocal);
+        setOrderTable(orderTableLocal);
+        setImageLoading(false);
+        setTransparentStartOrder(orderTableLocal.length);
+        setNeedReconvert(true);
+      } else if (ConvertResultCommand.is(data)) {
+        setLuaCodes((prev) => {
+          const l = prev ? prev.slice() : [];
+          l[data.metaData.offsetListIndex] = data.luaList;
+          return l;
+        });
+        setConvertProgress(data.metaData.finished / data.metaData.length);
+      } else if (EndConvertCommand.is(data)) {
+        setIsWorking(false);
+        setConvertProgress(1);
+        setNeedReconvert(false);
+        // apply settings using latest refs
+        const final = FinalizeLuaCode(
+          luaCodesRef.current || [],
+          ((): Color[] => {
+            const u = new Array<Color>(orderTableRef.current.length);
+            for (let i = 0; i < orderTableRef.current.length; i++) {
+              u[orderTableRef.current[i]] = colorSetRef.current[i];
+            }
+            return u;
+          })(),
+          convertOptionRef.current,
+          luaCodeOptionRef.current,
+        );
+        setGeneratedCode(final);
       }
-      const ndata = ConvertCardCommand.from(data);
-      _subworker.postMessage(ndata, ndata.getTransfer());
-    } else if (TerminateConverterCommand.is(data)) {
-      this.state.subWorker?.terminate();
-      this.setState({ subWorker: undefined });
-    } else if (ConvertSucceedCommand.is(data)) {
-      const ndata = ConvertSucceedCommand.from(data);
-      this.getWorker().postMessage(ndata, ndata.getTransfer());
-    } else if (FileLoadedCommand.is(data)) {
-      const colorSet = data.colorPallete.map(
-        (v) =>
-          new Color(v.originalR, v.originalG, v.originalB, v.originalA, v.raw),
-      );
-      const orderTable = colorSet.map((_, i) => i);
+    },
+    [getWorker],
+  );
 
-      this.setState({
-        colorSet: colorSet,
-        orderTable: orderTable,
-        imageLoading: false,
-        transparentStartOrder: orderTable.length,
-        needReconvert: true,
-      });
-    } else if (ConvertResultCommand.is(data)) {
-      this.setState((state) => {
-        const l = state.luaCodes || [];
-        l[data.metaData.offsetListIndex] = data.luaList;
-        return {
-          ...state,
-          luaCodes: l,
-          convertProgress: data.metaData.finished / data.metaData.length,
-        };
-      });
-    } else if (EndConvertCommand.is(data)) {
-      this.setState((state) => {
-        return {
-          ...state,
-          isWorking: false,
-          convertProgress: 1,
-          needReconvert: false,
-        };
-      });
-      this.handleApplySettingsClick();
-    }
-  }
-
-  // ----- Unload Dialog
-  componentDidMount() {
-    window.addEventListener("beforeunload", this.handleBeforeUnloadEvent);
-    this.restartWorker();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("beforeunload", this.handleBeforeUnloadEvent);
-  }
-
-  handleBeforeUnloadEvent(evt: BeforeUnloadEvent) {
-    if (this.state.imageUrl !== undefined) {
-      evt.preventDefault();
-    }
-    evt.returnValue = "";
-    this.state.worker?.terminate();
-    this.state.subWorker?.terminate();
-  }
-
-  // ----- Other Change Event
-  handleFileChange(file: File) {
-    this.setState({ imageLoading: true });
-    fileToU8Image(file, true).then((res) => {
-      this.setState({
-        imageUrl: res.dataUrl,
-        imageWidth: res.width,
-        imageHeight: res.height,
-      });
-      const cmd = new OpenFileCommand(res.u8Image, res.width, res.height, true);
-      this.getWorker().postMessage(cmd, cmd.getTransfer());
-    });
-  }
-
-  handleOnDrawChange(colorIndex: number, drawFlag: boolean) {
-    this.setState((state) => {
-      let k = state.orderTable.slice();
-      let o = k[colorIndex];
-      let to = state.transparentStartOrder;
-
-      if (o < to && drawFlag) {
-        k = k.map((v) => (v > o && v < to ? v - 1 : v));
-        k[colorIndex] = --to;
-      } else if (o >= to && !drawFlag) {
-        k = k.map((v) => (v >= to && v < o ? v + 1 : v));
-        k[colorIndex] = to++;
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnloadEvent);
+    restartWorker();
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnloadEvent);
+      try {
+        workerRef.current?.terminate();
+      } catch {
+        /* empty */
       }
+      try {
+        subWorkerRef.current?.terminate();
+      } catch {
+        /* empty */
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      return {
-        ...state,
-        orderTable: k,
-        transparentStartOrder: to,
-        needReconvert: true,
-      };
-    });
-  }
+  const handleBeforeUnloadEvent = useCallback(
+    (evt: BeforeUnloadEvent) => {
+      if (imageUrl !== undefined) {
+        evt.preventDefault();
+      }
+      evt.returnValue = "";
+      try {
+        workerRef.current?.terminate();
+      } catch {
+        /* empty */
+      }
+      try {
+        subWorkerRef.current?.terminate();
+      } catch {
+        /* empty */
+      }
+    },
+    [imageUrl],
+  );
 
-  handleOnMoveUpClick(colorIndex: number) {
-    this.setState((state) => {
-      let k = state.orderTable.slice();
-      let o = k[colorIndex];
+  const handleFileChange = useCallback(
+    (file: File) => {
+      setImageLoading(true);
+      fileToU8Image(file, true).then((res) => {
+        setImageUrl(res.dataUrl);
+        setImageWidth(res.width);
+        setImageHeight(res.height);
+        const cmd = new OpenFileCommand(
+          res.u8Image,
+          res.width,
+          res.height,
+          true,
+        );
+        getWorker().postMessage(cmd, cmd.getTransfer());
+      });
+    },
+    [getWorker],
+  );
+
+  const handleOnDrawChange = useCallback(
+    (colorIndex: number, drawFlag: boolean) => {
+      setOrderTable((state) => {
+        let k = state.slice();
+        const o = k[colorIndex];
+        let to = transparentStartOrderRef.current;
+
+        if (o < to && drawFlag) {
+          k = k.map((v) => (v > o && v < to ? v - 1 : v));
+          k[colorIndex] = --to;
+        } else if (o >= to && !drawFlag) {
+          k = k.map((v) => (v >= to && v < o ? v + 1 : v));
+          k[colorIndex] = to++;
+        }
+
+        setTransparentStartOrder(to);
+        setNeedReconvert(true);
+        return k;
+      });
+    },
+    [],
+  );
+
+  const handleOnMoveUpClick = useCallback((colorIndex: number) => {
+    setOrderTable((state) => {
+      const k = state.slice();
+      const o = k[colorIndex];
 
       k[k.indexOf(o - 1)] = o;
       k[colorIndex] = o - 1;
 
-      return { ...state, orderTable: k, needReconvert: true };
+      setNeedReconvert(true);
+      return k;
     });
-  }
+  }, []);
 
-  handleOnMoveDownClick(colorIndex: number) {
-    this.setState((state) => {
-      let k = state.orderTable.slice();
-      let o = k[colorIndex];
+  const handleOnMoveDownClick = useCallback((colorIndex: number) => {
+    setOrderTable((state) => {
+      const k = state.slice();
+      const o = k[colorIndex];
 
       k[k.indexOf(o + 1)] = o;
       k[colorIndex] = o + 1;
 
-      return { ...state, orderTable: k, needReconvert: true };
+      setNeedReconvert(true);
+      return k;
     });
-  }
+  }, []);
 
-  handleOnColorChange(colorIndex: number, colorInput: string) {
-    this.setState((state) => {
-      let c = state.colorSet.slice();
-      c[colorIndex].setConvertedRGB(colorInput);
+  const handleOnColorChange = useCallback(
+    (colorIndex: number, colorInput: string) => {
+      setColorSet((state) => {
+        const c = state.slice();
+        c[colorIndex].setConvertedRGB(colorInput);
+        return c;
+      });
+    },
+    [],
+  );
 
-      return { ...state, colorSet: c };
-    });
-  }
-
-  handleStartConvertClick() {
-    this.setState((state) => {
-      if (state.needReconvert) {
-        const u = new Uint32Array(state.orderTable.length);
-        for (let i = 0; i < state.orderTable.length; i++) {
-          u[state.orderTable[i]] = state.colorSet[i].raw || 0;
-        }
-
-        const cmd = new StartConvertCommand(
-          state.convertOption,
-          u,
-          state.transparentStartOrder,
-        );
-        this.getWorker().postMessage(cmd, cmd.getTransfer());
-        return { ...state, isWorking: true, luaCodes: [] };
-      } else {
-        return state;
+  const handleStartConvertClick = useCallback(() => {
+    if (needReconvertRef.current) {
+      const u = new Uint32Array(orderTableRef.current.length);
+      for (let i = 0; i < orderTableRef.current.length; i++) {
+        u[orderTableRef.current[i]] = colorSetRef.current[i].raw || 0;
       }
-    });
-  }
 
-  handleStopConvertClick() {
-    const cmd = new TerminateConverterCommand();
-    this.getWorker().postMessage(cmd, cmd.getTransfer());
-    this.setState({ isWorking: false });
-  }
-
-  handleApplySettingsClick() {
-    this.setState((state) => {
-      const u = new Array<Color>(state.orderTable.length);
-      for (let i = 0; i < state.orderTable.length; i++) {
-        u[state.orderTable[i]] = state.colorSet[i];
-      }
-      const final = FinalizeLuaCode(
-        state.luaCodes || [],
+      const cmd = new StartConvertCommand(
+        convertOptionRef.current,
         u,
-        state.convertOption,
-        state.luaCodeOption,
+        transparentStartOrderRef.current,
       );
-      return { ...state, generatedCode: final };
-    });
-  }
+      getWorker().postMessage(cmd, cmd.getTransfer());
+      setIsWorking(true);
+      setLuaCodes([]);
+    }
+  }, [getWorker]);
 
-  // 対応済み
-  handleModalClose() {
-    this.setState({ modalShow: "" });
-  }
+  const handleStopConvertClick = useCallback(() => {
+    const cmd = new TerminateConverterCommand();
+    getWorker().postMessage(cmd, cmd.getTransfer());
+    setIsWorking(false);
+  }, [getWorker]);
 
-  handleChangeConvertSettings(
-    opt: ConvertOption,
-    needReconvert: boolean = false,
-  ) {
-    this.setState((state) => {
-      let ss: ConvertOption = state.convertOption;
-      for (const key in opt) {
-        if (Object.prototype.hasOwnProperty.call(opt, key)) {
-          if (Object.prototype.hasOwnProperty.call(ss, key)) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (ss as any)[key] = (opt as any)[key];
-          } else {
-            console.error(`Key ${key} is not found in ConvertOption.`);
+  const handleApplySettingsClick = useCallback(() => {
+    const u = new Array<Color>(orderTableRef.current.length);
+    for (let i = 0; i < orderTableRef.current.length; i++) {
+      u[orderTableRef.current[i]] = colorSetRef.current[i];
+    }
+    const final = FinalizeLuaCode(
+      luaCodesRef.current || [],
+      u,
+      convertOptionRef.current,
+      luaCodeOptionRef.current,
+    );
+    setGeneratedCode(final);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setModalShow("");
+  }, []);
+
+  const handleChangeConvertSettings = useCallback(
+    (opt: ConvertOption, need: boolean = false) => {
+      setConvertOption((state) => {
+        const ss: ConvertOption = { ...state };
+        for (const key in opt) {
+          if (Object.prototype.hasOwnProperty.call(opt, key)) {
+            if (Object.prototype.hasOwnProperty.call(ss, key)) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (ss as any)[key] = (opt as any)[key];
+            } else {
+              console.error(`Key ${key} is not found in ConvertOption.`);
+            }
           }
         }
-      }
-      return {
-        ...state,
-        convertOption: ss,
-        needReconvert: needReconvert || state.needReconvert,
-      };
-    });
-  }
+        return ss;
+      });
+      setNeedReconvert((prev) => need || prev);
+    },
+    [],
+  );
 
-  handleChangeLuaCodeSettings(opt: LuaCodeOption) {
-    this.setState((state) => {
-      let ss: LuaCodeOption = state.luaCodeOption;
+  const handleChangeLuaCodeSettings = useCallback((opt: LuaCodeOption) => {
+    setLuaCodeOption((state) => {
+      const ss: LuaCodeOption = { ...state };
       for (const key in opt) {
         if (Object.prototype.hasOwnProperty.call(opt, key)) {
           if (Object.prototype.hasOwnProperty.call(ss, key)) {
@@ -334,106 +433,85 @@ class App extends React.Component<any & WithTranslation, AppState> {
           }
         }
       }
-      return { ...state, luaCodeOption: ss };
+      return ss;
     });
-  }
+  }, []);
 
-  render(): React.ReactNode {
-    const { t } = this.props;
-    return (
-      <>
-        <Navbar collapseOnSelect expand="md" bg="light">
-          <Container className="px-5" fluid="xl">
-            <Navbar.Brand>Storm Kamishibai</Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse
-              id="responsive-navbar-nav"
-              className="justify-content-end"
-            >
-              <Nav>
-                <Nav.Link
-                  href="https://forms.gle/TRxMsVQLBrCc3yJF7"
-                  target="_blank"
-                >
-                  {t("app.contact")}
-                </Nav.Link>
-                <Nav.Link
-                  onClick={() => {
-                    this.setState({ modalShow: "help" });
-                  }}
-                >
-                  {t("app.help")}
-                </Nav.Link>
-                <Nav.Link
-                  onClick={() => {
-                    this.setState({ modalShow: "about" });
-                  }}
-                >
-                  {t("app.about")}
-                </Nav.Link>
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
-        <Container className="px-5 mb-4" fluid="xl">
-          <Row>
-            <Col md={4} lg={6} className="mt-4">
-              <Stack gap={2}>
-                <FileSelector
-                  onFileChange={this.handleFileChange}
-                  imageUrl={this.state.imageUrl}
-                  width={this.state.imageWidth}
-                  height={this.state.imageHeight}
-                  loading={this.state.imageLoading}
-                />
-                <ConvertBox
-                  isVisible={this.state.imageUrl !== ""}
-                  isWorking={this.state.isWorking}
-                  onStartConvertClick={this.handleStartConvertClick}
-                  onStopConvertClick={this.handleStopConvertClick}
-                  onApplyClick={this.handleApplySettingsClick}
-                  needReconvert={this.state.needReconvert}
-                  convertProgress={this.state.convertProgress}
-                />
-                <LuaCode
-                  isVisible={this.state.imageUrl !== ""}
-                  code={this.state.generatedCode}
-                />
-              </Stack>
-            </Col>
-            <Col md={8} lg={6} className="mt-4">
-              <LandingBox isVisible={this.state.imageUrl === ""} />
-              <Settings
-                isVisible={this.state.imageUrl !== ""}
-                main={{
-                  changeConvertSettings: this.handleChangeConvertSettings,
-                  changeLuaCodeSettings: this.handleChangeLuaCodeSettings,
-                  luaCodeOption: this.state.luaCodeOption,
-                  convertOption: this.state.convertOption,
-                  colorSet: this.state.colorSet,
-                  colorOrder: this.state.orderTable,
-                  transparentStartOrder: this.state.transparentStartOrder,
-                  onDrawFlagChange: this.handleOnDrawChange,
-                  onMoveUpClick: this.handleOnMoveUpClick,
-                  onMoveDownClick: this.handleOnMoveDownClick,
-                  onColorChange: this.handleOnColorChange,
-                }}
-              />
-            </Col>
-          </Row>
+  return (
+    <>
+      <Navbar collapseOnSelect expand="md" bg="light">
+        <Container className="px-5" fluid="xl">
+          <Navbar.Brand>Storm Kamishibai</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse
+            id="responsive-navbar-nav"
+            className="justify-content-end"
+          >
+            <Nav>
+              <Nav.Link
+                href="https://forms.gle/TRxMsVQLBrCc3yJF7"
+                target="_blank"
+              >
+                {t("app.contact")}
+              </Nav.Link>
+              <Nav.Link onClick={() => setModalShow("help")}>
+                {t("app.help")}
+              </Nav.Link>
+              <Nav.Link onClick={() => setModalShow("about")}>
+                {t("app.about")}
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
         </Container>
-        <HelpModal
-          show={this.state.modalShow === "help"}
-          onClose={this.handleModalClose}
-        />
-        <AboutModal
-          show={this.state.modalShow === "about"}
-          onClose={this.handleModalClose}
-        />
-      </>
-    );
-  }
-}
+      </Navbar>
+      <Container className="px-5 mb-4" fluid="xl">
+        <Row>
+          <Col md={4} lg={6} className="mt-4">
+            <Stack gap={2}>
+              <FileSelector
+                onFileChange={handleFileChange}
+                imageUrl={imageUrl}
+                width={imageWidth}
+                height={imageHeight}
+                loading={imageLoading}
+              />
+              <ConvertBox
+                isVisible={imageUrl !== ""}
+                isWorking={isWorking}
+                onStartConvertClick={handleStartConvertClick}
+                onStopConvertClick={handleStopConvertClick}
+                onApplyClick={handleApplySettingsClick}
+                needReconvert={needReconvert}
+                convertProgress={convertProgress}
+              />
+              <LuaCode isVisible={imageUrl !== ""} code={generatedCode} />
+            </Stack>
+          </Col>
+          <Col md={8} lg={6} className="mt-4">
+            <LandingBox isVisible={imageUrl === ""} />
+            <Settings
+              isVisible={imageUrl !== ""}
+              main={{
+                changeConvertSettings: handleChangeConvertSettings,
+                changeLuaCodeSettings: handleChangeLuaCodeSettings,
+                luaCodeOption: luaCodeOption,
+                convertOption: convertOption,
+                colorSet: colorSet,
+                colorOrder: orderTable,
+                transparentStartOrder: transparentStartOrder,
+                onDrawFlagChange: handleOnDrawChange,
+                onMoveUpClick: handleOnMoveUpClick,
+                onMoveDownClick: handleOnMoveDownClick,
+                onColorChange: handleOnColorChange,
+              }}
+            />
+          </Col>
+        </Row>
+      </Container>
+      <HelpModal show={modalShow === "help"} onClose={handleModalClose} />
+      <AboutModal show={modalShow === "about"} onClose={handleModalClose} />
+    </>
+  );
+};
 
-// eslint-disable-next-line react-refresh/only-export-components
-export default withTranslation()(App);
+export default App;
