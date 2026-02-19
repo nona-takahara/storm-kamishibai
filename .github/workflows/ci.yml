@@ -17,15 +17,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Use Node.js v24
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -49,15 +48,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Use Node.js v24
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
