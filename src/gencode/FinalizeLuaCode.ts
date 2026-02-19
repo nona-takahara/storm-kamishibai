@@ -93,7 +93,7 @@ function standardFinalize(
   const r: string[] = [];
   let blockLP = "";
   for (let i = 0; i < sn.length; i++) {
-    const k = sn[i]
+    const k = (sn[i] || [])
       .map((v, j) => {
         if (v !== "") {
           return `C(${orderdColor[j].convertedR},${orderdColor[j].convertedG},${orderdColor[j].convertedB})${v}`;
