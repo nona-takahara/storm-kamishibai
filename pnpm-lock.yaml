@@ -41,9 +41,6 @@ importers:
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.10)(react@19.2.4)
-      storm-kamishibai:
-        specifier: 'link:'
-        version: 'link:'
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.1
