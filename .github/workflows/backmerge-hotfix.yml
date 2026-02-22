@@ -1,0 +1,47 @@
+name: Backmerge hotfix/release into develop
+
+# `hotfix/*` または `release/*` ブランチが main にマージ（merged=true）されたとき、自動で main → develop の
+# Pull Request を作成します。
+# 理由: 本番に入った修正（hotfix）やリリース（release）は develop にも取り込むことでブランチ間の乖離を防ぐため。
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  create-backmerge-pr:
+    name: Create PR main → develop after hotfix/release merged
+    runs-on: ubuntu-latest
+    # 条件: PR が merge され、ターゲットが main、送信元ブランチが hotfix/* または release/* の場合のみ実行
+    if: ${{ github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && (startsWith(github.event.pull_request.head.ref, 'hotfix/') || startsWith(github.event.pull_request.head.ref, 'release/')) }}
+    steps:
+      - name: Prepare
+        run: |
+          echo "Hotfix branch merged: ${GITHUB_REF}"
+
+      - name: Create backmerge PR from main to develop
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const sourceRef = context.payload.pull_request.head.ref;
+            const head = 'main';
+            const base = 'develop';
+            const title = `chore(backmerge): merge ${sourceRef} → ${base}`;
+            const body = `Backmerge of ${sourceRef} into ${base}.
+            \nThis PR was created automatically by workflow 'backmerge-hotfix'. Please review and merge.`;
+
+            // 既に同様の open PR がないか確認
+            const existing = await github.pulls.list({ owner, repo, state: 'open', head: `${owner}:${head}`, base });
+            if (existing.data && existing.data.length > 0) {
+              console.log('An open backmerge PR from main to develop already exists. Skipping creation.');
+            } else {
+              await github.pulls.create({ owner, repo, head, base, title, body });
+              console.log('Created backmerge PR from main to develop.');
+            }
+
+# アクション選定理由:
+# - `actions/github-script` を使うことで追加のアクション依存を増やさず、Octokit を直接呼べるため
+#   シンプルに PR 作成ロジックを記述できる点を評価しました。GITHUB_TOKEN で十分です。

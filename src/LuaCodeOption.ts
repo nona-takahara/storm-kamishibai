@@ -9,7 +9,7 @@ type LuaCodeOption = {
   luaCardIndexStartWith: number;
   luaReadChannel: number;
   luaMaxLength: number;
-}
+};
 
 export function getLuaCodeOptionDefault(): LuaCodeOption {
   return {
@@ -22,7 +22,7 @@ export function getLuaCodeOptionDefault(): LuaCodeOption {
     luaRotate: 0,
     luaCardIndexStartWith: 1,
     luaReadChannel: 1,
-    luaMaxLength: 4090
+    luaMaxLength: 4090,
   };
 }
 
